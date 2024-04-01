@@ -1,0 +1,75 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                Int      @id @default(autoincrement())
+  name              String   @unique
+  lists             List[]
+}
+
+model List {
+  id                Int      @id @default(autoincrement())
+  user              User     @relation(fields: [userId], references: [id])
+  userId            Int
+  name              String
+  type              ListType
+  icon              String
+  color             String
+  items             Item[]
+}
+
+model Item {
+  id                Int      @id @default(autoincrement())
+  createdTime       DateTime @default(now())
+  updatedTime       DateTime @updatedAt
+  checked           Boolean  @default(false)
+  checkedTime       DateTime
+  title             String
+  memo              String?
+  url               String?
+  date              DateTime?
+  time              DateTime?
+  tags              Tag[]    @relation("ItemToTag")
+  priority          Priority?
+  flagged           Boolean  @default(false)
+  list              List     @relation(fields: [listId], references: [id])
+  listId            Int
+  image_url         String?
+  subItems          SubItem[]
+}
+
+model SubItem {
+  id                Int      @id @default(autoincrement())
+  items             Item     @relation(fields: [itemId], references: [id])
+  itemId            Int
+  createdTime       DateTime @default(now())
+  updatedTime       DateTime @updatedAt
+  checked           Boolean  @default(false)
+  checkedTime       DateTime
+  title             String
+}
+
+model Tag {
+  id                Int      @id @default(autoincrement())
+  name              String
+  items             Item[]   @relation("ItemToTag")
+}
+
+enum ListType {
+  STANDARD
+  GROCERY
+  SMART
+}
+
+enum Priority {
+  LOWER
+  MIDDLE
+  UPPER
+}
+
