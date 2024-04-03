@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import Sidebar from "@/components/Sidebar";
+import Sidebar from "@/src/containers/Sidebar";
 import { config } from '@fortawesome/fontawesome-svg-core';
 import '@fortawesome/fontawesome-svg-core/styles.css';
+import QueryProvider from "../utils/QueryProvider";
 config.autoAddCss = false
 
 export const metadata: Metadata = {
@@ -18,8 +19,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="flex overflow-hidden">
-        <Sidebar />
-        {children}
+        <QueryProvider>
+          <Sidebar />
+          {children}
+        </QueryProvider>
       </body>
     </html>
   );

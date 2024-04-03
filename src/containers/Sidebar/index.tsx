@@ -1,4 +1,4 @@
-import SearchInput from "@/components/Sidebar/SearchInput";
+import SearchInput from "@/src/containers/Sidebar/SearchInput";
 import AddListButton from "./AddListButton";
 import Lists from "./Lists";
 
