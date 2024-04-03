@@ -8,26 +8,35 @@ datasource db {
 }
 
 model User {
-  id                Int      @id @default(autoincrement())
+  id                String   @id @default(uuid())
   name              String   @unique
   lists             List[]
 }
 
 model List {
-  id                Int      @id @default(autoincrement())
+  id                String   @id @default(uuid())
   user              User     @relation(fields: [userId], references: [id])
-  userId            Int
+  userId            String
   name              String
   type              ListType
-  icon              String
-  color             String
+  icon              Icon
+  color             Color
+  items             Item[]
+  sections          Section[]
+}
+
+model Section {
+  id                String   @id @default(uuid())
+  list              List     @relation(fields: [listId], references: [id])
+  listId            String
+  name              String
   items             Item[]
 }
 
 model Item {
-  id                Int      @id @default(autoincrement())
+  id                String   @id @default(uuid())
   createdTime       DateTime @default(now())
-  updatedTime       DateTime @updatedAt
+  updatedTime       DateTime @updatedAt 
   checked           Boolean  @default(false)
   checkedTime       DateTime
   title             String
@@ -39,15 +48,17 @@ model Item {
   priority          Priority?
   flagged           Boolean  @default(false)
   list              List     @relation(fields: [listId], references: [id])
-  listId            Int
+  listId            String
+  section           Section? @relation(fields: [sectionId], references: [id])
+  sectionId         String?
   image_url         String?
   subItems          SubItem[]
 }
 
 model SubItem {
-  id                Int      @id @default(autoincrement())
+  id                String   @id @default(uuid())
   items             Item     @relation(fields: [itemId], references: [id])
-  itemId            Int
+  itemId            String
   createdTime       DateTime @default(now())
   updatedTime       DateTime @updatedAt
   checked           Boolean  @default(false)
@@ -56,7 +67,7 @@ model SubItem {
 }
 
 model Tag {
-  id                Int      @id @default(autoincrement())
+  id                String   @id @default(uuid())
   name              String
   items             Item[]   @relation("ItemToTag")
 }
@@ -73,3 +84,37 @@ enum Priority {
   UPPER
 }
 
+enum Color {
+  RED
+  ORANGE
+  YELLOW
+  GREEN
+  LIGHTBLUE
+  BLUE
+  DEEPBLUE
+  PINK
+  PURPLE
+  BROWN
+  GRAY
+  PINKBEIGE
+}
+
+enum Icon {
+  LIST
+  BOOK
+  FILE
+  MONEY
+  COMPUTER
+  LEAF
+  PERSON
+  SHOPPING
+  TRIP
+  CALENDAR
+  IDEA
+  HOUSE
+  MUSIC
+  SUN
+  MOON
+  HEART
+  STAR
+}
