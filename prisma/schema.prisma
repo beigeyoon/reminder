@@ -57,7 +57,7 @@ model Item {
 
 model SubItem {
   id                String   @id @default(uuid())
-  items             Item     @relation(fields: [itemId], references: [id])
+  item              Item     @relation(fields: [itemId], references: [id])
   itemId            String
   createdTime       DateTime @default(now())
   updatedTime       DateTime @updatedAt
