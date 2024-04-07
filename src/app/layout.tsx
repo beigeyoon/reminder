@@ -22,6 +22,7 @@ export default function RootLayout({
         <QueryProvider>
           <Sidebar />
           {children}
+          <div id='modal-portal' />
         </QueryProvider>
       </body>
     </html>

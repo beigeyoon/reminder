@@ -1,11 +1,13 @@
 import { Color, Icon, ListType } from "../enums";
-import { List } from "../types";
+import { List, Item, Section } from "../types";
 
 export type AddListPayload = {
   name: string;
   type: ListType;
   icon: Icon;
   color: Color;
+  items?: Item[];
+  sections?: Section[];
 }
 
 export const getLists = async () => {
@@ -25,7 +27,7 @@ export const addList = async (body: AddListPayload): Promise<List> => {
       },
       body: JSON.stringify(body),
     });
-
+    
     if (!response.ok) {
       throw new Error(`Failed to add list: ${response.statusText}`);
     }

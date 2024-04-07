@@ -1,14 +1,20 @@
-import { faListUl } from "@fortawesome/free-solid-svg-icons/faListUl";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import CircleIcon from "@/src/components/CircleIcon";
+import { List } from "@/src/types";
 
-const ListButton = () => {
+interface IListButton {
+  list: List;
+}
+
+const ListButton = ({ list }: IListButton) => {
+  const { color, icon, name, items } = list;
+
   return (
-    <button className='flex bg-gray200'>
-      <div className="flex flex-col">
-        <FontAwesomeIcon icon={faListUl} className='text-pink' />
-        <span>TO DO</span>
+    <button className='w-[130px] flex flex-col justify-between bg-gray200 rounded-xl p-[10px]'>
+      <div className="w-full flex items-center justify-between">
+        <CircleIcon iconName={icon} colorName={color} size='large' />
+        <span className='font-bold text-lg'>{items?.length}</span>
       </div>
-      <div>9</div>
+      <span className='font-bold mt-[8px]'>{name}</span>
     </button>
   )
 }

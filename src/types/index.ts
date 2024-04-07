@@ -1,4 +1,4 @@
-import { ListType, Icon, Color, Priority } from "../enums";
+ import { ListType, Icon, Color, Priority } from "../enums";
 
 export interface User {
   id: string;
@@ -12,8 +12,8 @@ export interface List {
   userId: string;
   name: string;
   type: ListType;
-  icon: Icon;
-  color: Color;
+  icon: keyof typeof Icon;
+  color: keyof typeof Color;
   items: Item[];
   sections: Section[];
 }

@@ -2,15 +2,21 @@
 import ListButton from "./ListButton";
 import { useQuery } from "@tanstack/react-query";
 import { getLists } from "@/src/services/list";
+import { List } from "@/src/types";
 
 const Lists = () => {
-  const { data } = useQuery({
+  const { data, isLoading } = useQuery({
     queryKey: ['getLists'],
     queryFn: () => getLists(),
   });
-
+  
+  if (isLoading) return <></>;
   return (
-    <ListButton />
+    <div className='mt-[20px]'>
+      {data.map((item: List) => (
+        <ListButton key={item.id} list={item} />
+      ))}
+    </div>
   )
 }
 

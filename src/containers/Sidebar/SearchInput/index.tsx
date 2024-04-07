@@ -1,6 +1,8 @@
+import Input from "@/src/components/Input";
+
 const SearchInput = () => {
   return (
-    <input className='w-full bg-gray200' />
+    <Input className='w-full bg-gray200' />
   )
 }
 
