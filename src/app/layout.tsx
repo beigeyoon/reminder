@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import SessionProvider from "../providers/SessionProvider";
 import Sidebar from "@/src/containers/Sidebar";
 import { config } from '@fortawesome/fontawesome-svg-core';
 import '@fortawesome/fontawesome-svg-core/styles.css';
@@ -20,9 +21,10 @@ export default function RootLayout({
     <html lang="en">
       <body className="flex overflow-hidden">
         <QueryProvider>
-          <Sidebar />
-          {children}
-          <div id='modal-portal' />
+          <SessionProvider>
+            {children}
+            <div id='modal-portal' />
+          </SessionProvider>
         </QueryProvider>
       </body>
     </html>

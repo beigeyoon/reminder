@@ -1,14 +1,14 @@
- import { ListType, Icon, Color, Priority } from "../enums";
+import { DefaultSession } from "next-auth";
+import { ListType, Icon, Color, Priority } from "../enums";
 
 export interface User {
   id: string;
   name: string;
-  lists: List[];
+  password: string;
 }
 
 export interface List {
   id: string;
-  user: User;
   userId: string;
   name: string;
   type: ListType;

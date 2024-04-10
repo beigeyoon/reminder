@@ -1,7 +1,11 @@
 import { Color, Icon, ListType } from "../enums";
 import { List, Item, Section } from "../types";
 
-export type AddListPayload = {
+export interface GetListsPayload {
+  userId: string;
+}
+
+export interface AddListPayload {
   name: string;
   type: ListType;
   icon: Icon;
@@ -10,8 +14,8 @@ export type AddListPayload = {
   sections?: Section[];
 }
 
-export const getLists = async () => {
-  const response = await fetch(`${process.env.NEXT_PUBLIC_FE_URL}/api/list`, {
+export const getLists = async ({ userId }: GetListsPayload) => {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_FE_URL}/api/list?userId=${userId}`, {
     method: 'GET',
   });
   const data = await response.json();
@@ -27,7 +31,6 @@ export const addList = async (body: AddListPayload): Promise<List> => {
       },
       body: JSON.stringify(body),
     });
-    
     if (!response.ok) {
       throw new Error(`Failed to add list: ${response.statusText}`);
     }

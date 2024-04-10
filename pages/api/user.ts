@@ -1,15 +1,26 @@
 import prisma from "@/prisma/db";
 import { NextApiRequest, NextApiResponse } from 'next';
 
+type UserSelect = {
+  id?: boolean;
+  name?: boolean;
+  password?: boolean;
+}
+
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'GET') {
     try {
-      const lists = await prisma.list.findMany({
-        include: {
-          items: true,
-        }
+      const userInfo = await prisma.user.findUnique({
+        where: {
+          name: req.query.name as string,
+        },
+        select: {
+          id: true,
+          name: true,
+          password: true,
+        } as UserSelect
       });
-      return res.status(200).json(lists);
+      return res.status(200).json(userInfo);
     } catch (error) {
       return res.status(500).json({ error: 'Internal Server Error'});
     }
@@ -17,11 +28,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   if (req.method === 'POST') {
     try {
-      const newList = await prisma.list.create({
+      const newUser = await prisma.user.create({
         data: req.body,
       });
-      console.log('🩷🩷🩷🩷🩷', newList);
-      return res.status(200).json(newList);
+      return res.status(200).json(newUser);
     } catch (error) {
       return res.status(500).json({ error: 'Internal Server Error'});
     }

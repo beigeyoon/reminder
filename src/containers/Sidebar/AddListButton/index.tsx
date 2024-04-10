@@ -6,16 +6,20 @@ import AddList from "../../ModalContents/AddList";
 import Modal from "@/src/components/Modal";
 import { useMutation } from "@tanstack/react-query";
 import { addList, AddListPayload } from "@/src/services/list";
+import { useSession } from "next-auth/react";
 
 const AddListButton = () => {
+  const { status, data: session } = useSession();
+  const userId = session?.user.id;
+
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   const dummy = {
-    name: '스케쥴',
+    name: '일본 여행',
     type: 'STANDARD',
-    icon: 'BOOK',
-    color: 'GREEN',
-    user: 'yooni',
+    icon: 'TRIP',
+    color: 'PINK',
+    userId,
   };
 
   const { mutateAsync: createList } = useMutation({
