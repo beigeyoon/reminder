@@ -47,10 +47,10 @@ const Login = () => {
   };
 
   return (
-    <div className='h-screen flex justify-center items-center'>
+    <div className='w-screen h-screen flex justify-center items-center'>
       <div className='w-[300px] flex flex-col gap-4 text-sm'>
-        <div className='text-center text-2xl font-bold pb-4'>
-          Reminder
+        <div className='text-center text-[24px] font-bold pb-4'>
+          Reminder ☑️
         </div>
         <div className='flex justify-between items-center'>
           <label>Username</label>
@@ -60,7 +60,7 @@ const Login = () => {
             value={username}
             onChange={onChangeInput}
             onKeyDown={onKeyDown}
-            className='border border-gray500 rounded p-1 w-[220px]'
+            className='border border-gray400 rounded p-1 w-[220px]'
           />
         </div>
         <div className='flex justify-between items-center'>
@@ -71,14 +71,20 @@ const Login = () => {
             value={password}
             onChange={onChangeInput}
             onKeyDown={onKeyDown}
-            className='border border-gray500 rounded p-1 w-[220px]'
+            className='border border-gray400 rounded p-1 w-[220px]'
           />
         </div>
         <button
           onClick={onClickLogin}
-          className='border border-red rounded py-1 mt-4 text-red'
+          className='border border-GREEN rounded py-2 mt-4 text-GREEN font-bold'
         >
-          login
+          Login
+        </button>
+        <button
+          onClick={() => router.push('/signup')}
+          className='text-gray400 underline'
+        >
+          Sign Up
         </button>
       </div>
     </div>

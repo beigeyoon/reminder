@@ -17,7 +17,7 @@ const Lists = () => {
   
   if (isLoading) return <></>;
   return (
-    <div className='mt-[20px]'>
+    <div>
       {data?.map((item: List) => (
         <ListButton key={item.id} list={item} />
       ))}

@@ -29,7 +29,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (req.method === 'POST') {
     try {
       const newUser = await prisma.user.create({
-        data: req.body,
+        data: JSON.parse(req.body),
       });
       return res.status(200).json(newUser);
     } catch (error) {

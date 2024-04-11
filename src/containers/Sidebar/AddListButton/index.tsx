@@ -1,5 +1,5 @@
 'use client'
-import { faCirclePlus } from "@fortawesome/free-solid-svg-icons/faCirclePlus";
+import { faPlus } from "@fortawesome/free-solid-svg-icons/faPlus";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
 import AddList from "../../ModalContents/AddList";
@@ -41,7 +41,7 @@ const AddListButton = () => {
   return (
     <>
       <div className='flex items-center gap-2' onClick={onClickButton}>
-        <FontAwesomeIcon icon={faCirclePlus} fontSize={14} />
+        <FontAwesomeIcon icon={faPlus} fontSize={14} />
         <span>목록 추가</span>
       </div>
       <Modal isOpen={isModalOpen} close={handleModal} submit={onSubmit}>
