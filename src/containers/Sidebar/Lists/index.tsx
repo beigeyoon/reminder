@@ -11,13 +11,13 @@ const Lists = () => {
   
   const { data, isLoading } = useQuery({
     enabled: !!userId,
-    queryKey: ['getLists', userId],
+    queryKey: ['getLists'],
     queryFn: () => getLists({ userId }),
   });
   
   if (isLoading) return <></>;
   return (
-    <div>
+    <div className='grid grid-cols-2 gap-[10px]'>
       {data?.map((item: List) => (
         <ListButton key={item.id} list={item} />
       ))}

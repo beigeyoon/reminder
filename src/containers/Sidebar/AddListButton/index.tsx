@@ -4,30 +4,32 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
 import AddList from "../../ModalContents/AddList";
 import Modal from "@/src/components/Modal";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient, InvalidateQueryFilters } from "@tanstack/react-query";
 import { addList, AddListPayload } from "@/src/services/list";
 import { useSession } from "next-auth/react";
 
 const AddListButton = () => {
+  const queryClient = useQueryClient();
   const { status, data: session } = useSession();
   const userId = session?.user.id;
 
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
-  const dummy = {
-    name: '일본 여행',
-    type: 'STANDARD',
-    icon: 'TRIP',
-    color: 'PINK',
-    userId,
-  };
-
   const { mutateAsync: createList } = useMutation({
-    mutationFn: () => addList(dummy as AddListPayload),
+    mutationFn: (body: AddListPayload) => addList(body),
+    onSuccess: () => {
+      handleModal();
+      alert('리스트가 생성되었습니다.');
+      queryClient.invalidateQueries(['getLists'] as InvalidateQueryFilters);
+    }
   });
 
-  const onSubmit = () => {
-    createList();
+  const onSubmit = async (payload: any) => {
+    const body = {
+      ...payload,
+      userId,
+    }
+    await createList(body);
   };
 
   const onClickButton = () => {
@@ -40,7 +42,7 @@ const AddListButton = () => {
 
   return (
     <>
-      <div className='flex items-center gap-2' onClick={onClickButton}>
+      <div className='flex items-center gap-2 cursor-pointer' onClick={onClickButton}>
         <FontAwesomeIcon icon={faPlus} fontSize={14} />
         <span>목록 추가</span>
       </div>

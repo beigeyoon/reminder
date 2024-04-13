@@ -9,7 +9,7 @@ const ListButton = ({ list }: IListButton) => {
   const { color, icon, name, items } = list;
 
   return (
-    <button className='w-[130px] flex flex-col justify-between bg-gray200 rounded-xl p-[10px]'>
+    <button className='w-[123px] flex flex-col justify-between bg-gray200 rounded-xl p-[10px]'>
       <div className="w-full flex items-center justify-between">
         <CircleIcon iconName={icon} colorName={color} size='large' />
         <span className='font-bold text-lg'>{items?.length}</span>

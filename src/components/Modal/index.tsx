@@ -1,13 +1,12 @@
 import React, { Children, ReactNode, cloneElement, isValidElement } from "react";
 import ReactDOM from "react-dom";
 import { useRef } from 'react';
-import Button from "../Button";
 
 type ModalProps = {
   isOpen: boolean;
   close: () => void;
   children: ReactNode;
-  submit: () => void;
+  submit: (payload?: any) => void;
 };
 
 export default function Modal ({ isOpen, close, children, submit }: ModalProps) {
@@ -20,7 +19,7 @@ export default function Modal ({ isOpen, close, children, submit }: ModalProps) 
   };
 
   const childrenWithProps = Children.map(children, (child) => {
-    if (isValidElement(child)) return cloneElement(child, { close, ...child.props });
+    if (isValidElement(child)) return cloneElement(child, { close, submit, ...child.props });
     return child;
   });
 
@@ -33,10 +32,6 @@ export default function Modal ({ isOpen, close, children, submit }: ModalProps) 
     >
       <div className='rounded-xl border border-gray300 bg-white p-[16px] w-fit h-fit drop-shadow-xl'>
         {childrenWithProps}
-        <div className='flex justify-end gap-[10px]'>
-          <Button onClick={close}>취소</Button>
-          <Button onClick={submit}>확인</Button>
-        </div>
       </div>
     </div>,
     document.getElementById('modal-portal') as HTMLElement
