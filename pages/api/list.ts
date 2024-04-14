@@ -28,4 +28,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(500).json({ error: 'Internal Server Error'});
     }
   }
+
+  if (req.method === 'DELETE') {
+    try {
+      const deletedList = await prisma.list.delete({
+        where: {
+          id: JSON.parse(req.body).id,
+        }
+      });
+      return res.status(200).json(deletedList);
+    } catch (error) {
+      return res.status(500).json({ error: 'Internal Server Error' });
+    }
+  }
 }

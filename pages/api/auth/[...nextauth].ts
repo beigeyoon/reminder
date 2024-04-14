@@ -22,8 +22,8 @@ export default NextAuth({
       async authorize(credentials: Record<"name" | "password", string> | undefined) {
         const user = await getUserInfo({ name: credentials?.name as string });
         if (!user) throw new Error('Wrong User!');
-        // const isValid = await verifyPassword(credentials!.password, user.password as string);
-        const isValid = credentials!.password === user.password;
+        const isValid = await verifyPassword(credentials!.password, user.password as string);
+        //const isValid = credentials!.password === user.password;
         if (!isValid) throw new Error('Wrong Password!');
         return { id: user.id, name: user.name }
       }

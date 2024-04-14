@@ -3,6 +3,7 @@ import { useRouter } from "next/navigation";
 import { useSession, signIn } from "next-auth/react";
 import { ChangeEvent, KeyboardEvent, useState } from "react";
 import { addUser } from "@/src/services/user";
+import { hashPassword } from "@/src/utils/bcrypt";
 
 const SignUp = () => {
   const [inputs, setInputs] = useState({
@@ -13,9 +14,8 @@ const SignUp = () => {
   const router = useRouter();
   const { status, data: session } = useSession();
 
-  if (status === 'loading') return <></>;
   if (session) {
-    router.push('/');
+    router.push('/dashboard');
   };
 
   const { username, password } = inputs;
@@ -43,6 +43,7 @@ const SignUp = () => {
     }
   };
 
+  if (status === 'loading') return <></>;
   return (
     <div className='w-screen h-screen flex justify-center items-center'>
       <div className='w-[320px] flex flex-col gap-4 text-sm'>

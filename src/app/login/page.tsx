@@ -1,4 +1,5 @@
 'use client'
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useSession, signIn } from "next-auth/react";
 import { ChangeEvent, KeyboardEvent, useState } from "react";
@@ -12,10 +13,11 @@ const Login = () => {
   const router = useRouter();
   const { status, data: session } = useSession();
 
-  if (status === 'loading') return <></>;
-  if (session) {
-    router.push('/');
-  };
+  useEffect(() => {
+    if (session) {
+      router.push('/dashboard');
+    };
+  }, [session, router])
 
   const { username, password } = inputs;
 
@@ -46,6 +48,7 @@ const Login = () => {
     }
   };
 
+  if (status === 'loading') return <></>;
   return (
     <div className='w-screen h-screen flex justify-center items-center'>
       <div className='w-[300px] flex flex-col gap-4 text-sm'>

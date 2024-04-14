@@ -1,16 +1,14 @@
-'use client'
-import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { getServerSession } from "next-auth";
+import { redirect } from "next/navigation";
 
-const Main = () => {
-  const router = useRouter();
-  const { status, data: session } = useSession();
+const Main = async () => {
+  const session = await getServerSession();
 
-  if (status === 'loading') return;
-  if (!session) router.push('/login');
-  else router.push('/dashboard');
-
-  return null;
+  if (!session) {
+    redirect('/login');
+  } else {
+    redirect('/dashboard');
+  }
 }
 
 export default Main;

@@ -1,3 +1,5 @@
+import { hashPassword } from "../utils/bcrypt";
+
 export interface GetUserInfoPayload {
   name: string;
 }
@@ -20,7 +22,7 @@ export const addUser = async ({ username, password }: AddUserPayload) => {
     method: 'POST',
     body: JSON.stringify({
       name: username,
-      password,
+      password: await hashPassword(password),
     })
   });
   const data = await response.json();
