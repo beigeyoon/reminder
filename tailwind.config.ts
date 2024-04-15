@@ -16,6 +16,7 @@ const config: Config = {
       gray400: '#7d7d7d',
       gray500: '#4e4e4f',
       black: '#262626',
+      blue: '#459fff',
       RED: '#ff3b31',
       ORANGE: '#ff9503',
       YELLOW: '#ffcb00',

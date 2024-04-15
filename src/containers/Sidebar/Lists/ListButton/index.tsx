@@ -2,6 +2,8 @@ import CircleIcon from "@/src/components/CircleIcon";
 import { List } from "@/src/types";
 import { deleteList } from "@/src/services/list";
 import ContextMenu from "@/src/components/ContextMenu";
+import { useMutation, useQueryClient, InvalidateQueryFilters } from "@tanstack/react-query";
+import { DeleteListPayload } from "@/src/services/list";
 
 interface IListButton {
   list: List;
@@ -9,17 +11,57 @@ interface IListButton {
 
 const ListButton = ({ list }: IListButton) => {
   const { id, color, icon, name, items } = list;
+  const queryClient = useQueryClient();
+
+  const { mutateAsync: removeList } = useMutation({
+    mutationFn: (body: DeleteListPayload) => deleteList(body),
+    onSuccess: () => {
+      alert('리스트가 삭제되었습니다.');
+      queryClient.invalidateQueries(['getLists'] as InvalidateQueryFilters);
+    }
+  })
+
+  const menuItems = [
+    {
+      id: 'unpin-list',
+      caption: '목록 고정 해제',
+    },
+    {
+      id: 'divide-bar-1',
+      isDivideBar: true,
+    },
+    {
+      id: 'show-list-info',
+      caption: '목록 정보 보기',
+    },
+    {
+      id: 'divide-bar-2',
+      isDivideBar: true,
+    },
+    {
+      id: 'sort-items',
+      caption: '다음으로 정렬',
+    },
+    {
+      id: 'divide-bar-3',
+      isDivideBar: true,
+    },
+    {
+      id: 'delete-list',
+      caption: '삭제',
+      onClick: () => removeList({ id }),
+    },
+    {
+      id: 'set-group',
+      caption: '그룹에 추가',
+    },
+  ];
 
   return (
     <ContextMenu
       id={`list-button-${id}`}
-      items={[
-        {
-          id: 'entry-1',
-          caption: 'this is the first entry',
-          onClick: () => alert('hello!'),
-        }
-      ]}
+      items={menuItems}
+      width={160}
     >
       <button
         className='w-[123px] flex flex-col justify-between bg-gray200 rounded-xl p-[10px]'

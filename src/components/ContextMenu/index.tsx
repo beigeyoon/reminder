@@ -2,16 +2,18 @@ import { PropsWithChildren, useState, useEffect, KeyboardEvent, useRef, useCallb
 
 type ContextMenuItem = {
   id: string;
-  caption: string;
-  onClick: () => void;
+  caption?: string;
+  onClick?: () => void;
+  isDivideBar?: boolean;
 }
 
 interface IContextMenu {
   id: string;
   items: ContextMenuItem[];
+  width?: number;
 }
 
-const ContextMenu = ({ id, items, children }: PropsWithChildren<IContextMenu>) => {
+const ContextMenu = ({ id, items, width, children }: PropsWithChildren<IContextMenu>) => {
   const [isVisible, setIsVisible] = useState<boolean>(false);
   const [position, setPosition] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
   const ulRef = useRef<HTMLUListElement>(null);
@@ -51,12 +53,25 @@ const ContextMenu = ({ id, items, children }: PropsWithChildren<IContextMenu>) =
     <>
       <div onContextMenu={handleContextMenu}>{children}</div>
       {isVisible && (
-        <ul style={{ left: position.x, top: position.y }} className='absolute' ref={ulRef}>
-          {items.map((item: ContextMenuItem) => (
-            <li key={item.id} onClick={() => {
-              setIsVisible(false);
-              item.onClick();
-            }}>
+        <ul
+          style={{ left: position.x, top: position.y, width }}
+          ref={ulRef}
+          className='absolute border border-gray200 rounded-lg drop-shadow-md p-[4px] z-10 bg-gray100'
+        >
+          {items.map((item: ContextMenuItem) => item.isDivideBar ? (
+            <hr
+              key={item.id}
+              className='mx-[8px] my-[4px] border-gray200'
+            />
+          ) : (
+            <li
+              key={item.id}
+              className='px-[8px] py-[4px] rounded-md cursor-pointer hover:bg-blue hover:text-white'
+              onClick={() => {
+                setIsVisible(false);
+                if (item.onClick) item.onClick();
+              }}
+            >
               {item.caption}
             </li>
           ))}
