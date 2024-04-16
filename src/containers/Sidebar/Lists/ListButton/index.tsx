@@ -1,7 +1,7 @@
 import CircleIcon from "@/src/components/CircleIcon";
 import { List } from "@/src/types";
 import { deleteList } from "@/src/services/list";
-import ContextMenu from "@/src/components/ContextMenu";
+import ContextMenu, { ContextMenuItem } from "@/src/components/ContextMenu";
 import { useMutation, useQueryClient, InvalidateQueryFilters } from "@tanstack/react-query";
 import { DeleteListPayload } from "@/src/services/list";
 
@@ -21,39 +21,50 @@ const ListButton = ({ list }: IListButton) => {
     }
   })
 
-  const menuItems = [
+  const menuItems: ContextMenuItem[] = [
     {
       id: 'unpin-list',
       caption: '목록 고정 해제',
+      type: 'normal',
     },
     {
       id: 'divide-bar-1',
-      isDivideBar: true,
+      type: 'divider',
     },
     {
       id: 'show-list-info',
       caption: '목록 정보 보기',
+      type: 'normal',
     },
     {
       id: 'divide-bar-2',
-      isDivideBar: true,
+      type: 'divider',
     },
     {
       id: 'sort-items',
       caption: '다음으로 정렬',
+      type: 'hasSecondDepth',
+      secondDepthItems: [
+        {
+          id: 'sort-items-manually',
+          caption: '수동',
+        }
+      ]
     },
     {
       id: 'divide-bar-3',
-      isDivideBar: true,
+      type: 'divider',
     },
     {
       id: 'delete-list',
       caption: '삭제',
+      type: 'normal',
       onClick: () => removeList({ id }),
     },
     {
       id: 'set-group',
       caption: '그룹에 추가',
+      type: 'normal',
     },
   ];
 

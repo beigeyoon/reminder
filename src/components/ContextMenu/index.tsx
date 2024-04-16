@@ -1,6 +1,15 @@
-import { PropsWithChildren, useState, useEffect, KeyboardEvent, useRef, useCallback } from "react";
+import { PropsWithChildren, useState, useEffect, useRef, useCallback } from "react";
+import SecondDepthMenu from "./SecondDepthMenu";
 
-type ContextMenuItem = {
+export interface ContextMenuItem {
+  id: string;
+  type: 'normal' | 'hasSecondDepth' | 'divider';
+  caption?: string;
+  onClick?: () => void;
+  secondDepthItems?: SecondDepthMenuItem[];
+}
+
+export type SecondDepthMenuItem = {
   id: string;
   caption?: string;
   onClick?: () => void;
@@ -39,15 +48,33 @@ const ContextMenu = ({ id, items, width, children }: PropsWithChildren<IContextM
     }
   }, [isVisible])
 
+  const contextMenuOpenedHandler = useCallback((e: Event) => {
+    if ((e as CustomEvent<string>).detail != id) {
+      setIsVisible(false);
+    }
+  }, [id]);
+
   useEffect(() => {
     window.addEventListener('keydown', keyDownHandler);
     window.addEventListener('click', clickHandler);
+    document.addEventListener('contextMenuOpened', contextMenuOpenedHandler);
 
     return () => {
       window.removeEventListener('keydown', keyDownHandler);
       window.removeEventListener('click', clickHandler);
+      document.removeEventListener('contextMenuOpened', contextMenuOpenedHandler);
     }
-  }, [keyDownHandler, clickHandler]);
+  }, [keyDownHandler, clickHandler, contextMenuOpenedHandler]);
+
+  useEffect(() => {
+    if (isVisible) {
+      document.dispatchEvent(
+        new CustomEvent<string>('contextMenuOpened', {
+          detail: id,
+        })
+      );
+    }
+}, [isVisible, id]);
 
   return (
     <>
@@ -58,23 +85,8 @@ const ContextMenu = ({ id, items, width, children }: PropsWithChildren<IContextM
           ref={ulRef}
           className='absolute border border-gray200 rounded-lg drop-shadow-md p-[4px] z-10 bg-gray100'
         >
-          {items.map((item: ContextMenuItem) => item.isDivideBar ? (
-            <hr
-              key={item.id}
-              className='mx-[8px] my-[4px] border-gray200'
-            />
-          ) : (
-            <li
-              key={item.id}
-              className='px-[8px] py-[4px] rounded-md cursor-pointer hover:bg-blue hover:text-white'
-              onClick={() => {
-                setIsVisible(false);
-                if (item.onClick) item.onClick();
-              }}
-            >
-              {item.caption}
-            </li>
-          ))}
+          {items.map((item: ContextMenuItem) => <MenuItem key={item.id} item={item} closeMenu={() => setIsVisible(false)} />
+          )}
         </ul>
       )}
     </>
@@ -82,3 +94,41 @@ const ContextMenu = ({ id, items, width, children }: PropsWithChildren<IContextM
 }
 
 export default ContextMenu;
+
+
+interface IMenuItem {
+  item: ContextMenuItem;
+  closeMenu: () => void;
+}
+
+const MenuItem = ({ item, closeMenu }: IMenuItem) => {
+  const { type, caption, onClick, secondDepthItems } = item;
+
+  if (type === 'divider') {
+    return <hr className='mx-[8px] my-[4px] border-gray200' />;
+  } else if (type === 'hasSecondDepth' && secondDepthItems) {
+    return (
+      <SecondDepthMenu items={secondDepthItems}>
+        <li
+        className='px-[8px] py-[4px] rounded-md cursor-pointer hover:bg-blue hover:text-white'
+        onClick={() => {
+          closeMenu();
+          if (onClick) onClick();
+        }}
+        >
+          {caption + '>>>>'}
+        </li>
+      </SecondDepthMenu>
+    )
+  } else return (
+    <li
+      className='px-[8px] py-[4px] rounded-md cursor-pointer hover:bg-blue hover:text-white'
+      onClick={() => {
+        closeMenu();
+        if (onClick) onClick();
+      }}
+    >
+      {caption}
+    </li>
+  )
+}
