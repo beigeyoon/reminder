@@ -4,8 +4,11 @@ import { useQuery } from "@tanstack/react-query";
 import { getLists } from "@/src/services/list";
 import { List } from "@/src/types";
 import { useSession } from "next-auth/react";
+import { useEffect } from 'react';
+import { useListInfo } from '@/src/store/useListInfo';
 
 const Lists = () => {
+  const { setListInfo } = useListInfo();
   const { status, data: session } = useSession();
   const userId = session?.user?.id;
   
@@ -14,6 +17,12 @@ const Lists = () => {
     queryKey: ['getLists'],
     queryFn: () => getLists({ userId }),
   });
+
+  useEffect(() => {
+    if (data) {
+      setListInfo(data[0]);
+    }
+  }, [data]);
   
   if (isLoading) return <></>;
   return (

@@ -4,6 +4,7 @@ import { deleteList } from "@/src/services/list";
 import ContextMenu, { ContextMenuItem } from "@/src/components/ContextMenu";
 import { useMutation, useQueryClient, InvalidateQueryFilters } from "@tanstack/react-query";
 import { DeleteListPayload } from "@/src/services/list";
+import { useListInfo } from '@/src/store/useListInfo';
 
 interface IListButton {
   list: List;
@@ -12,6 +13,11 @@ interface IListButton {
 const ListButton = ({ list }: IListButton) => {
   const { id, color, icon, name, items } = list;
   const queryClient = useQueryClient();
+  const { setListInfo } = useListInfo();
+
+  const selectList = () => {
+    setListInfo(list);
+  }
 
   const { mutateAsync: removeList } = useMutation({
     mutationFn: (body: DeleteListPayload) => deleteList(body),
@@ -76,6 +82,7 @@ const ListButton = ({ list }: IListButton) => {
     >
       <button
         className='w-[123px] flex flex-col justify-between bg-gray200 rounded-xl p-[10px]'
+        onClick={selectList}
       >
         <div className="w-full flex items-center justify-between">
           <CircleIcon iconName={icon} colorName={color} size='large' />

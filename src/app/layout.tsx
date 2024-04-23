@@ -18,7 +18,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="flex overflow-hidden">
+      <body className="overflow-hidden w-full">
         <QueryProvider>
           <SessionProvider>
             {children}
