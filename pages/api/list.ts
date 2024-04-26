@@ -29,6 +29,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
   }
 
+  if (req.method === 'PUT') {
+    try {
+      const updatedList = await prisma.list.update({
+        where: {
+          id: req.body.id,
+        },
+        data: req.body.data,
+      });
+      return res.status(200).json(updatedList);
+    } catch (error) {
+      return res.status(500).json({ error: 'Internal Server Error'});
+    }
+  }
+
   if (req.method === 'DELETE') {
     try {
       const deletedList = await prisma.list.delete({

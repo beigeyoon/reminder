@@ -8,9 +8,10 @@ import Button from "@/src/components/Button";
 interface IAddList {
   close?: () => void;
   submit?: (payload?: any) => void;
+  mode?: 'add' | 'edit';
 }
 
-const AddList = ({ submit }: IAddList) => {
+const AddList = ({ submit, mode = 'add' }: IAddList) => {
   const nameRef = useRef(null);
   const [color, setColor] = useState<keyof typeof Color>('BLUE');
   const [icon, setIcon] = useState<keyof typeof Icon>('LIST');
