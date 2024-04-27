@@ -68,6 +68,7 @@ const ContextMenu = ({ id, items, width, children }: PropsWithChildren<IContextM
 
   useEffect(() => {
     if (isVisible) {
+      // 컨텍스트 메뉴 오픈시, 이미 오픈된 다른 메뉴를 close 하기 위해 이벤트 dispatch
       document.dispatchEvent(
         new CustomEvent<string>('contextMenuOpened', {
           detail: id,

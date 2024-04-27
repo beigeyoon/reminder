@@ -27,7 +27,7 @@ export interface DeleteListPayload {
 }
 
 export const getLists = async ({ userId }: GetListsPayload): Promise<List[]> => {
-  const response = await fetch(`${process.env.NEXT_PUBLIC_FE_URL}/api/list?userId=${userId}`, {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_FE_URL}/api/lists?userId=${userId}`, {
     method: 'GET',
   });
   if (!response.ok) {
@@ -37,7 +37,7 @@ export const getLists = async ({ userId }: GetListsPayload): Promise<List[]> => 
 }
 
 export const addList = async (body: AddListPayload): Promise<List> => {
-  const response = await fetch(`${process.env.NEXT_PUBLIC_FE_URL}/api/list`, {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_FE_URL}/api/lists`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -51,7 +51,7 @@ export const addList = async (body: AddListPayload): Promise<List> => {
 }
 
 export const updateList = async (body: UpdateListPayload): Promise<List> => {
-  const response = await fetch(`${process.env.NEXT_PUBLIC_FE_URL}/api/list`, {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_FE_URL}/api/lists`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
@@ -65,7 +65,7 @@ export const updateList = async (body: UpdateListPayload): Promise<List> => {
 }
 
 export const deleteList = async (body: DeleteListPayload): Promise<List> => {
-  const response = await fetch(`${process.env.NEXT_PUBLIC_FE_URL}/api/list`, {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_FE_URL}/api/lists`, {
     method: 'DELETE',
     body: JSON.stringify(body),
   });

@@ -10,7 +10,7 @@ export interface AddUserPayload {
 }
 
 export const getUserInfo = async ({ name }: GetUserInfoPayload) => {
-  const response = await fetch(`${process.env.NEXT_PUBLIC_FE_URL}/api/user?name=${name}`, {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_FE_URL}/api/users?name=${name}`, {
     method: 'GET',
   });
   const data = await response.json();
@@ -18,7 +18,7 @@ export const getUserInfo = async ({ name }: GetUserInfoPayload) => {
 }
 
 export const addUser = async ({ username, password }: AddUserPayload) => {
-  const response = await fetch(`${process.env.NEXT_PUBLIC_FE_URL}/api/user`, {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_FE_URL}/api/users`, {
     method: 'POST',
     body: JSON.stringify({
       name: username,
