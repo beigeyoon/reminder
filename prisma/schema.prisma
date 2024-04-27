@@ -1,0 +1,119 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                String   @id @default(uuid())
+  name              String   @unique
+  password          String
+}
+
+model List {
+  id                String   @id @default(uuid())
+  userId            String
+  name              String
+  type              ListType
+  icon              Icon
+  color             Color
+  items             Item[]
+  sections          Section[]
+}
+
+model Section {
+  id                String   @id @default(uuid())
+  list              List     @relation(fields: [listId], references: [id])
+  listId            String
+  name              String
+  items             Item[]
+}
+
+model Item {
+  id                String   @id @default(uuid())
+  createdTime       DateTime @default(now())
+  updatedTime       DateTime @updatedAt 
+  checked           Boolean  @default(false)
+  checkedTime       DateTime
+  title             String
+  memo              String?
+  url               String?
+  date              DateTime?
+  time              DateTime?
+  tags              Tag[]    @relation("ItemToTag")
+  priority          Priority?
+  flagged           Boolean  @default(false)
+  list              List     @relation(fields: [listId], references: [id])
+  listId            String
+  section           Section? @relation(fields: [sectionId], references: [id])
+  sectionId         String?
+  image_url         String?
+  subItems          SubItem[]
+}
+
+model SubItem {
+  id                String   @id @default(uuid())
+  item              Item     @relation(fields: [itemId], references: [id])
+  itemId            String
+  createdTime       DateTime @default(now())
+  updatedTime       DateTime @updatedAt
+  checked           Boolean  @default(false)
+  checkedTime       DateTime
+  title             String
+}
+
+model Tag {
+  id                String   @id @default(uuid())
+  name              String   @unique
+  items             Item[]   @relation("ItemToTag")
+}
+
+enum ListType {
+  STANDARD
+  GROCERY
+  SMART
+}
+
+enum Priority {
+  LOWER
+  MIDDLE
+  UPPER
+}
+
+enum Color {
+  RED
+  ORANGE
+  YELLOW
+  GREEN
+  LIGHTBLUE
+  BLUE
+  DEEPBLUE
+  PINK
+  PURPLE
+  BROWN
+  GRAY
+  PINKBEIGE
+}
+
+enum Icon {
+  LIST
+  BOOK
+  FILE
+  MONEY
+  COMPUTER
+  LEAF
+  PERSON
+  SHOPPING
+  TRIP
+  CALENDAR
+  IDEA
+  HOUSE
+  MUSIC
+  SUN
+  MOON
+  HEART
+  STAR
+}
