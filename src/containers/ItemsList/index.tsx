@@ -1,4 +1,5 @@
 'use client'
+import ItemForm from '@/src/components/ItemForm';
 import { useListInfo } from '@/src/store/useListInfo';
 
 const ItemsList = () => {
@@ -10,6 +11,7 @@ const ItemsList = () => {
         <div>{listInfo?.name}</div>
         <div>{listInfo?.items.length}</div>
       </div>
+      <ItemForm />
     </>
   )
 }

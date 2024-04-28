@@ -3,18 +3,14 @@ import prisma from "@/prisma/db";
 
 export async function GET (req: NextRequest) {
   const searchParams = req.nextUrl.searchParams;
-  const userId = searchParams.get('userId');
+  const itemId = searchParams.get('itemId');
   try {
-    const lists = await prisma.list.findMany({
+    const subItems = await prisma.subItem.findMany({
       where: {
-        userId: userId as string,
+        itemId: itemId as string,
       },
-      include: {
-        items: true,
-        sections: true,
-      }
     });
-    return Response.json(lists);
+    return Response.json(subItems);
   } catch (error) {
     return Response.json(error);
   }
@@ -23,10 +19,10 @@ export async function GET (req: NextRequest) {
 export async function POST (req: NextRequest) {
   const data = await req.json();
   try {
-    const newList = await prisma.list.create({
+    const newSubItem = await prisma.subItem.create({
       data,
     });
-    return Response.json(newList);
+    return Response.json(newSubItem);
   } catch (error) {
     return Response.json(error);
   }
@@ -35,13 +31,13 @@ export async function POST (req: NextRequest) {
 export async function PUT (req: NextRequest) {
   const { id, data } = await req.json();
   try {
-    const updatedList = await prisma.list.update({
+    const updatedSubItem = await prisma.subi.update({
       where: {
         id: id
       },
       data: data,
     });
-    return Response.json(updatedList);
+    return Response.json(updatedSubItem);
   } catch (error) {
     return Response.json(error);
   }
@@ -50,12 +46,12 @@ export async function PUT (req: NextRequest) {
 export async function DELETE (req: NextRequest) {
   const { id } = await req.json();
   try {
-    const deletedList = await prisma.list.delete({
+    const deletedSubItem = await prisma.subItem.delete({
       where: {
         id: id
       }
     });
-    return Response.json(deletedList);
+    return Response.json(deletedSubItem);
   } catch (error) {
     return Response.json(error);
   }

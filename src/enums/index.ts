@@ -5,6 +5,7 @@ export enum ListType {
 }
 
 export enum Priority {
+  NO_PRIORITY,
   LOWER,
   MIDDLE,
   UPPER,
