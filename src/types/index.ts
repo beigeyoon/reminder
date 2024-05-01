@@ -31,11 +31,11 @@ export interface Item {
   createdTime: any;
   updatedTime: any;
   checked: boolean;
-  checkedTime: any;
+  checkedTime?: any;
   title: string;
   memo?: string;
   url?: string;
-  data?: any;
+  date?: any;
   time?: any;
   tags: Tag[];
   priority?: Priority;

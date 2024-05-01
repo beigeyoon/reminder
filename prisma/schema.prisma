@@ -37,7 +37,7 @@ model Item {
   createdTime       DateTime @default(now())
   updatedTime       DateTime @updatedAt 
   checked           Boolean  @default(false)
-  checkedTime       DateTime
+  checkedTime       DateTime?
   title             String
   memo              String?
   url               String?

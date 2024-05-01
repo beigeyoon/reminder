@@ -6,6 +6,7 @@ import DateTime from "./DateTime";
 import PrioritySelect from "./PrioritySelect";
 import FlagButton from "./FlagButton";
 import Tags from "./Tags";
+import { Input, Checkbox } from "antd";
 
 interface IItem {
   item?: Item;
@@ -16,17 +17,24 @@ const ItemForm = ({ item }: IItem) => {
   const [isActive, setIsActive] = useState<boolean>(false);
 
   return (
-    <div onClick={() => setIsActive(true)} className='flex flex-col'>
-      <input id='title' placeholder="새로운 아이템" />
-      <input id='memo' placeholder="메모" />
-      <Tags />
-      <input id='url' placeholder="url" />
-      <div>
-        <DateTime />
-        <PrioritySelect />
-        <FlagButton />
+    <div
+      className="flex items-start gap-3"
+      onClick={() => setIsActive(true)}
+    >
+      <Checkbox />
+      <div className='flex flex-col w-full'>
+        <Input id='title' placeholder="새로운 아이템" />
+        <Input id='memo' placeholder="메모" />
+        <Input id='url' placeholder="url" />
+        <Tags />
+        <div>
+          <DateTime />
+          <PrioritySelect />
+          <FlagButton isActive={false} />
+        </div>
       </div>
     </div>
+    
   )
 }
 

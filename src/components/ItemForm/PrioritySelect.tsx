@@ -22,7 +22,11 @@ const PrioritySelect = () => {
   ];
 
   return (
-    <Select options={options} />
+    <Select
+      options={options}
+      className='w-[100px]'
+      defaultValue={Priority.NO_PRIORITY}
+    />
   )
 }
 
