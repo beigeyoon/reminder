@@ -54,7 +54,7 @@ const ItemForm = ({ item }: IItem) => {
       priority: item?.priority,
       flagged: item?.flagged,
       tags: item?.tags,
-      date: item?.date,
+      dateTime: item?.dateTime,
     }
   });
 
@@ -92,7 +92,7 @@ const ItemForm = ({ item }: IItem) => {
         />
         <div>
           <Controller
-            name='date'
+            name='dateTime'
             control={control}
             render={({ field }) => (
               <DateTime isActive={isActive} {...field} />

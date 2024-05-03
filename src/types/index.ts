@@ -35,8 +35,7 @@ export interface Item {
   title: string;
   memo?: string;
   url?: string;
-  date?: any;
-  time?: any;
+  dateTime?: any;
   tags: Tag[];
   priority?: Priority;
   flagged: boolean;

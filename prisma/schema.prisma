@@ -41,8 +41,7 @@ model Item {
   title             String
   memo              String?
   url               String?
-  date              DateTime?
-  time              DateTime?
+  dateTime          DateTime?
   tags              Tag[]    @relation("ItemToTag")
   priority          Int?
   flagged           Boolean  @default(false)
