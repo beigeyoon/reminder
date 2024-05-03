@@ -11,6 +11,7 @@ import { useMutation, useQueryClient, InvalidateQueryFilters } from "@tanstack/r
 import { AddItemPayload, addItem } from "@/src/services/item";
 import { useListInfo } from "@/src/store/useListInfo";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
+import { getTagsArray } from "@/src/utils/getTagsArray";
 
 interface IItem {
   item: Item;
@@ -53,7 +54,7 @@ const ItemForm = ({ item }: IItem) => {
       url: item?.url || null,
       priority: item?.priority,
       flagged: item?.flagged,
-      tags: item?.tags,
+      tags: getTagsArray(item?.tags),
       dateTime: item?.dateTime,
       hasTime: item?.hasTime || false,
     }

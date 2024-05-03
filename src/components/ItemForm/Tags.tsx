@@ -61,12 +61,12 @@ const Tags = forwardRef(({ ...props }: FieldValues) => {
 
   return (
     <Flex gap="4px 0" wrap="wrap">
-      {tags?.map((tag: TagType, index: number) => {
+      {tags?.map((tag: string, index: number) => {
         if (editInputIndex === index) {
           return (
             <Input
               ref={editInputRef}
-              key={tag.id}
+              key={tag}
               size="small"
               value={editInputValue}
               onChange={handleEditInputChange}
@@ -75,30 +75,30 @@ const Tags = forwardRef(({ ...props }: FieldValues) => {
             />
           );
         }
-        const isLongTag = tag.name?.length > 20;
+        const isLongTag = tag.length > 20;
         const tagElem = (
           <Tag
-            key={tag.id}
+            key={tag}
             closable={true}
             style={{ userSelect: 'none' }}
-            onClose={() => handleClose(tag.name)}
+            onClose={() => handleClose(tag)}
             bordered={false}
           >
             <span
               onDoubleClick={(e) => {
                 if (index !== 0) {
                   setEditInputIndex(index);
-                  setEditInputValue(tag.name);
+                  setEditInputValue(tag);
                   e.preventDefault();
                 }
               }}
             >
-              {'#' + (isLongTag ? `${tag.name.slice(0, 20)}...` : tag.name)}
+              {'#' + (isLongTag ? `${tag.slice(0, 20)}...` : tag)}
             </span>
           </Tag>
         );
         return isLongTag ? (
-          <Tooltip title={tag.name} key={tag.id}>
+          <Tooltip title={tag} key={tag}>
             {tagElem}
           </Tooltip>
         ) : (
