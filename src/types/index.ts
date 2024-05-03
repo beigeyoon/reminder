@@ -40,7 +40,7 @@ export interface Item {
   tags: Tag[];
   priority?: Priority;
   flagged: boolean;
-  list: List;
+  list?: List;
   listId: string;
   section?: Section;
   sectionId?: string;
@@ -62,5 +62,5 @@ export interface SubItem {
 export interface Tag {
   id: string;
   name: string;
-  items: Item[];
+  items?: Item[];
 }

@@ -1,19 +1,19 @@
 'use client'
 import { DatePicker, DatePickerProps, TimePickerProps } from "antd";
-import { Dayjs } from "dayjs";
-import { useState } from "react";
+import { forwardRef } from "react";
+import { FieldValues } from "react-hook-form";
+import dayjs from "dayjs";
 
-const DateTime = () => {
-  const [date, setDate] = useState<Dayjs | null>(null);
-  const [dateTime, setDateTime] = useState<Dayjs | null>(null);
+const DateTime = forwardRef(({ ...props }: FieldValues) => {
+  const { isActive, name, onBlur, onChange, value } = props;
 
   const onChangeDate: DatePickerProps['onChange'] = (date) => {
-    setDate(date);
+    onChange(date);
   };
-  const onChangeTime: TimePickerProps['onChange'] = (dateTime) => {
-    setDateTime(dateTime);
+  const onChangeTime: TimePickerProps['onChange'] = (time) => {
+    // 시간 선택시 dateTime 업데이트
   };
-  
+
   return (
     <div>
       <DatePicker
@@ -21,18 +21,12 @@ const DateTime = () => {
         variant="filled"
         className='w-[130px]'
         onChange={onChangeDate}
+        defaultValue={value ? dayjs(value) : null}
       />
-      {date && (
-        <DatePicker
-          placeholder='시간 추가'
-          variant='filled'
-          className='w-[100px]'
-          picker="time"
-          onChange={onChangeTime}
-        />
-      )}
     </div>
   )
-}
+});
+
+DateTime.displayName = 'DateTime';
 
 export default DateTime;

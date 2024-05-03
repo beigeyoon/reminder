@@ -10,6 +10,7 @@ export async function GET (req: NextRequest) {
         listId: listId as string,
       },
       include: {
+        tags: true,
         subItems: true,
       }
     });
@@ -21,10 +22,34 @@ export async function GET (req: NextRequest) {
 
 export async function POST (req: NextRequest) {
   const data = await req.json();
+  const { tags, ...dataWithoutTags } = data;
+  
   try {
     const newItem = await prisma.item.create({
-      data,
+      data: dataWithoutTags,
     });
+    for (const tagName of tags) {
+      let tag = await prisma.tag.findUnique({
+        where: {
+          name: tagName
+        }
+      });
+      if (!tag) {
+        tag = await prisma.tag.create({
+          data: {
+            name: tagName
+          }
+        });
+      }
+      await prisma.item.update({
+        where: { id: newItem.id },
+        data: {
+          tags: {
+            connect: { id: tag.id }
+          }
+        }
+      })
+    }
     return Response.json(newItem);
   } catch (error) {
     return Response.json(error);

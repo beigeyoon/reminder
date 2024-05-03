@@ -1,10 +1,13 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, forwardRef} from 'react';
 import { PlusOutlined } from '@ant-design/icons';
 import type { InputRef } from 'antd';
 import { Flex, Input, Tag, Tooltip } from 'antd';
+import { FieldValues } from 'react-hook-form';
+import { Tag as TagType } from '@/src/types';
 
-const Tags = () => {
-  const [tags, setTags] = useState<string[]>(['Tag1', 'Tag2', 'Tag3']);
+const Tags = forwardRef(({ ...props }: FieldValues) => {
+  const { name, onBlur, onChange, value: tags } = props;
+
   const [inputVisible, setInputVisible] = useState(false);
   const [inputValue, setInputValue] = useState('');
   const [editInputIndex, setEditInputIndex] = useState(-1);
@@ -23,9 +26,9 @@ const Tags = () => {
   }, [editInputValue]);
 
   const handleClose = (removedTag: string) => {
-    const newTags = tags.filter((tag) => tag !== removedTag);
+    const newTags = tags.filter((tag: string) => tag !== removedTag);
     console.log(newTags);
-    setTags(newTags);
+    onChange(newTags);
   };
 
   const showInput = () => {
@@ -38,7 +41,7 @@ const Tags = () => {
 
   const handleInputConfirm = () => {
     if (inputValue && !tags.includes(inputValue)) {
-      setTags([...tags, inputValue]);
+      onChange([...tags, inputValue]);
     }
     setInputVisible(false);
     setInputValue('');
@@ -51,19 +54,19 @@ const Tags = () => {
   const handleEditInputConfirm = () => {
     const newTags = [...tags];
     newTags[editInputIndex] = editInputValue;
-    setTags(newTags);
+    onChange(newTags);
     setEditInputIndex(-1);
     setEditInputValue('');
   };
 
   return (
     <Flex gap="4px 0" wrap="wrap">
-      {tags.map<React.ReactNode>((tag, index) => {
+      {tags?.map((tag: TagType, index: number) => {
         if (editInputIndex === index) {
           return (
             <Input
               ref={editInputRef}
-              key={tag}
+              key={tag.id}
               size="small"
               value={editInputValue}
               onChange={handleEditInputChange}
@@ -72,30 +75,30 @@ const Tags = () => {
             />
           );
         }
-        const isLongTag = tag.length > 20;
+        const isLongTag = tag.name?.length > 20;
         const tagElem = (
           <Tag
-            key={tag}
+            key={tag.id}
             closable={true}
             style={{ userSelect: 'none' }}
-            onClose={() => handleClose(tag)}
+            onClose={() => handleClose(tag.name)}
             bordered={false}
           >
             <span
               onDoubleClick={(e) => {
                 if (index !== 0) {
                   setEditInputIndex(index);
-                  setEditInputValue(tag);
+                  setEditInputValue(tag.name);
                   e.preventDefault();
                 }
               }}
             >
-              {'#' + (isLongTag ? `${tag.slice(0, 20)}...` : tag)}
+              {'#' + (isLongTag ? `${tag.name.slice(0, 20)}...` : tag.name)}
             </span>
           </Tag>
         );
         return isLongTag ? (
-          <Tooltip title={tag} key={tag}>
+          <Tooltip title={tag.name} key={tag.id}>
             {tagElem}
           </Tooltip>
         ) : (
@@ -120,6 +123,8 @@ const Tags = () => {
       )}
     </Flex>
   );
-};
+});
+
+Tags.displayName = 'Tags';
 
 export default Tags;

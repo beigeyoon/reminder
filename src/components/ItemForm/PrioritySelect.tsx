@@ -1,7 +1,11 @@
 import { Select } from "antd";
 import { Priority } from "@/src/enums";
+import { forwardRef } from "react";
+import { FieldValues } from "react-hook-form";
 
-const PrioritySelect = () => {
+const PrioritySelect = forwardRef(({ ...props }: FieldValues) => {
+  const { name, onBlur, onChange, value } = props;
+  
   const options = [
     {
       value: Priority.NO_PRIORITY,
@@ -26,8 +30,11 @@ const PrioritySelect = () => {
       options={options}
       className='w-[100px]'
       defaultValue={Priority.NO_PRIORITY}
+      {...props}
     />
   )
-}
+});
+
+PrioritySelect.displayName = 'PrioritySelect';
 
 export default PrioritySelect;

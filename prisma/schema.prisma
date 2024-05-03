@@ -44,7 +44,7 @@ model Item {
   date              DateTime?
   time              DateTime?
   tags              Tag[]    @relation("ItemToTag")
-  priority          Priority?
+  priority          Int?
   flagged           Boolean  @default(false)
   list              List     @relation(fields: [listId], references: [id])
   listId            String
