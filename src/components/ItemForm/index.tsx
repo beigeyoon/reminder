@@ -10,7 +10,7 @@ import { Checkbox } from "antd";
 import { useMutation, useQueryClient, InvalidateQueryFilters } from "@tanstack/react-query";
 import { AddItemPayload, addItem } from "@/src/services/item";
 import { useListInfo } from "@/src/store/useListInfo";
-import { useForm, Controller } from "react-hook-form";
+import { useForm, Controller, SubmitHandler } from "react-hook-form";
 
 interface IItem {
   item: Item;
@@ -58,7 +58,7 @@ const ItemForm = ({ item }: IItem) => {
     }
   });
 
-  const onSubmit = (data) => {
+  const onSubmit: SubmitHandler<any> = (data) => {
     createItem({
       listId,
       ...data,
