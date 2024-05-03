@@ -13,6 +13,7 @@ export interface AddItemPayload {
   memo?: string;
   url?: string;
   dateTime?: any;
+  hasTime?: boolean;
   tags?: Tag[];
   subItems?: SubItem[];
   priority?: Priority;

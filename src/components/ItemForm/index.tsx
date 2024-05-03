@@ -55,6 +55,7 @@ const ItemForm = ({ item }: IItem) => {
       flagged: item?.flagged,
       tags: item?.tags,
       dateTime: item?.dateTime,
+      hasTime: item?.hasTime || false,
     }
   });
 
@@ -95,7 +96,7 @@ const ItemForm = ({ item }: IItem) => {
             name='dateTime'
             control={control}
             render={({ field }) => (
-              <DateTime isActive={isActive} {...field} />
+              <DateTime isActive={isActive} control={control} {...field} />
             )}
           />
           <Controller

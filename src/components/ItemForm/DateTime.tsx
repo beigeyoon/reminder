@@ -3,9 +3,17 @@ import { DatePicker, DatePickerProps, TimePickerProps } from "antd";
 import { forwardRef } from "react";
 import { FieldValues } from "react-hook-form";
 import dayjs from "dayjs";
+import { useController } from "react-hook-form";
 
 const DateTime = forwardRef(({ ...props }: FieldValues) => {
-  const { isActive, name, onBlur, onChange, value } = props;
+  const { isActive, name, onBlur, onChange, value, control } = props;
+
+  const { field: {
+    onBlur: onBlurHasTime,
+    onChange: onChangeHasTime,
+    value: hasTimeValue,
+    }
+  } = useController({ name: 'hasTime', control });
 
   const onChangeDate: DatePickerProps['onChange'] = (date) => {
     onChange(date);

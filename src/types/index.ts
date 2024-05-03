@@ -36,6 +36,7 @@ export interface Item {
   memo?: string;
   url?: string;
   dateTime?: any;
+  hasTime?: boolean;
   tags: Tag[];
   priority?: Priority;
   flagged: boolean;
