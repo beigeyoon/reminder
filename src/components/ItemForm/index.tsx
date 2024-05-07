@@ -44,6 +44,7 @@ const ItemForm = ({ item }: IItem) => {
     control,
     getValues,
     setValue,
+    watch,
     formState: { errors },
   } = useForm({
     defaultValues: {
@@ -58,6 +59,21 @@ const ItemForm = ({ item }: IItem) => {
       hasTime: item?.hasTime || false,
     }
   });
+  const isChecked = watch('checked');
+
+  useEffect(() => {
+    if (isChecked) {
+      editItem({
+        id: item.id,
+        checked: true,
+      });
+    } else {
+      editItem({
+        id: item.id,
+        checked: false,
+      })
+    }
+  }, [editItem, isChecked, item.id]);
 
   const onSubmit: SubmitHandler<any> = useCallback((data) => {
     if (isNewItem) {
@@ -96,7 +112,6 @@ const ItemForm = ({ item }: IItem) => {
   return (
     <form
       className="flex items-start gap-3"
-      onClick={() => setIsActive(true)}
       ref={itemFormRef}
     >
       <Controller
@@ -106,7 +121,7 @@ const ItemForm = ({ item }: IItem) => {
           <Checkbox {...field} checked={field.value} />
         )}
       />
-      <div className='flex flex-col w-full'>
+      <div className='flex flex-col w-full' onClick={() => setIsActive(true)}>
         <input id='title' {...register('title')} />
         {(isActive || getValues('memo')) && <input id='memo' placeholder="메모" {...register('memo')} />}
         {(isActive || getValues('url')) && <input id='url' placeholder="url" {...register('url')} />}

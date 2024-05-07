@@ -24,7 +24,7 @@ export interface AddItemPayload {
 
 export interface UpdateItemPayload {
   id: string;
-  title: string;
+  title?: string;
   checked?: boolean;
   flagged?: boolean;
   memo?: string;
