@@ -3,6 +3,8 @@ import ItemForm from '@/src/components/ItemForm';
 import { Priority } from '@/src/enums';
 import { useListInfo } from '@/src/store/useListInfo';
 import { useEffect, useState } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faAlignLeft, faPlus } from '@fortawesome/free-solid-svg-icons';
 
 interface IItemList {
   itemsData: any[];
@@ -34,11 +36,18 @@ const ItemsList = ({ itemsData }: IItemList) => {
 
   return (
     <>
+      <div className='flex justify-end gap-4 pb-6 text-lg text-gray400'>
+        <button>
+          <FontAwesomeIcon icon={faAlignLeft} />
+        </button>
+        <button onClick={onClickAddItem}>
+          <FontAwesomeIcon icon={faPlus} />
+        </button>
+      </div>
       <div className='pb-8 flex justify-between text-[36px]'>
         <div>{listInfo?.name}</div>
         <div>{listInfo?.items.length}</div>
       </div>
-      <button onClick={onClickAddItem}>newItem</button>
       {items.map((item) => (
         <ItemForm key={item.id} item={item} />
       ))}

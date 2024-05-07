@@ -1,12 +1,11 @@
 import React, { useEffect, useRef, useState, forwardRef} from 'react';
 import { PlusOutlined } from '@ant-design/icons';
 import type { InputRef } from 'antd';
-import { Flex, Input, Tag, Tooltip } from 'antd';
+import { Input, Tag, Tooltip } from 'antd';
 import { FieldValues } from 'react-hook-form';
-import { Tag as TagType } from '@/src/types';
 
 const Tags = forwardRef(({ ...props }: FieldValues) => {
-  const { name, onBlur, onChange, value: tags } = props;
+  const { name, onBlur, onChange, value: tags, isActive } = props;
 
   const [inputVisible, setInputVisible] = useState(false);
   const [inputValue, setInputValue] = useState('');
@@ -59,8 +58,9 @@ const Tags = forwardRef(({ ...props }: FieldValues) => {
     setEditInputValue('');
   };
 
+  if (!isActive && tags.length === 0) return <></>;
   return (
-    <Flex gap="4px 0" wrap="wrap">
+    <div className='flex gap-1'>
       {tags?.map((tag: string, index: number) => {
         if (editInputIndex === index) {
           return (
@@ -121,7 +121,7 @@ const Tags = forwardRef(({ ...props }: FieldValues) => {
           태그 추가
         </Tag>
       )}
-    </Flex>
+    </div>
   );
 });
 

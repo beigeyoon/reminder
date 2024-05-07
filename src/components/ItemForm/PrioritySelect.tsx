@@ -3,8 +3,8 @@ import { Priority } from "@/src/enums";
 import { forwardRef } from "react";
 import { FieldValues } from "react-hook-form";
 
-const PrioritySelect = forwardRef(({ ...props }: FieldValues) => {
-  const { name, onBlur, onChange, value } = props;
+const  PrioritySelect = forwardRef(({ ...props }: FieldValues) => {
+  const { name, onBlur, onChange, value, isActive } = props;
   
   const options = [
     {
@@ -25,6 +25,7 @@ const PrioritySelect = forwardRef(({ ...props }: FieldValues) => {
     },
   ];
 
+  if (!isActive) return <></>;
   return (
     <Select
       options={options}

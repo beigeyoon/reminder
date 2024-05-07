@@ -7,3 +7,25 @@ export const getTagsArray = (tags: Tag[]) => {
   });
   return result;
 };
+
+export const updateTagLists = (prevTags: string[], newTags: string[]) => {
+  const addedTags: string[] = [];
+  const deletedTags: string[] = [];
+
+  for (const tag of prevTags) {
+    if (!newTags.includes(tag)) {
+      deletedTags.push(tag);
+    }
+  }
+
+  for (const tag of newTags) {
+    if (!prevTags.includes(tag)) {
+      addedTags.push(tag);
+    }
+  }
+
+  return {
+    addedTags,
+    deletedTags,
+  }
+};

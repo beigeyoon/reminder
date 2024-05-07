@@ -22,6 +22,7 @@ const DateTime = forwardRef(({ ...props }: FieldValues) => {
     // 시간 선택시 dateTime 업데이트
   };
 
+  if (!isActive && !value) return <></>;
   return (
     <div>
       <DatePicker

@@ -1,50 +1,49 @@
 'use client'
-
 import { Item } from "@/src/types";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import DateTime from "./DateTime";
 import PrioritySelect from "./PrioritySelect";
 import FlagButton from "./FlagButton";
 import Tags from "./Tags";
 import { Checkbox } from "antd";
-import { useMutation, useQueryClient, InvalidateQueryFilters } from "@tanstack/react-query";
-import { AddItemPayload, addItem } from "@/src/services/item";
+import { useMutation } from "@tanstack/react-query";
+import { AddItemPayload, addItem, UpdateItemPayload, updateItem, DeleteItemPayload, deleteItem } from "@/src/services/item";
 import { useListInfo } from "@/src/store/useListInfo";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
-import { getTagsArray } from "@/src/utils/getTagsArray";
+import { getTagsArray, updateTagLists } from "@/src/utils/getTagsArray";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTrashCan } from '@fortawesome/free-solid-svg-icons';
 
 interface IItem {
   item: Item;
 }
 
 const ItemForm = ({ item }: IItem) => {
+  const isNewItem = item.id === undefined;
   const { listInfo } = useListInfo();
   const listId = listInfo?.id;
   
-  const [isActive, setIsActive] = useState<boolean>(false);
+  const [isActive, setIsActive] = useState<boolean>(isNewItem ? true : false);
   const itemFormRef = useRef<HTMLFormElement>(null);
-
-  useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
-      if (itemFormRef.current && !itemFormRef.current.contains(e.target as Node)) {
-        setIsActive(false);
-      }
-    };
-
-    document.addEventListener('click', handleClickOutside);
-    return () => {
-      document.removeEventListener('click', handleClickOutside);
-    }
-  }, []);
 
   const { mutateAsync: createItem } = useMutation({
     mutationFn: (body: AddItemPayload) => addItem(body),
   });
 
+  const { mutateAsync: editItem } = useMutation({
+    mutationFn: (body: UpdateItemPayload) => updateItem(body),
+  });
+
+  const { mutateAsync: removeItem } = useMutation({
+    mutationFn: (body: DeleteItemPayload) => deleteItem(body),
+  })
+
   const {
     register,
     handleSubmit,
     control,
+    getValues,
+    setValue,
     formState: { errors },
   } = useForm({
     defaultValues: {
@@ -60,36 +59,62 @@ const ItemForm = ({ item }: IItem) => {
     }
   });
 
-  const onSubmit: SubmitHandler<any> = (data) => {
-    createItem({
-      listId,
-      ...data,
-    });
-  };
+  const onSubmit: SubmitHandler<any> = useCallback((data) => {
+    if (isNewItem) {
+      createItem({
+        listId,
+        ...data,
+      });
+    } else {
+      editItem({
+        id: item.id,
+        ...data,
+        tags: updateTagLists(getTagsArray(item?.tags), data.tags),
+      });
+    }
+  }, [createItem, editItem, isNewItem, item.id, item?.tags, listId]);
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (itemFormRef.current && !itemFormRef.current.contains(e.target as Node)) {
+        if (isActive) {
+          if (!getValues('title') || getValues('title').length === 0) {
+            setValue('title', isNewItem ? '새로운 항목' : item.title);
+          }
+          setIsActive(false);
+          handleSubmit(onSubmit)();
+        }
+      }
+    };
+
+    document.addEventListener('click', handleClickOutside);
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+    }
+  }, [handleSubmit, onSubmit, isActive, getValues, setValue, isNewItem, item.title]);
 
   return (
     <form
       className="flex items-start gap-3"
       onClick={() => setIsActive(true)}
-      onSubmit={handleSubmit(onSubmit)}
       ref={itemFormRef}
     >
       <Controller
         name='checked'
         control={control}
         render={({ field }) => (
-          <Checkbox {...field} />
+          <Checkbox {...field} checked={field.value} />
         )}
       />
       <div className='flex flex-col w-full'>
         <input id='title' {...register('title')} />
-        <input id='memo' placeholder="메모" {...register('memo')} />
-        <input id='url' placeholder="url" {...register('url')} />
+        {(isActive || getValues('memo')) && <input id='memo' placeholder="메모" {...register('memo')} />}
+        {(isActive || getValues('url')) && <input id='url' placeholder="url" {...register('url')} />}
         <Controller
           name='tags'
           control={control}
           render={({ field }) => (
-            <Tags {...field} />
+            <Tags isActive={isActive} {...field} />
           )}
         />
         <div>
@@ -104,19 +129,23 @@ const ItemForm = ({ item }: IItem) => {
             name='priority'
             control={control}
             render={({ field }) => (
-              <PrioritySelect {...field} />
+              <PrioritySelect isActive={isActive} {...field} />
             )}
           />
           <Controller
             name='flagged'
             control={control}
             render={({ field }) => (
-              <FlagButton {...field} />
+              <FlagButton isActive={isActive} {...field} />
             )}
           />
         </div>
       </div>
-      <button type="submit">submit</button>
+      {isActive && (
+        <button onClick={() => removeItem({ id: item.id })}>
+          <FontAwesomeIcon icon={faTrashCan} />
+        </button>
+      )}
     </form>
   )
 }

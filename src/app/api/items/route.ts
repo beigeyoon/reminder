@@ -57,14 +57,47 @@ export async function POST (req: NextRequest) {
 };
 
 export async function PUT (req: NextRequest) {
-  const { id, data } = await req.json();
+  const { id, ...data } = await req.json();
+  const { tags, ...dataWithoutTags } = data;
   try {
     const updatedItem = await prisma.item.update({
       where: {
         id: id
       },
-      data: data,
+      data: dataWithoutTags,
     });
+    for (const tagName of tags.addedTags) {
+      let tag = await prisma.tag.findUnique({
+        where: {
+          name: tagName
+        }
+      });
+      if (!tag) {
+        tag = await prisma.tag.create({
+          data: {
+            name: tagName
+          }
+        });
+      }
+      await prisma.item.update({
+        where: { id: updatedItem.id },
+        data: {
+          tags: {
+            connect: { id: tag.id }
+          }
+        }
+      })
+    }
+    for (const tagName of tags.deletedTags) {
+      await prisma.item.update({
+        where: { id: updatedItem.id },
+        data: {
+          tags: {
+            disconnect: { name: tagName }
+          }
+        }
+      })
+    }
     return Response.json(updatedItem);
   } catch (error) {
     return Response.json(error);
