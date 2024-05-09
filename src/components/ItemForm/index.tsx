@@ -13,6 +13,7 @@ import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { getTagsArray, updateTagLists } from "@/src/utils/getTagsArray";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashCan } from '@fortawesome/free-solid-svg-icons';
+import SubItems from "./SubItems";
 
 interface IItem {
   item: Item;
@@ -57,6 +58,7 @@ const ItemForm = ({ item }: IItem) => {
       tags: getTagsArray(item?.tags),
       dateTime: item?.dateTime,
       hasTime: item?.hasTime || false,
+      subItems: item?.subItems,
     }
   });
   const isChecked = watch('checked');
@@ -152,6 +154,13 @@ const ItemForm = ({ item }: IItem) => {
             control={control}
             render={({ field }) => (
               <FlagButton isActive={isActive} {...field} />
+            )}
+          />
+          <Controller
+            name='subItems'
+            control={control}
+            render={({ field }) => (
+              <SubItems isActive={isActive} itemId={item.id} {...field} />
             )}
           />
         </div>

@@ -22,6 +22,14 @@ export async function POST (req: NextRequest) {
     const newSubItem = await prisma.subItem.create({
       data,
     });
+    await prisma.item.update({
+      where: { id: data.itemId },
+      data: {
+        subItems: {
+          connect: { id: newSubItem.id }
+        }
+      }
+    });
     return Response.json(newSubItem);
   } catch (error) {
     return Response.json(error);
@@ -31,7 +39,7 @@ export async function POST (req: NextRequest) {
 export async function PUT (req: NextRequest) {
   const { id, data } = await req.json();
   try {
-    const updatedSubItem = await prisma.subi.update({
+    const updatedSubItem = await prisma.subItem.update({
       where: {
         id: id
       },

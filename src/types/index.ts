@@ -31,7 +31,6 @@ export interface Item {
   createdTime: any;
   updatedTime: any;
   checked: boolean;
-  checkedTime?: any;
   title: string;
   memo?: string;
   url?: string;
@@ -50,12 +49,10 @@ export interface Item {
 
 export interface SubItem {
   id: string;
-  item: Item;
+  item?: Item;
   itemId: string;
-  createdTime: any;
   updatedTime: any;
   checked: boolean;
-  checkedTime: any;
   title: string;
 }
 
