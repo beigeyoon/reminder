@@ -22,11 +22,11 @@ export async function GET (req: NextRequest) {
 
 export async function POST (req: NextRequest) {
   const data = await req.json();
-  const { tags, ...dataWithoutTags } = data;
+  const { tags, subItems, ...dataWithoutTagsAndSubItems } = data;
   
   try {
     const newItem = await prisma.item.create({
-      data: dataWithoutTags,
+      data: dataWithoutTagsAndSubItems,
     });
     for (const tagName of tags) {
       let tag = await prisma.tag.findUnique({
@@ -58,45 +58,49 @@ export async function POST (req: NextRequest) {
 
 export async function PUT (req: NextRequest) {
   const { id, ...data } = await req.json();
-  const { tags, ...dataWithoutTags } = data;
+  const { tags, subItems, ...dataWithoutTagsAndSubItems } = data;
   try {
     const updatedItem = await prisma.item.update({
       where: {
         id: id
       },
-      data: dataWithoutTags,
+      data: dataWithoutTagsAndSubItems,
     });
-    for (const tagName of tags.addedTags) {
-      let tag = await prisma.tag.findUnique({
-        where: {
-          name: tagName
-        }
-      });
-      if (!tag) {
-        tag = await prisma.tag.create({
-          data: {
+    if (tags.addedTags?.length > 0) {
+      for (const tagName of tags.addedTags) {
+        let tag = await prisma.tag.findUnique({
+          where: {
             name: tagName
           }
         });
+        if (!tag) {
+          tag = await prisma.tag.create({
+            data: {
+              name: tagName
+            }
+          });
+        }
+        await prisma.item.update({
+          where: { id: updatedItem.id },
+          data: {
+            tags: {
+              connect: { id: tag.id }
+            }
+          }
+        })
       }
-      await prisma.item.update({
-        where: { id: updatedItem.id },
-        data: {
-          tags: {
-            connect: { id: tag.id }
-          }
-        }
-      })
     }
-    for (const tagName of tags.deletedTags) {
-      await prisma.item.update({
-        where: { id: updatedItem.id },
-        data: {
-          tags: {
-            disconnect: { name: tagName }
+    if (tags.deletedTags?.length > 0) {
+      for (const tagName of tags.deletedTags) {
+        await prisma.item.update({
+          where: { id: updatedItem.id },
+          data: {
+            tags: {
+              disconnect: { name: tagName }
+            }
           }
-        }
-      })
+        })
+      }
     }
     return Response.json(updatedItem);
   } catch (error) {
@@ -112,8 +116,8 @@ export async function DELETE (req: NextRequest) {
         id: id
       }
     });
-    return Response.json(deletedItem);
+    return Response.json({ ok: true, item: deletedItem });
   } catch (error) {
-    return Response.json(error);
+    return Response.json({ ok: false, error });
   }
 };

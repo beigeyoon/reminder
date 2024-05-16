@@ -15,11 +15,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashCan } from '@fortawesome/free-solid-svg-icons';
 import SubItems from "./SubItems";
 
-interface IItem {
+interface IItemForm {
   item: Item;
+  onClickDeleteItem: (itemId: string) => void;
 }
 
-const ItemForm = ({ item }: IItem) => {
+const ItemForm = ({ item, onClickDeleteItem }: IItemForm) => {
   const isNewItem = item.id === undefined;
   const { listInfo } = useListInfo();
   const listId = listInfo?.id;
@@ -91,6 +92,14 @@ const ItemForm = ({ item }: IItem) => {
       });
     }
   }, [createItem, editItem, isNewItem, item.id, item?.tags, listId]);
+
+  const onDelete = useCallback(async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, itemId: string) => {
+    e.preventDefault();
+    const result = await removeItem({ id: itemId });
+    if (result.ok) {
+      onClickDeleteItem(itemId);
+    }
+  }, [onClickDeleteItem, removeItem]);
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -166,7 +175,7 @@ const ItemForm = ({ item }: IItem) => {
         </div>
       </div>
       {isActive && (
-        <button onClick={() => removeItem({ id: item.id })}>
+        <button onClick={(e) => onDelete(e, item.id)}>
           <FontAwesomeIcon icon={faTrashCan} />
         </button>
       )}

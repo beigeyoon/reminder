@@ -1,5 +1,3 @@
-import { SubItem } from "../types";
-
 export interface AddSubItemPayload {
   itemId: string;
   title: string;
@@ -16,7 +14,7 @@ export interface DeleteSubItemPayload {
   id: string;
 }
 
-export const addSubItem = async (body: AddSubItemPayload): Promise<SubItem> => {
+export const addSubItem = async (body: AddSubItemPayload) => {
   const response = await fetch(`${process.env.NEXT_PUBLIC_FE_URL}/api/subitems`, {
     method: 'POST',
     headers: {
@@ -24,13 +22,10 @@ export const addSubItem = async (body: AddSubItemPayload): Promise<SubItem> => {
     },
     body: JSON.stringify(body),
   });
-  if (!response.ok) {
-    throw new Error(`Failed to add subItem: ${response.statusText}`);
-  }
   return await response.json();
 }
 
-export const updateSubItem = async (body: UpdateSubItemPayload): Promise<SubItem> => {
+export const updateSubItem = async (body: UpdateSubItemPayload) => {
   const response = await fetch(`${process.env.NEXT_PUBLIC_FE_URL}/api/subitems`, {
     method: 'PUT',
     headers: {
@@ -38,13 +33,10 @@ export const updateSubItem = async (body: UpdateSubItemPayload): Promise<SubItem
     },
     body: JSON.stringify(body),
   });
-  if (!response.ok) {
-    throw new Error(`Failed to update subItem: ${response.statusText}`);
-  }
   return await response.json();
 }
 
-export const deleteSubItem = async (body: DeleteSubItemPayload): Promise<SubItem> => {
+export const deleteSubItem = async (body: DeleteSubItemPayload) => {
   const response = await fetch(`${process.env.NEXT_PUBLIC_FE_URL}/api/subitems`, {
     method: 'DELETE',
     headers: {
@@ -52,8 +44,5 @@ export const deleteSubItem = async (body: DeleteSubItemPayload): Promise<SubItem
     },
     body: JSON.stringify(body),
   });
-  if (!response.ok) {
-    throw new Error(`Failed to delete subItem: ${response.statusText}`);
-  }
   return await response.json();
 }

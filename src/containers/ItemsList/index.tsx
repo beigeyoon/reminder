@@ -34,6 +34,11 @@ const ItemsList = ({ itemsData }: IItemList) => {
     setItems(copiedItems);
   };
 
+  const onClickDeleteItem = (itemId: string) => {
+    const updatedItems = items.filter((item) => item.id !== itemId);
+    setItems(updatedItems);
+  }
+
   return (
     <>
       <div className='flex justify-end gap-4 pb-6 text-lg text-gray400'>
@@ -49,7 +54,7 @@ const ItemsList = ({ itemsData }: IItemList) => {
         <div>{listInfo?.items.length}</div>
       </div>
       {items.map((item) => (
-        <ItemForm key={item.id} item={item} />
+        <ItemForm key={item.id} item={item} onClickDeleteItem={onClickDeleteItem} />
       ))}
     </>
   )

@@ -30,7 +30,8 @@ const Tags = forwardRef(({ ...props }: FieldValues) => {
     onChange(newTags);
   };
 
-  const showInput = () => {
+  const showInput = (e: React.MouseEvent<HTMLSpanElement, MouseEvent>) => {
+    e.preventDefault();
     setInputVisible(true);
   };
 
@@ -117,7 +118,7 @@ const Tags = forwardRef(({ ...props }: FieldValues) => {
           className='w-[80px] inline-block'
         />
       ) : (
-        <Tag icon={<PlusOutlined />} onClick={showInput}>
+        <Tag icon={<PlusOutlined />} onClick={(e) => showInput(e)}>
           태그 추가
         </Tag>
       )}

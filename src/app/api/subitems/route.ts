@@ -30,14 +30,14 @@ export async function POST (req: NextRequest) {
         }
       }
     });
-    return Response.json(newSubItem);
+    return Response.json({ ok: true, subItem: newSubItem });
   } catch (error) {
-    return Response.json(error);
+    return Response.json({ ok: false, error });
   }
 };
 
 export async function PUT (req: NextRequest) {
-  const { id, data } = await req.json();
+  const { id, ...data } = await req.json();
   try {
     const updatedSubItem = await prisma.subItem.update({
       where: {
@@ -45,9 +45,9 @@ export async function PUT (req: NextRequest) {
       },
       data: data,
     });
-    return Response.json(updatedSubItem);
+    return Response.json({ ok: true, subItem: updatedSubItem });
   } catch (error) {
-    return Response.json(error);
+    return Response.json({ ok: false, error });
   }
 };
 
@@ -59,8 +59,8 @@ export async function DELETE (req: NextRequest) {
         id: id
       }
     });
-    return Response.json(deletedSubItem);
+    return Response.json({ ok: true, subItem: deletedSubItem });
   } catch (error) {
-    return Response.json(error);
+    return Response.json({ ok: false, error });
   }
 };

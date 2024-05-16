@@ -84,7 +84,7 @@ export const updateItem = async (body: UpdateItemPayload): Promise<Item> => {
   return await response.json();
 }
 
-export const deleteItem = async (body: DeleteItemPayload): Promise<Item> => {
+export const deleteItem = async (body: DeleteItemPayload) => {
   const response = await fetch(`${process.env.NEXT_PUBLIC_FE_URL}/api/items`, {
     method: 'DELETE',
     headers: {
@@ -92,8 +92,5 @@ export const deleteItem = async (body: DeleteItemPayload): Promise<Item> => {
     },
     body: JSON.stringify(body),
   });
-  if (!response.ok) {
-    throw new Error(`Failed to delete item: ${response.statusText}`);
-  }
   return await response.json();
 }
