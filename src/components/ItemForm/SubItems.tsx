@@ -6,7 +6,8 @@ import { CheckboxChangeEvent } from "antd/es/checkbox";
 import { MouseEvent, forwardRef, useCallback } from "react";
 import { FieldValues } from "react-hook-form";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrashCan } from '@fortawesome/free-solid-svg-icons';
+import { faPlus } from '@fortawesome/free-solid-svg-icons';
+import ContextMenu, { ContextMenuItem } from "../ContextMenu";
 
 const SubItems = forwardRef(({ ...props }: FieldValues) => {
   const { onChange, value: subItems, isActive, itemId } = props;
@@ -27,7 +28,7 @@ const SubItems = forwardRef(({ ...props }: FieldValues) => {
     e.preventDefault();
     const newSubItem = {
       itemId: itemId,
-      title: 'new subItem',
+      title: '',
       checked: false,
     };
     const result = await createSubItem(newSubItem);
@@ -39,6 +40,22 @@ const SubItems = forwardRef(({ ...props }: FieldValues) => {
       console.error(result.error);
     }
   }, [createSubItem, itemId, onChange, subItems]);
+
+  const onUpdateTitle = useCallback(async (subItemId: string, newTitle: string) => {
+    const result = await editSubItem({ id: subItemId, title: newTitle });
+    if (result.ok) {
+      const updatedSubItems = subItems.map((subItem: SubItem) => {
+        if (subItem.id === subItemId) {
+          subItem.title = newTitle;
+        }
+        return subItem;
+      });
+      onChange(updatedSubItems);
+    } else {
+      alert('서브 아이템 제목 업데이트 에러');
+      console.error(result.error);
+    }
+  }, [editSubItem, onChange, subItems])
 
   const onChangeChecked = useCallback(async (e: CheckboxChangeEvent, subItem: SubItem) => {
     e.preventDefault();
@@ -60,8 +77,7 @@ const SubItems = forwardRef(({ ...props }: FieldValues) => {
     }
   }, [editSubItem, onChange, subItems]);
 
-  const onDelete = useCallback(async (e: MouseEvent<HTMLButtonElement, globalThis.MouseEvent>, subItemId: string) => {
-    e.preventDefault();
+  const onDelete = useCallback(async (subItemId: string) => {
     const result = await removeSubItem({ id: subItemId });
     if (result.ok) {
       const updatedSubItems = subItems.filter((subItem: SubItem) => subItem.id !== result.subItem.id);
@@ -73,24 +89,26 @@ const SubItems = forwardRef(({ ...props }: FieldValues) => {
   }, [onChange, removeSubItem, subItems]);
 
   return (
-    <div className='flex'>
+    <div className='w-full flex items-start'>
       {isActive && (
-        <button onClick={(e) => onClickAddSubItem(e)}>+</button>
+        <button
+          onClick={(e) => onClickAddSubItem(e)}
+          className='pt-[8px] pr-[8px]'
+        >
+          <FontAwesomeIcon icon={faPlus} className='text-gray400' />
+        </button>
       )}
-      <div>
+      <div className='w-full'>
         {subItems?.map((subItem: any) => (
-          <div key={subItem?.id}>
-            {isActive && (
-              <Checkbox checked={subItem?.checked} onChange={(e) => onChangeChecked(e, subItem)} />
-            )}
-            <span>{subItem?.title}</span>
-            {isActive && (
-              <button onClick={(e) => onDelete(e, subItem.id)}>
-                <FontAwesomeIcon icon={faTrashCan} />
-              </button>
-            )}
-          </div>
-        ))}
+          <SubItemComponemt
+            key={subItem.id}
+            subItem={subItem}
+            onUpdateTitle={onUpdateTitle}
+            onDelete={onDelete}
+            onChangeChecked={onChangeChecked}
+          />
+        ))
+        }
       </div>
     </div>
   )
@@ -99,3 +117,58 @@ const SubItems = forwardRef(({ ...props }: FieldValues) => {
 SubItems.displayName = 'SubItems';
 
 export default SubItems;
+
+interface ISubItem {
+  subItem: SubItem;
+  onUpdateTitle: (subItemId: string, newTitle: string) => Promise<void>;
+  onDelete: (subItemId: string) => Promise<void>;
+  onChangeChecked: (e: CheckboxChangeEvent, subItem: SubItem) => Promise<void>;
+}
+
+const SubItemComponemt = ({ subItem, onUpdateTitle, onDelete, onChangeChecked }: ISubItem) => {
+  const menuItems: ContextMenuItem[] = [
+    {
+      id: 'delete-list',
+      caption: '서브 아이템 삭제',
+      type: 'normal',
+      onClick: () => {
+        onDelete(subItem.id);
+      },
+    },
+  ];
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, subItem: SubItem) => {
+    if (e.key === 'Enter') {
+      onUpdateTitle(subItem.id, e.currentTarget.value);
+    }
+  };
+
+  const handleBlur = (e: React.FocusEvent<HTMLInputElement>, subItem: SubItem) => {
+    onUpdateTitle(subItem.id, e.currentTarget.value);
+  };
+
+  return (
+    <ContextMenu
+      id={`subItem-form-${subItem.id}`}
+      items={menuItems}
+      width={160}
+      key={subItem.id}
+    >
+      <div key={subItem?.id} className='flex items-center gap-3'>
+        <Checkbox
+          className='leading-[16px]'
+          checked={subItem?.checked}
+          onChange={(e) => onChangeChecked(e, subItem)}
+        />
+        <span className='w-full border-b border-gray100 py-[8px]'>
+          <input
+            id='subItem-title'
+            defaultValue={subItem.title}
+            onKeyDown={(e) => handleKeyDown(e, subItem)}
+            onBlur={(e) => handleBlur(e, subItem)}
+          />
+        </span>
+      </div>
+    </ContextMenu>
+  )
+}

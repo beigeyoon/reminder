@@ -18,10 +18,10 @@ const SecondDepthMenu = ({ items, width, children }: PropsWithChildren<ISecondDe
   }
 
   return (
-    <div onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+    <div onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} className='relative'>
       <div>{children}</div>
       {isVisible && (
-        <ul className="absolute border border-gray200 rounded-lg drop-shadow-md p-[4px] z-20 bg-gray100">
+        <ul className="absolute top-0 border border-gray200 rounded-lg drop-shadow-md p-[4px] z-20 bg-gray100">
           <li>hello</li>
         </ul>
       )}

@@ -29,7 +29,7 @@ const  PrioritySelect = forwardRef(({ ...props }: FieldValues) => {
   return (
     <Select
       options={options}
-      className='w-[100px]'
+      className='w-[100px] h-[28px]'
       defaultValue={Priority.NO_PRIORITY}
       {...props}
     />

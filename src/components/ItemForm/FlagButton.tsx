@@ -1,4 +1,4 @@
-import { forwardRef, useState } from "react";
+import { forwardRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFlag as unactiveFlag } from "@fortawesome/free-regular-svg-icons";
 import { faFlag as activeFlag } from "@fortawesome/free-solid-svg-icons";
@@ -17,9 +17,13 @@ const FlagButton = forwardRef(({ ...props }: FieldValues) => {
   return (
     <Button
       onClick={handleButton}
+      className='h-[28px] leading-[22px] px-[8px] py-[3px]'
       {...props}
     >
-      <FontAwesomeIcon icon={isFlagged ? activeFlag : unactiveFlag} />
+      <FontAwesomeIcon
+        icon={isFlagged ? activeFlag : unactiveFlag}
+        color={isFlagged ? 'orange' : 'unset'}
+      />
     </Button>
   )
 });

@@ -53,7 +53,7 @@ const ItemsList = ({ itemsData }: IItemList) => {
         <div>{listInfo?.name}</div>
         <div>{listInfo?.items.length}</div>
       </div>
-      {items.map((item) => (
+      {items.filter((item) => item.listId === listInfo?.id).map((item) => (
         <ItemForm key={item.id} item={item} onClickDeleteItem={onClickDeleteItem} />
       ))}
     </>

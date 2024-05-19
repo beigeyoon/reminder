@@ -9,8 +9,6 @@ const Tags = forwardRef(({ ...props }: FieldValues) => {
 
   const [inputVisible, setInputVisible] = useState(false);
   const [inputValue, setInputValue] = useState('');
-  const [editInputIndex, setEditInputIndex] = useState(-1);
-  const [editInputValue, setEditInputValue] = useState('');
   const inputRef = useRef<InputRef>(null);
   const editInputRef = useRef<InputRef>(null);
 
@@ -20,10 +18,6 @@ const Tags = forwardRef(({ ...props }: FieldValues) => {
     }
   }, [inputVisible]);
 
-  useEffect(() => {
-    editInputRef.current?.focus();
-  }, [editInputValue]);
-
   const handleClose = (removedTag: string) => {
     const newTags = tags.filter((tag: string) => tag !== removedTag);
     console.log(newTags);
@@ -31,7 +25,7 @@ const Tags = forwardRef(({ ...props }: FieldValues) => {
   };
 
   const showInput = (e: React.MouseEvent<HTMLSpanElement, MouseEvent>) => {
-    e.preventDefault();
+    e.stopPropagation();
     setInputVisible(true);
   };
 
@@ -46,55 +40,37 @@ const Tags = forwardRef(({ ...props }: FieldValues) => {
     setInputVisible(false);
     setInputValue('');
   };
-
-  const handleEditInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setEditInputValue(e.target.value);
-  };
-
-  const handleEditInputConfirm = () => {
-    const newTags = [...tags];
-    newTags[editInputIndex] = editInputValue;
-    onChange(newTags);
-    setEditInputIndex(-1);
-    setEditInputValue('');
-  };
-
-  if (!isActive && tags.length === 0) return <></>;
-  return (
-    <div className='flex gap-1'>
+  
+  if (!isActive) {
+    if (tags.length === 0) return <></>;
+    else return (
+      <div>
+        {tags?.map((tag: string, index: number) => (
+          <span key={index} className='inline-block mr-[4px] text-blue text-[12px]'>
+            {`#${tag}`}
+          </span>
+        ))}
+      </div>
+    )
+  } else return (
+    <div className='h-[28px]'>
       {tags?.map((tag: string, index: number) => {
-        if (editInputIndex === index) {
-          return (
-            <Input
-              ref={editInputRef}
-              key={tag}
-              size="small"
-              value={editInputValue}
-              onChange={handleEditInputChange}
-              onBlur={handleEditInputConfirm}
-              onPressEnter={handleEditInputConfirm}
-            />
-          );
-        }
-        const isLongTag = tag.length > 20;
+        const isLongTag = tag.length > 10;
         const tagElem = (
           <Tag
             key={tag}
             closable={true}
-            style={{ userSelect: 'none' }}
+            style={{ 
+              userSelect: 'none',
+              backgroundColor: 'transparent',
+              padding: 0,
+              lineHeight: '22px',
+            }}
             onClose={() => handleClose(tag)}
             bordered={false}
           >
-            <span
-              onDoubleClick={(e) => {
-                if (index !== 0) {
-                  setEditInputIndex(index);
-                  setEditInputValue(tag);
-                  e.preventDefault();
-                }
-              }}
-            >
-              {'#' + (isLongTag ? `${tag.slice(0, 20)}...` : tag)}
+            <span className='inline-block text-blue'>
+              {'#' + (isLongTag ? `${tag.slice(0, 10)}...` : tag)}
             </span>
           </Tag>
         );
@@ -115,12 +91,15 @@ const Tags = forwardRef(({ ...props }: FieldValues) => {
           onChange={handleInputChange}
           onBlur={handleInputConfirm}
           onPressEnter={handleInputConfirm}
-          className='w-[80px] inline-block'
+          className='w-[100px] inline-block text-[12px] leading-1'
         />
       ) : (
-        <Tag icon={<PlusOutlined />} onClick={(e) => showInput(e)}>
-          태그 추가
-        </Tag>
+        <button
+          onClick={(e) => showInput(e)}
+          className='cursor-pointer px-[6px] text-[12px] leading-[22px] bg-gray10 rounded text-gray400'
+        >
+          + 태그 추가
+        </button>
       )}
     </div>
   );
