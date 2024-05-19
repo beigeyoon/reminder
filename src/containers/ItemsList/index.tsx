@@ -5,6 +5,7 @@ import { useListInfo } from '@/src/store/useListInfo';
 import { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAlignLeft, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { orderItems } from '@/src/utils/orderItems';
 
 interface IItemList {
   itemsData: any[];
@@ -53,7 +54,7 @@ const ItemsList = ({ itemsData }: IItemList) => {
         <div>{listInfo?.name}</div>
         <div>{listInfo?.items.length}</div>
       </div>
-      {items.filter((item) => item.listId === listInfo?.id).map((item) => (
+      {orderItems(items).filter((item) => item.listId === listInfo?.id).map((item) => (
         <ItemForm key={item.id} item={item} onClickDeleteItem={onClickDeleteItem} />
       ))}
     </>
