@@ -1,9 +1,8 @@
 import { Select } from "antd";
 import { Priority } from "@/src/enums";
-import { forwardRef } from "react";
 import { FieldValues } from "react-hook-form";
 
-const  PrioritySelect = forwardRef(({ ...props }: FieldValues) => {
+const  PrioritySelect = ({ ...props }: FieldValues) => {
   const { name, onBlur, onChange, value, isActive } = props;
   
   const options = [
@@ -27,15 +26,16 @@ const  PrioritySelect = forwardRef(({ ...props }: FieldValues) => {
 
   if (!isActive) return <></>;
   return (
-    <Select
-      options={options}
-      className='w-[100px] h-[28px]'
-      defaultValue={Priority.NO_PRIORITY}
-      {...props}
-    />
+    <div onClick={e => e.stopPropagation()}>
+      <Select
+        options={options}
+        className='w-[100px] h-[28px]'
+        defaultValue={Priority.NO_PRIORITY}
+        getPopupContainer={(trigger) => trigger}
+        {...props}
+      />
+    </div>
   )
-});
-
-PrioritySelect.displayName = 'PrioritySelect';
+};
 
 export default PrioritySelect;

@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState, forwardRef} from 'react';
-import { PlusOutlined } from '@ant-design/icons';
 import type { InputRef } from 'antd';
 import { Input, Tag, Tooltip } from 'antd';
 import { FieldValues } from 'react-hook-form';
@@ -25,7 +24,6 @@ const Tags = forwardRef(({ ...props }: FieldValues) => {
   };
 
   const showInput = (e: React.MouseEvent<HTMLSpanElement, MouseEvent>) => {
-    e.stopPropagation();
     setInputVisible(true);
   };
 

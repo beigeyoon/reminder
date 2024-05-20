@@ -1,16 +1,15 @@
 import { AddSubItemPayload, DeleteSubItemPayload, UpdateSubItemPayload, addSubItem, deleteSubItem, updateSubItem } from "@/src/services/subItem";
-import { SubItem } from "@/src/types";
+import { SubItem as SubItemType } from "@/src/types";
 import { useMutation } from "@tanstack/react-query";
-import { Checkbox } from "antd";
 import { CheckboxChangeEvent } from "antd/es/checkbox";
 import { MouseEvent, forwardRef, useCallback } from "react";
 import { FieldValues } from "react-hook-form";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
-import ContextMenu, { ContextMenuItem } from "../ContextMenu";
+import SubItem from "./SubItem";
 
 const SubItems = forwardRef(({ ...props }: FieldValues) => {
-  const { onChange, value: subItems, isActive, itemId } = props;
+  const { onChange, value: subItems, isActive, itemId, showSubItems } = props;
 
   const { mutateAsync: createSubItem } = useMutation({
     mutationFn: (body: AddSubItemPayload) => addSubItem(body),
@@ -44,7 +43,7 @@ const SubItems = forwardRef(({ ...props }: FieldValues) => {
   const onUpdateTitle = useCallback(async (subItemId: string, newTitle: string) => {
     const result = await editSubItem({ id: subItemId, title: newTitle });
     if (result.ok) {
-      const updatedSubItems = subItems.map((subItem: SubItem) => {
+      const updatedSubItems = subItems.map((subItem: SubItemType) => {
         if (subItem.id === subItemId) {
           subItem.title = newTitle;
         }
@@ -57,14 +56,14 @@ const SubItems = forwardRef(({ ...props }: FieldValues) => {
     }
   }, [editSubItem, onChange, subItems])
 
-  const onChangeChecked = useCallback(async (e: CheckboxChangeEvent, subItem: SubItem) => {
+  const onChangeChecked = useCallback(async (e: CheckboxChangeEvent, subItem: SubItemType) => {
     e.preventDefault();
     const result = await editSubItem({
       ...subItem,
       checked: !subItem.checked,
     });
     if (result.ok) {
-      const updatedSubItems = subItems.map((subItem: SubItem) => {
+      const updatedSubItems = subItems.map((subItem: SubItemType) => {
         if (result.subItem.id === subItem.id) {
           subItem.checked = !subItem.checked;
         };
@@ -80,7 +79,7 @@ const SubItems = forwardRef(({ ...props }: FieldValues) => {
   const onDelete = useCallback(async (subItemId: string) => {
     const result = await removeSubItem({ id: subItemId });
     if (result.ok) {
-      const updatedSubItems = subItems.filter((subItem: SubItem) => subItem.id !== result.subItem.id);
+      const updatedSubItems = subItems.filter((subItem: SubItemType) => subItem.id !== result.subItem.id);
       onChange(updatedSubItems);
     } else {
       alert('서브 아이템 삭제 에러');
@@ -98,9 +97,10 @@ const SubItems = forwardRef(({ ...props }: FieldValues) => {
           <FontAwesomeIcon icon={faPlus} className='text-gray400' />
         </button>
       )}
-      <div className='w-full'>
+      {showSubItems && (
+        <div className='w-full'>
         {subItems?.map((subItem: any) => (
-          <SubItemComponemt
+          <SubItem
             key={subItem.id}
             subItem={subItem}
             onUpdateTitle={onUpdateTitle}
@@ -110,6 +110,7 @@ const SubItems = forwardRef(({ ...props }: FieldValues) => {
         ))
         }
       </div>
+      )}
     </div>
   )
 });
@@ -117,58 +118,3 @@ const SubItems = forwardRef(({ ...props }: FieldValues) => {
 SubItems.displayName = 'SubItems';
 
 export default SubItems;
-
-interface ISubItem {
-  subItem: SubItem;
-  onUpdateTitle: (subItemId: string, newTitle: string) => Promise<void>;
-  onDelete: (subItemId: string) => Promise<void>;
-  onChangeChecked: (e: CheckboxChangeEvent, subItem: SubItem) => Promise<void>;
-}
-
-const SubItemComponemt = ({ subItem, onUpdateTitle, onDelete, onChangeChecked }: ISubItem) => {
-  const menuItems: ContextMenuItem[] = [
-    {
-      id: 'delete-list',
-      caption: '서브 아이템 삭제',
-      type: 'normal',
-      onClick: () => {
-        onDelete(subItem.id);
-      },
-    },
-  ];
-
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, subItem: SubItem) => {
-    if (e.key === 'Enter') {
-      onUpdateTitle(subItem.id, e.currentTarget.value);
-    }
-  };
-
-  const handleBlur = (e: React.FocusEvent<HTMLInputElement>, subItem: SubItem) => {
-    onUpdateTitle(subItem.id, e.currentTarget.value);
-  };
-
-  return (
-    <ContextMenu
-      id={`subItem-form-${subItem.id}`}
-      items={menuItems}
-      width={160}
-      key={subItem.id}
-    >
-      <div key={subItem?.id} className='flex items-center gap-3'>
-        <Checkbox
-          className='leading-[16px]'
-          checked={subItem?.checked}
-          onChange={(e) => onChangeChecked(e, subItem)}
-        />
-        <span className='w-full border-b border-gray100 py-[8px]'>
-          <input
-            id='subItem-title'
-            defaultValue={subItem.title}
-            onKeyDown={(e) => handleKeyDown(e, subItem)}
-            onBlur={(e) => handleBlur(e, subItem)}
-          />
-        </span>
-      </div>
-    </ContextMenu>
-  )
-}

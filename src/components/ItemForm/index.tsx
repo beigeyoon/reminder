@@ -18,6 +18,7 @@ import { faChevronRight } from "@fortawesome/free-solid-svg-icons";
 import SubItems from "./SubItems";
 import ContextMenu, { ContextMenuItem } from "../ContextMenu";
 import { Priority } from "@/src/enums";
+import { useClickAway } from "react-use";
 
 interface IItemForm {
   item: Item;
@@ -32,6 +33,16 @@ const ItemForm = ({ item, onClickDeleteItem }: IItemForm) => {
   const [showSubItems, setShowSubItems] = useState<boolean>(false);
   const [isActive, setIsActive] = useState<boolean>(isNewItem ? true : false);
   const itemFormRef = useRef<HTMLFormElement>(null);
+
+  useClickAway(itemFormRef, async () => {
+    if (isActive) {
+      if (!getValues('title') || getValues('title').length === 0) {
+        setValue('title', isNewItem ? '새로운 항목' : item.title);
+      }
+      handleSubmit(onSubmit)();
+      setIsActive(false);
+    }
+  })
 
   const { mutateAsync: createItem } = useMutation({
     mutationFn: (body: AddItemPayload) => addItem(body),
@@ -105,25 +116,6 @@ const ItemForm = ({ item, onClickDeleteItem }: IItemForm) => {
     }
   }, [onClickDeleteItem, removeItem]);
 
-  useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
-      if (itemFormRef.current && !itemFormRef.current.contains(e.target as Node)) {
-        if (isActive) {
-          if (!getValues('title') || getValues('title').length === 0) {
-            setValue('title', isNewItem ? '새로운 항목' : item.title);
-          }
-          setIsActive(false);
-          handleSubmit(onSubmit)();
-        }
-      }
-    };
-
-    document.addEventListener('click', handleClickOutside);
-    return () => {
-      document.removeEventListener('click', handleClickOutside);
-    }
-  }, [handleSubmit, onSubmit, isActive, getValues, setValue, isNewItem, item.title]);
-
   const menuItems: ContextMenuItem[] = [
     {
       id: 'delete-list',
@@ -158,10 +150,8 @@ const ItemForm = ({ item, onClickDeleteItem }: IItemForm) => {
         <div className='w-full'>
           <div className='flex justify-between border-b border-gray100 pb-[4px]'>
             <div className='flex flex-col leading-[22px]' onClick={() => setIsActive(true)}>
-              <div className='flex gap-1'>
-                <span className='text-PURPLE'>
-                  {getValues('priority') === Priority.LOWER ? '!' : getValues('priority') === Priority.MIDDLE ? '!!' : getValues('priority') === Priority.UPPER ? '!!!' : null}
-                </span>
+              <div className='flex'>
+                <PriorityInTitle priority={getValues('priority')!} />
                 <input id='title' {...register('title')} />
               </div>
               {(isActive || getValues('memo')) && <input id='memo' placeholder="메모" {...register('memo')} className='text-gray400' />}
@@ -173,7 +163,7 @@ const ItemForm = ({ item, onClickDeleteItem }: IItemForm) => {
                   <Tags isActive={isActive} {...field} />
                 )}
               />
-              <div className='flex gap-3 h-[28px]'>
+              <div className='flex gap-3'>
                 <Controller
                   name='dateTime'
                   control={control}
@@ -213,15 +203,13 @@ const ItemForm = ({ item, onClickDeleteItem }: IItemForm) => {
               )}
             </div>
           </div>
-          {showSubItems && (
-            <Controller
-              name='subItems'
-              control={control}
-              render={({ field }) => (
-                <SubItems isActive={isActive} itemId={item.id} {...field} />
-              )}
-            />
-          )}
+          <Controller
+            name='subItems'
+            control={control}
+            render={({ field }) => (
+              <SubItems isActive={isActive} itemId={item.id} {...field} showSubItems={showSubItems} />
+            )}
+          />
         </div>
       </form>
     </ContextMenu>
@@ -229,3 +217,22 @@ const ItemForm = ({ item, onClickDeleteItem }: IItemForm) => {
 }
 
 export default ItemForm;
+
+
+interface IPriorityInTitle {
+  priority: Priority;
+}
+
+const PriorityInTitle = ({ priority }: IPriorityInTitle) => {
+  if (priority === Priority.NO_PRIORITY) return null;
+  else return (
+    <span className='text-PURPLE mr-1'>
+      {priority === Priority.LOWER ?
+        '!'
+        : priority === Priority.MIDDLE ?
+        '!!'
+        : '!!!'
+      }
+    </span>
+  )
+};

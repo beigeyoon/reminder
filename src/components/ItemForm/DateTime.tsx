@@ -44,7 +44,7 @@ const DateTime = forwardRef(({ ...props }: FieldValues) => {
       </div>
     )
   } else return (
-    <div className='flex gap-3'>
+    <div className='flex gap-3 h-[28px]'>
       <DatePicker
         placeholder='날짜 추가'
         variant="filled"
@@ -52,6 +52,7 @@ const DateTime = forwardRef(({ ...props }: FieldValues) => {
         onChange={onChangeDate}
         defaultValue={value ? dayjs(value) : null}
         format={'YYYY. M. D.'}
+        getPopupContainer={(trigger) => trigger}
       />
       {timeSectionIsVisible && (
         hasTimeValue ? (
@@ -61,6 +62,7 @@ const DateTime = forwardRef(({ ...props }: FieldValues) => {
             onChange={onChangeTime}
             defaultValue={value ? dayjs(value) : null}
             format={'A h:mm'}
+            getPopupContainer={(trigger) => trigger}
           />
         ) : (
           <button
