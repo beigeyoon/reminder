@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAlignLeft, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { orderItems } from '@/src/utils/orderItems';
+import ContextMenu, { ContextMenuItem } from '@/src/components/ContextMenu';
 
 interface IItemList {
   itemsData: any[];
@@ -40,6 +41,17 @@ const ItemsList = ({ itemsData }: IItemList) => {
     setItems(updatedItems);
   }
 
+  const menuItems: ContextMenuItem[] = [
+    {
+      id: 'delete-list',
+      caption: '완료된 항목 보기',
+      type: 'normal',
+      onClick: () => {
+        
+      },
+    },
+  ];
+
   return (
     <>
       <div className='flex justify-end gap-4 pb-6 text-lg text-gray400'>
@@ -54,9 +66,13 @@ const ItemsList = ({ itemsData }: IItemList) => {
         <div>{listInfo?.name}</div>
         <div>{listInfo?.items.length}</div>
       </div>
-      {orderItems(items).filter((item) => item.listId === listInfo?.id).map((item) => (
-        <ItemForm key={item.id} item={item} onClickDeleteItem={onClickDeleteItem} />
-      ))}
+      <ContextMenu id={`items-list-${listInfo?.id}`} items={menuItems}>
+        <div>
+          {orderItems(items).filter((item) => item.listId === listInfo?.id).map((item) => (
+            <ItemForm key={item.id} item={item} onClickDeleteItem={onClickDeleteItem} />
+          ))}
+        </div>
+      </ContextMenu>
     </>
   )
 }

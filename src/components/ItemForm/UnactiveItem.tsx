@@ -30,7 +30,7 @@ const UnactiveItem = ({ item }: IUnactiveItem) => {
       {item.tags.length > 0 && (
         <div>
           {item.tags.map((tag: string, index: number) => (
-            <span key={index} className='inline-block mr-[4px] text-blue text-[12px]'>
+            <span key={index} className='inline-block mr-[4px] text-DEEPBLUE text-[12px]'>
               {`#${tag}`}
             </span>
           ))}
