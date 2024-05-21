@@ -6,14 +6,13 @@ import { Button } from "antd";
 import { FieldValues } from "react-hook-form";
 
 const FlagButton = forwardRef(({ ...props }: FieldValues) => {
-  const { name, onBlur, onChange, value, isActive } = props;
+  const { name, onBlur, onChange, value } = props;
   const isFlagged = value === true;
 
   const handleButton = () => {
     onChange(!value);
   };
 
-  if (!isActive) return <></>;
   return (
     <Button
       onClick={handleButton}

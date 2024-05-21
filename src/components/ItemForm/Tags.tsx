@@ -4,7 +4,7 @@ import { Input, Tag, Tooltip } from 'antd';
 import { FieldValues } from 'react-hook-form';
 
 const Tags = forwardRef(({ ...props }: FieldValues) => {
-  const { name, onBlur, onChange, value: tags, isActive } = props;
+  const { name, onBlur, onChange, value: tags } = props;
 
   const [inputVisible, setInputVisible] = useState(false);
   const [inputValue, setInputValue] = useState('');
@@ -39,18 +39,7 @@ const Tags = forwardRef(({ ...props }: FieldValues) => {
     setInputValue('');
   };
   
-  if (!isActive) {
-    if (tags.length === 0) return <></>;
-    else return (
-      <div>
-        {tags?.map((tag: string, index: number) => (
-          <span key={index} className='inline-block mr-[4px] text-blue text-[12px]'>
-            {`#${tag}`}
-          </span>
-        ))}
-      </div>
-    )
-  } else return (
+  return (
     <div className='h-[28px]'>
       {tags?.map((tag: string, index: number) => {
         const isLongTag = tag.length > 10;

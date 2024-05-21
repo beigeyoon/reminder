@@ -17,8 +17,9 @@ import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
 import { faChevronRight } from "@fortawesome/free-solid-svg-icons";
 import SubItems from "./SubItems";
 import ContextMenu, { ContextMenuItem } from "../ContextMenu";
-import { Priority } from "@/src/enums";
+import { PriorityIcon } from './PriorityIcon';
 import { useClickAway } from "react-use";
+import UnactiveItem from './UnactiveItem';
 
 interface IItemForm {
   item: Item;
@@ -127,66 +128,37 @@ const ItemForm = ({ item, onClickDeleteItem }: IItemForm) => {
 
   const formStyle = {
     active: 'border-2 rounded border-blue p-[8px]',
-    inactive: '',
+    inactive: 'cursor-default',
   };
 
   return (
-    <ContextMenu
-      id={`item-form-${item.id}`}
-      items={menuItems}
-      width={160}
-    >
-      <form
-        className={`flex items-start gap-3 mb-[8px] ${isActive ? formStyle['active'] : formStyle['inactive']}`}
-        ref={itemFormRef}
-      >
-        <Controller
-          name='checked'
-          control={control}
-          render={({ field }) => (
-            <Checkbox {...field} checked={field.value} />
-          )}
-        />
+    <ContextMenu id={`item-form-${item.id}`} items={menuItems} width={160}>
+      <form className={`flex items-start gap-3 mb-[8px] ${isActive ? formStyle['active'] : formStyle['inactive']}`} ref={itemFormRef}>
+        <Controller name='checked' control={control} render={({ field }) => <Checkbox {...field} checked={field.value} />} />
         <div className='w-full'>
-          <div className='flex justify-between border-b border-gray100 pb-[4px]'>
-            <div className='flex flex-col leading-[22px]' onClick={() => setIsActive(true)}>
-              <div className='flex'>
-                <PriorityInTitle priority={getValues('priority')!} />
-                <input id='title' {...register('title')} />
-              </div>
-              {(isActive || getValues('memo')) && <input id='memo' placeholder="메모" {...register('memo')} className='text-gray400' />}
-              {(isActive || getValues('url')) && <input id='url' placeholder="url" {...register('url')} />}
-              <Controller
-                name='tags'
-                control={control}
-                render={({ field }) => (
-                  <Tags isActive={isActive} {...field} />
+          <div className='flex justify-between border-b border-gray100 pb-[4px]' onClick={() => setIsActive(true)}>
+            {isActive ? (
+              <div className='flex flex-col leading-[22px]'>
+                <div className='flex'>
+                  <PriorityIcon priority={getValues('priority')!} />
+                  <input id='title' {...register('title')} />
+                </div>
+                {getValues('memo') && (
+                  <input id='memo' placeholder="메모" {...register('memo')} className='text-gray400' />
                 )}
-              />
-              <div className='flex gap-3'>
-                <Controller
-                  name='dateTime'
-                  control={control}
-                  render={({ field }) => (
-                    <DateTime isActive={isActive} control={control} {...field} />
-                  )}
-                />
-                <Controller
-                  name='priority'
-                  control={control}
-                  render={({ field }) => (
-                    <PrioritySelect isActive={isActive} {...field} />
-                  )}
-                />
-                <Controller
-                  name='flagged'
-                  control={control}
-                  render={({ field }) => (
-                    <FlagButton isActive={isActive} {...field} />
-                  )}
-                />
+                {getValues('url') && (
+                  <input id='url' placeholder="url" {...register('url')} className='text-blue' />
+                )}
+                <Controller name='tags' control={control} render={({ field }) => <Tags {...field} />} />
+                <div className='flex gap-3'>
+                  <Controller name='dateTime' control={control} render={({ field }) => <DateTime control={control} {...field} />} />
+                  <Controller name='priority' control={control} render={({ field }) => <PrioritySelect {...field} />} />
+                  <Controller name='flagged' control={control} render={({ field }) => <FlagButton {...field} />} />
+                </div>
               </div>
-            </div>
+            ) : (
+              <UnactiveItem item={getValues()} />
+            )}
             <div className='h-fit flex items-center gap-3 pt-[4px]'>
               {(!isActive && getValues('flagged')) && (
                 <FontAwesomeIcon icon={activeFlag} className='text-ORANGE' fontSize={10} />
@@ -203,13 +175,7 @@ const ItemForm = ({ item, onClickDeleteItem }: IItemForm) => {
               )}
             </div>
           </div>
-          <Controller
-            name='subItems'
-            control={control}
-            render={({ field }) => (
-              <SubItems isActive={isActive} itemId={item.id} {...field} showSubItems={showSubItems} />
-            )}
-          />
+          <Controller name='subItems' control={control} render={({ field }) => <SubItems isActive={isActive} itemId={item.id} {...field} showSubItems={showSubItems} />} />
         </div>
       </form>
     </ContextMenu>
@@ -217,22 +183,3 @@ const ItemForm = ({ item, onClickDeleteItem }: IItemForm) => {
 }
 
 export default ItemForm;
-
-
-interface IPriorityInTitle {
-  priority: Priority;
-}
-
-const PriorityInTitle = ({ priority }: IPriorityInTitle) => {
-  if (priority === Priority.NO_PRIORITY) return null;
-  else return (
-    <span className='text-PURPLE mr-1'>
-      {priority === Priority.LOWER ?
-        '!'
-        : priority === Priority.MIDDLE ?
-        '!!'
-        : '!!!'
-      }
-    </span>
-  )
-};

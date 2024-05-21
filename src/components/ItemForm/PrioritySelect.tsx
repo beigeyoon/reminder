@@ -3,7 +3,7 @@ import { Priority } from "@/src/enums";
 import { FieldValues } from "react-hook-form";
 
 const  PrioritySelect = ({ ...props }: FieldValues) => {
-  const { name, onBlur, onChange, value, isActive } = props;
+  const { name, onBlur, onChange, value } = props;
   
   const options = [
     {
@@ -24,7 +24,6 @@ const  PrioritySelect = ({ ...props }: FieldValues) => {
     },
   ];
 
-  if (!isActive) return <></>;
   return (
     <div onClick={e => e.stopPropagation()}>
       <Select

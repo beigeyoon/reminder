@@ -8,7 +8,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClock } from "@fortawesome/free-regular-svg-icons";
 
 const DateTime = forwardRef(({ ...props }: FieldValues) => {
-  const { isActive, onChange: onChangeDateTime, value, control } = props;
+  const { onChange: onChangeDateTime, value, control } = props;
 
   const [timeSectionIsVisible, setTimeSectionIsVisible] = useState<boolean>(!!value);
 
@@ -35,15 +35,7 @@ const DateTime = forwardRef(({ ...props }: FieldValues) => {
     onChangeHasTime(true);
   }
 
-  if (!isActive) {
-    if (!value) return <></>;
-    else return (
-      <div className='inline-block text-gray400'>
-        {dayjs(value).format('YYYY. M. D.')}
-        {hasTimeValue && ' ' + dayjs(value).format('A h:mm')}
-      </div>
-    )
-  } else return (
+return (
     <div className='flex gap-3 h-[28px]'>
       <DatePicker
         placeholder='날짜 추가'
