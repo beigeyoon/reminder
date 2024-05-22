@@ -66,7 +66,7 @@ export async function PUT (req: NextRequest) {
       },
       data: dataWithoutTagsAndSubItems,
     });
-    if (tags.addedTags?.length > 0) {
+    if (tags?.addedTags?.length > 0) {
       for (const tagName of tags.addedTags) {
         let tag = await prisma.tag.findUnique({
           where: {
@@ -90,7 +90,7 @@ export async function PUT (req: NextRequest) {
         })
       }
     }
-    if (tags.deletedTags?.length > 0) {
+    if (tags?.deletedTags?.length > 0) {
       for (const tagName of tags.deletedTags) {
         await prisma.item.update({
           where: { id: updatedItem.id },
@@ -102,9 +102,9 @@ export async function PUT (req: NextRequest) {
         })
       }
     }
-    return Response.json(updatedItem);
+    return Response.json({ ok: true, item: updatedItem });
   } catch (error) {
-    return Response.json(error);
+    return Response.json({ ok: false, error });
   }
 };
 

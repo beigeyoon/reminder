@@ -20,13 +20,15 @@ import ContextMenu, { ContextMenuItem } from "../ContextMenu";
 import { PriorityIcon } from './PriorityIcon';
 import { useClickAway } from "react-use";
 import UnactiveItem from './UnactiveItem';
+import { CheckboxChangeEvent } from 'antd/es/checkbox';
 
 interface IItemForm {
   item: Item;
   onClickDeleteItem: (itemId: string) => void;
+  onClickItemCheckbox: (itemId: string, isChecked: boolean) => void;
 }
 
-const ItemForm = ({ item, onClickDeleteItem }: IItemForm) => {
+const ItemForm = ({ item, onClickDeleteItem, onClickItemCheckbox }: IItemForm) => {
   const isNewItem = item.id === undefined;
   const { listInfo } = useListInfo();
   const listId = listInfo?.id;
@@ -79,21 +81,18 @@ const ItemForm = ({ item, onClickDeleteItem }: IItemForm) => {
       subItems: item?.subItems,
     }
   });
-  const isChecked = watch('checked');
 
-  useEffect(() => {
-    if (isChecked) {
-      editItem({
-        id: item.id,
-        checked: true,
-      });
-    } else {
-      editItem({
-        id: item.id,
-        checked: false,
-      })
-    }
-  }, [editItem, isChecked, item.id]);
+  const onClickCheckbox = async (e: CheckboxChangeEvent) => {
+    e.stopPropagation();
+    const result = await editItem({
+      id: item.id,
+      checked: e.target.checked,
+    });
+    if (result.ok) {
+      setValue('checked', e.target.checked);
+      onClickItemCheckbox(item.id, e.target.checked);
+    };
+  };
 
   const onSubmit: SubmitHandler<any> = useCallback((data) => {
     if (isNewItem) {
@@ -134,7 +133,7 @@ const ItemForm = ({ item, onClickDeleteItem }: IItemForm) => {
   return (
     <ContextMenu id={`item-form-${item.id}`} items={menuItems} width={160}>
       <form className={`flex items-start gap-3 mb-[8px] ${isActive ? formStyle['active'] : formStyle['inactive']}`} ref={itemFormRef}>
-        <Controller name='checked' control={control} render={({ field }) => <Checkbox {...field} checked={field.value} />} />
+        <Controller name='checked' control={control} render={({ field }) => <Checkbox {...field} checked={field.value} onChange={(e) => onClickCheckbox(e)} />} />
         <div className='w-full'>
           <div className='flex justify-between border-b border-gray100 pb-[4px]' onClick={() => setIsActive(true)}>
             {isActive ? (
