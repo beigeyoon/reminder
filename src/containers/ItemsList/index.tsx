@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAlignLeft, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { orderItems } from '@/src/utils/orderItems';
+import { motion, AnimatePresence } from "framer-motion";
 
 interface IItemList {
   itemsData: any[];
@@ -86,14 +87,24 @@ const ItemsList = ({ itemsData }: IItemList) => {
         <button onClick={toggleFinishedItems}>완료된 항목 {showFinishedItems ? '가리기' : '보기'}</button>
       </div>
       <div id='items' className='grow overflow-y-auto'>
-        {orderItems(items).filter((item) => item.listId === listInfo?.id).filter((item) => {
-          if (showFinishedItems) {
-            return true;
-          }
-          return !item.checked;
-        }).map((item) => (
-          <ItemForm key={item.id} item={item} onClickDeleteItem={onClickDeleteItem} onClickItemCheckbox={onClickItemCheckbox} />
-        ))}
+        <AnimatePresence>
+          {orderItems(items).filter((item) => item.listId === listInfo?.id).filter((item) => {
+            if (showFinishedItems) {
+              return true;
+            }
+            return !item.checked;
+          }).map((item) => (
+            <motion.div
+              key={item.id}
+              initial={{ opacity: 1, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.2 }}
+            >
+              <ItemForm item={item} onClickDeleteItem={onClickDeleteItem} onClickItemCheckbox={onClickItemCheckbox} />
+            </motion.div>
+          ))}
+        </AnimatePresence>
       </div>
     </div>
   )
