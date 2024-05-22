@@ -31,7 +31,7 @@ const ItemForm = ({ item, onClickDeleteItem }: IItemForm) => {
   const { listInfo } = useListInfo();
   const listId = listInfo?.id;
   
-  const [showSubItems, setShowSubItems] = useState<boolean>(false);
+  const [showSubItems, setShowSubItems] = useState<boolean>(true);
   const [isActive, setIsActive] = useState<boolean>(isNewItem ? true : false);
   const itemFormRef = useRef<HTMLFormElement>(null);
 
@@ -143,12 +143,8 @@ const ItemForm = ({ item, onClickDeleteItem }: IItemForm) => {
                   <PriorityIcon priority={getValues('priority')!} />
                   <input id='title' {...register('title')} />
                 </div>
-                {getValues('memo') && (
-                  <input id='memo' placeholder="메모" {...register('memo')} className='text-gray400' />
-                )}
-                {getValues('url') && (
-                  <input id='url' placeholder="url" {...register('url')} className='text-blue' />
-                )}
+                <input id='memo' placeholder="메모" {...register('memo')} className='text-gray400' />
+                <input id='url' placeholder="url" {...register('url')} className='text-blue' />
                 <Controller name='tags' control={control} render={({ field }) => <Tags {...field} />} />
                 <div className='flex gap-3'>
                   <Controller name='dateTime' control={control} render={({ field }) => <DateTime control={control} {...field} />} />

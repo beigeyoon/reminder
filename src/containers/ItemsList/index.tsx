@@ -53,7 +53,7 @@ const ItemsList = ({ itemsData }: IItemList) => {
   ];
 
   return (
-    <>
+    <div className='flex flex-col h-screen'>
       <div className='flex justify-end gap-4 pb-6 text-lg text-gray400'>
         <button>
           <FontAwesomeIcon icon={faAlignLeft} />
@@ -66,14 +66,17 @@ const ItemsList = ({ itemsData }: IItemList) => {
         <div>{listInfo?.name}</div>
         <div>{listInfo?.items.length}</div>
       </div>
-      <ContextMenu id={`items-list-${listInfo?.id}`} items={menuItems}>
-        <div>
+      <div id='items' className='flex-1 overflow-y-auto'>
+        <ContextMenu
+          id={`items-list-${listInfo?.id}`}
+          items={menuItems}
+        >
           {orderItems(items).filter((item) => item.listId === listInfo?.id).map((item) => (
             <ItemForm key={item.id} item={item} onClickDeleteItem={onClickDeleteItem} />
           ))}
-        </div>
-      </ContextMenu>
-    </>
+        </ContextMenu>
+      </div>
+    </div>
   )
 }
 
