@@ -1,5 +1,7 @@
 import { PropsWithChildren, useState, useEffect, useRef, useCallback } from "react";
 import SecondDepthMenu from "./SecondDepthMenu";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faChevronRight } from "@fortawesome/free-solid-svg-icons";
 
 export interface ContextMenuItem {
   id: string;
@@ -29,6 +31,7 @@ const ContextMenu = ({ id, items, width, children }: PropsWithChildren<IContextM
 
   const handleContextMenu = (e: React.MouseEvent) => {
     e.preventDefault();
+    e.stopPropagation();
     setIsVisible(true);
     setPosition({ x: e.clientX, y: e.clientY });
   }
@@ -111,13 +114,18 @@ const MenuItem = ({ item, closeMenu }: IMenuItem) => {
     return (
       <SecondDepthMenu items={secondDepthItems}>
         <li
-        className='px-[8px] py-[4px] rounded-md cursor-pointer hover:bg-blue hover:text-white'
-        onClick={() => {
-          closeMenu();
-          if (onClick) onClick();
-        }}
+          className='px-[8px] py-[4px] rounded-md cursor-pointer hover:bg-blue hover:text-white'
+          onClick={() => {
+            closeMenu();
+            if (onClick) onClick();
+          }}
         >
-          {caption + '>>>>'}
+          <div className='flex justify-between items-center'>
+            {caption}
+            <span className='text-[10px]'>
+              <FontAwesomeIcon icon={faChevronRight} />
+            </span>
+          </div>
         </li>
       </SecondDepthMenu>
     )

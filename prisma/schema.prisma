@@ -37,14 +37,13 @@ model Item {
   createdTime       DateTime @default(now())
   updatedTime       DateTime @updatedAt 
   checked           Boolean  @default(false)
-  checkedTime       DateTime
   title             String
   memo              String?
   url               String?
-  date              DateTime?
-  time              DateTime?
+  dateTime          DateTime?
+  hasTime           Boolean  @default(false)
   tags              Tag[]    @relation("ItemToTag")
-  priority          Priority?
+  priority          Int?
   flagged           Boolean  @default(false)
   list              List     @relation(fields: [listId], references: [id])
   listId            String
@@ -61,7 +60,6 @@ model SubItem {
   createdTime       DateTime @default(now())
   updatedTime       DateTime @updatedAt
   checked           Boolean  @default(false)
-  checkedTime       DateTime
   title             String
 }
 
@@ -78,6 +76,7 @@ enum ListType {
 }
 
 enum Priority {
+  NO_PRIORITY
   LOWER
   MIDDLE
   UPPER

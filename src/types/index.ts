@@ -31,16 +31,15 @@ export interface Item {
   createdTime: any;
   updatedTime: any;
   checked: boolean;
-  checkedTime: any;
   title: string;
   memo?: string;
   url?: string;
-  data?: any;
-  time?: any;
+  dateTime?: any;
+  hasTime?: boolean;
   tags: Tag[];
   priority?: Priority;
   flagged: boolean;
-  list: List;
+  list?: List;
   listId: string;
   section?: Section;
   sectionId?: string;
@@ -50,17 +49,15 @@ export interface Item {
 
 export interface SubItem {
   id: string;
-  item: Item;
+  item?: Item;
   itemId: string;
-  createdTime: any;
   updatedTime: any;
   checked: boolean;
-  checkedTime: any;
   title: string;
 }
 
 export interface Tag {
   id: string;
   name: string;
-  items: Item[];
+  items?: Item[];
 }
