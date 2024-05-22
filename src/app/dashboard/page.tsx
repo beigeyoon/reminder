@@ -24,7 +24,7 @@ const Dashboard = async () => {
   });
 
   return (
-    <div className='grow p-6'>
+    <div className='grow'>
       {useViewType.getState().viewType === 'list' ? (
         <ItemsList itemsData={items || []} />
       ) : (

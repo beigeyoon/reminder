@@ -53,7 +53,7 @@ const ItemsList = ({ itemsData }: IItemList) => {
   ];
 
   return (
-    <div className='flex flex-col h-screen'>
+    <div className='flex flex-col h-svh p-6'>
       <div className='flex justify-end gap-4 pb-6 text-lg text-gray400'>
         <button>
           <FontAwesomeIcon icon={faAlignLeft} />
@@ -66,7 +66,7 @@ const ItemsList = ({ itemsData }: IItemList) => {
         <div>{listInfo?.name}</div>
         <div>{listInfo?.items.length}</div>
       </div>
-      <div id='items' className='flex-1 overflow-y-auto'>
+      <div id='items' className='grow overflow-y-auto'>
         <ContextMenu
           id={`items-list-${listInfo?.id}`}
           items={menuItems}
