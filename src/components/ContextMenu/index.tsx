@@ -22,9 +22,10 @@ interface IContextMenu {
   id: string;
   items: ContextMenuItem[];
   width?: number;
+  byLeftMouseButton?: boolean;
 }
 
-const ContextMenu = ({ id, items, width, children }: PropsWithChildren<IContextMenu>) => {
+const ContextMenu = ({ id, items, width, byLeftMouseButton = false, children }: PropsWithChildren<IContextMenu>) => {
   const [isVisible, setIsVisible] = useState<boolean>(false);
   const [position, setPosition] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
   const ulRef = useRef<HTMLUListElement>(null);
@@ -82,7 +83,12 @@ const ContextMenu = ({ id, items, width, children }: PropsWithChildren<IContextM
 
   return (
     <>
-      <div onContextMenu={handleContextMenu}>{children}</div>
+      <div
+        onContextMenu={byLeftMouseButton ? undefined : handleContextMenu}
+        onClick={byLeftMouseButton ? handleContextMenu : undefined}
+      >
+        {children}
+      </div>
       {isVisible && (
         <ul
           style={{ left: position.x, top: position.y, width }}

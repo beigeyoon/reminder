@@ -9,6 +9,10 @@ export interface AddUserPayload {
   password: string;
 }
 
+export interface DeleteUserPayload {
+  id: string;
+}
+
 export const getUserInfo = async ({ name }: GetUserInfoPayload) => {
   const response = await fetch(`${process.env.NEXT_PUBLIC_FE_URL}/api/users?name=${name}`, {
     method: 'GET',
@@ -27,4 +31,12 @@ export const addUser = async ({ username, password }: AddUserPayload) => {
   });
   const data = await response.json();
   return data;
+}
+
+export const deleteUser = async (body: DeleteUserPayload) => {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_FE_URL}/api/users`, {
+    method: 'DELETE',
+    body: JSON.stringify(body),
+  });
+  return await response.json();
 }

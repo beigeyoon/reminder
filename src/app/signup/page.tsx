@@ -32,6 +32,7 @@ const SignUp = () => {
     const response = await addUser(inputs);
     if (response.ok) {
       alert('User Added Successfully!');
+      router.push('/login');
     } else {
       alert(response.error);
     }
