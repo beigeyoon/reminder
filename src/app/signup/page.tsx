@@ -4,6 +4,7 @@ import { useSession, signIn } from "next-auth/react";
 import { ChangeEvent, KeyboardEvent, useState } from "react";
 import { addUser } from "@/src/services/user";
 import { hashPassword } from "@/src/utils/bcrypt";
+import { motion } from "framer-motion";
 
 const SignUp = () => {
   const [inputs, setInputs] = useState({
@@ -46,7 +47,12 @@ const SignUp = () => {
 
   if (status === 'loading') return <></>;
   return (
-    <div className='w-screen h-screen flex justify-center items-center'>
+    <motion.div
+      className='w-screen h-screen flex justify-center items-center'
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+    >
       <div className='w-[320px] flex flex-col gap-4 text-sm'>
         <div className='text-center text-[18px] font-bold pb-4'>
           Sign Up
@@ -96,7 +102,7 @@ const SignUp = () => {
           Back To Login
         </button>
       </div>
-    </div>
+    </motion.div>
   )
 }
 

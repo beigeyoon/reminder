@@ -5,6 +5,7 @@ import ItemsClass from '@/src/containers/ItemsClass';
 import { useViewType } from '@/src/store/useViewType';
 import { useListInfo } from "@/src/store/useListInfo";
 import prisma from "@/prisma/db";
+import { motion } from "framer-motion";
 
 const Dashboard = async () => {
   const session = await getServerSession();
@@ -24,13 +25,18 @@ const Dashboard = async () => {
   });
 
   return (
-    <div className='grow'>
+    <motion.div
+      className='grow'
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+    >
       {useViewType.getState().viewType === 'list' ? (
         <ItemsList itemsData={items || []} />
       ) : (
         <ItemsClass />
       )}
-    </div>
+    </motion.div>
   )
 }
 

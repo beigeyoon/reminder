@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useSession, signIn } from "next-auth/react";
 import { ChangeEvent, KeyboardEvent, useState } from "react";
+import { motion } from "framer-motion";
 
 const Login = () => {
   const [inputs, setInputs] = useState({
@@ -50,7 +51,12 @@ const Login = () => {
 
   if (status === 'loading') return <></>;
   return (
-    <div className='w-screen h-screen flex justify-center items-center'>
+    <motion.div
+      className='w-screen h-screen flex justify-center items-center'
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+    >
       <div className='w-[300px] flex flex-col gap-4 text-sm'>
         <div className='text-center text-[24px] font-bold pb-4'>
           Reminder ☑️
@@ -90,7 +96,7 @@ const Login = () => {
           Sign Up
         </button>
       </div>
-    </div>
+    </motion.div>
   )
 }
 
