@@ -1,7 +1,7 @@
 'use client'
 import { useListInfo } from '@/src/store/useListInfo';
 
-const ItemsClass = () => {
+const ItemsCalendar = () => {
   const { listInfo } = useListInfo();
 
   return (
@@ -9,4 +9,4 @@ const ItemsClass = () => {
   )
 }
 
-export default ItemsClass;
+export default ItemsCalendar;

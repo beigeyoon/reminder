@@ -24,9 +24,9 @@ const ItemsList = ({ itemsData }: IItemList) => {
   }, [itemsData]);
 
   useEffect(() => {
-    const count = items.filter((item) => item.checked).length;
+    const count = items.filter((item) => item.id === listInfo?.id).filter((item) => item.checked).length;
     setCheckedItemsCount(count);
-  }, [items])
+  }, [items, listInfo])
 
   const onClickAddItem = () => {
     const newItem = {

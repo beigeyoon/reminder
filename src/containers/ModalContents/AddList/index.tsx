@@ -1,21 +1,32 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import ColorSelect from "./ColorSelect";
 import { Color, Icon, ListType } from "@/src/enums";
 import IconSelect from "./IconSelect";
 import Input from "@/src/components/Input";
 import Button from "@/src/components/Button";
+import { List } from "@/src/types";
 
 interface IAddList {
   close?: () => void;
   submit?: (payload?: any) => void;
   mode?: 'add' | 'edit';
+  listInfo?: List;
 }
 
-const AddList = ({ submit, mode = 'add' }: IAddList) => {
+const AddList = ({ close, submit, mode = 'add', listInfo }: IAddList) => {
   const nameRef = useRef(null);
   const [color, setColor] = useState<keyof typeof Color>('BLUE');
   const [icon, setIcon] = useState<keyof typeof Icon>('LIST');
   const typeRef = useRef(null);
+
+  useEffect(() => {
+    if (mode === 'edit' && listInfo && nameRef.current && typeRef.current) {
+      nameRef.current.value = listInfo?.name;
+      typeRef.current.value = listInfo?.type;
+      setColor(listInfo.color);
+      setIcon(listInfo?.icon);
+    }
+  }, [listInfo, mode]);
 
   const selectColor = (colorName: keyof typeof Color) => {
     setColor(colorName);
@@ -33,7 +44,6 @@ const AddList = ({ submit, mode = 'add' }: IAddList) => {
       icon,
       type: typeRef.current?.value,
     }
-
     submit!(payload);
   };
 

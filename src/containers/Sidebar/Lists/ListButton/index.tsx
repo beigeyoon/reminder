@@ -124,11 +124,11 @@ const ListButton = ({ list }: IListButton) => {
             <CircleIcon iconName={icon} colorName={color} size='large' />
             <span className='font-bold text-lg'>{items?.length}</span>
           </div>
-          <span className='font-bold mt-[8px]'>{name}</span>
+          <span className='font-bold mt-[8px] overflow-hidden whitespace-nowrap text-ellipsis w-full text-left'>{name}</span>
         </button>   
       </ContextMenu>
       <Modal isOpen={isEditListModalOpen} close={() => setIsEditListModalOpen(false)} submit={onSubmitEditList}>
-        <AddList />
+        <AddList mode='edit' listInfo={list} />
       </Modal>
     </>
   )
