@@ -8,6 +8,7 @@ import { useListInfo } from '@/src/store/useListInfo';
 import { useState } from "react";
 import AddList from "@/src/containers/ModalContents/AddList";
 import Modal from "@/src/components/Modal";
+import { Modal as AntdModdal } from "antd";
 
 interface IListButton {
   list: List;
@@ -17,6 +18,7 @@ const ListButton = ({ list }: IListButton) => {
   const { id, color, icon, name, items } = list;
   const queryClient = useQueryClient();
   const { setListInfo } = useListInfo();
+  const { confirm } = AntdModdal;
 
   const [isEditListModalOpen, setIsEditListModalOpen] = useState<boolean>(false);
 
@@ -40,6 +42,16 @@ const ListButton = ({ list }: IListButton) => {
       queryClient.invalidateQueries(['getLists'] as InvalidateQueryFilters);
     }
   });
+
+  const showDeleteConfirm = () => {
+    confirm({
+      title: '정말로 삭제하시겠습니까?',
+      content: '목록 관련 데이터가 모두 삭제됩니다.',
+      onOk() {
+        removeList({ id });
+      }
+    })
+  }
 
   const onSubmitEditList = async (payload: any) => {
     const body = {
@@ -88,7 +100,7 @@ const ListButton = ({ list }: IListButton) => {
       id: 'delete-list',
       caption: '삭제',
       type: 'normal',
-      onClick: () => removeList({ id }),
+      onClick: () => showDeleteConfirm(),
     },
     {
       id: 'set-group',
