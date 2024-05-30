@@ -1,9 +1,9 @@
 'use client'
-import { Calendar as AntdCalandar } from "antd";
+import { Calendar as ReactCalendar } from 'react-calendar';
 
 const Calendar = () => {
   return (
-    <AntdCalandar />
+    <ReactCalendar />
   )
 }
 
