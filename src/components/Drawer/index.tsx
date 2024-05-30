@@ -8,7 +8,6 @@ interface IDrawer {
 }
 
 const Drawer = ({ isOpen, close }: IDrawer) => {
-
   return (
     <AntdDrawer
       placement="right"

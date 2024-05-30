@@ -3,6 +3,8 @@ import { Section, Item, SubItem, Tag } from "../types";
 
 export interface GetItemsPayload {
   listId: string;
+  year: number;
+  month: number;
 }
 
 export interface AddItemPayload {
@@ -46,8 +48,8 @@ export interface DeleteItemPayload {
   id: string;
 }
 
-export const getItems = async ({ listId }: GetItemsPayload): Promise<Item[]> => {
-  const response = await fetch(`${process.env.NEXT_PUBLIC_FE_URL}/api/items?listId=${listId}`, {
+export const getItems = async ({ listId, year, month }: GetItemsPayload): Promise<Item[]> => {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_FE_URL}/api/items?listId=${listId}&year=${year}&month=${month}`, {
     method: 'GET',
   });
   if (!response.ok) {
