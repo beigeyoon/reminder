@@ -1,8 +1,6 @@
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import ItemsList from '@/src/containers/ItemsList';
-import ItemsCalendar from "@/src/containers/ItemsCalendar";
-import { useViewType } from '@/src/store/useViewType';
 import { useListInfo } from "@/src/store/useListInfo";
 import prisma from "@/prisma/db";
 
@@ -25,11 +23,7 @@ const Dashboard = async () => {
 
   return (
     <div className='grow'>
-      {useViewType.getState().viewType === 'list' ? (
-        <ItemsList itemsData={items || []} />
-      ) : (
-        <ItemsCalendar />
-      )}
+      <ItemsList itemsData={items || []} />
     </div>
   )
 }

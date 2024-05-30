@@ -1,7 +1,11 @@
 'use client'
 import { useListInfo } from '@/src/store/useListInfo';
 
-const ItemsCalendar = () => {
+interface IItemsCalendar {
+  itemsData: any[];
+}
+
+const ItemsCalendar = ({ itemsData }: IItemsCalendar) => {
   const { listInfo } = useListInfo();
 
   return (

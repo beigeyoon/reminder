@@ -4,20 +4,23 @@ import { Priority } from '@/src/enums';
 import { useListInfo } from '@/src/store/useListInfo';
 import { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faAlignLeft, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faCalendar } from '@fortawesome/free-regular-svg-icons';
 import { orderItems } from '@/src/utils/orderItems';
 import { motion, AnimatePresence } from "framer-motion";
+import Drawer from '@/src/components/Drawer';
 
-interface IItemList {
+interface IItemsList {
   itemsData: any[];
 }
 
-const ItemsList = ({ itemsData }: IItemList) => {
+const ItemsList = ({ itemsData }: IItemsList) => {
   const { listInfo } = useListInfo();
 
   const [items, setItems] = useState<any[]>([]);
   const [showFinishedItems, setShowFinishedItems] = useState<boolean>(false);
   const [checkedItemsCount, setCheckedItemsCount] = useState<number>(0);
+  const [isCalanderOpen, setIsCalendarOpen] = useState<boolean>(false);
 
   useEffect(() => {
     setItems(itemsData);
@@ -68,13 +71,14 @@ const ItemsList = ({ itemsData }: IItemList) => {
   return (
     <div className='flex flex-col h-svh p-6'>
       <div className='flex justify-end gap-4 pb-6 text-lg text-gray400'>
-        <button>
-          <FontAwesomeIcon icon={faAlignLeft} />
-        </button>
         <button onClick={onClickAddItem}>
           <FontAwesomeIcon icon={faPlus} />
         </button>
+        <button onClick={() => setIsCalendarOpen(true)}>
+          <FontAwesomeIcon icon={faCalendar} />
+        </button>
       </div>
+      <Drawer isOpen={isCalanderOpen} close={() => setIsCalendarOpen(false)} />
       <div className='pb-4 flex justify-between text-[36px] font-extrabold'>
         <div>{listInfo?.name}</div>
         <div>{listInfo?.items.length}</div>
