@@ -21,6 +21,7 @@ import { PriorityIcon } from './PriorityIcon';
 import { useClickAway } from "react-use";
 import UnactiveItem from './UnactiveItem';
 import { CheckboxChangeEvent } from 'antd/es/checkbox';
+import { useControl } from '@/src/store/useControl';
 
 interface IItemForm {
   item: Item;
@@ -31,9 +32,10 @@ interface IItemForm {
 const ItemForm = ({ item, onClickDeleteItem, onClickItemCheckbox }: IItemForm) => {
   const isNewItem = item.id === undefined;
   const { listInfo } = useListInfo();
+  const { expandedItems, setExpandedItems } = useControl();
   const listId = listInfo?.id;
   
-  const [showSubItems, setShowSubItems] = useState<boolean>(true);
+  const [showSubItems, setShowSubItems] = useState<boolean>(expandedItems.includes(item.id));
   const [isActive, setIsActive] = useState<boolean>(isNewItem ? true : false);
   const itemFormRef = useRef<HTMLFormElement>(null);
 
@@ -125,6 +127,15 @@ const ItemForm = ({ item, onClickDeleteItem, onClickItemCheckbox }: IItemForm) =
     },
   ];
 
+  const handleSubItemsToggle = () => {
+    setShowSubItems(!showSubItems);
+    if (showSubItems) {
+      setExpandedItems(expandedItems.filter((id) => id !== item.id));
+    } else {
+      setExpandedItems([...expandedItems, item.id]);
+    }
+  };
+
   const formStyle = {
     active: 'border-2 rounded border-blue p-[8px]',
     inactive: 'cursor-default',
@@ -162,9 +173,9 @@ const ItemForm = ({ item, onClickDeleteItem, onClickItemCheckbox }: IItemForm) =
                 <div className='w-[28px] flex justify-between items-center'>
                   <span className='text-gray400'>{getValues('subItems').length}</span>
                   {showSubItems ? (
-                    <FontAwesomeIcon icon={faChevronDown} className='text-PURPLE' fontSize={10} onClick={() => setShowSubItems(false)} />
+                    <FontAwesomeIcon icon={faChevronDown} className='text-PURPLE' fontSize={10} onClick={handleSubItemsToggle} />
                   ) : (
-                    <FontAwesomeIcon icon={faChevronRight} className='text-PURPLE' fontSize={10} onClick={() => setShowSubItems(true)} />
+                    <FontAwesomeIcon icon={faChevronRight} className='text-PURPLE' fontSize={10} onClick={handleSubItemsToggle} />
                   )}
                 </div>
               )}

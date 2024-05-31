@@ -27,7 +27,7 @@ const ItemsList = ({ itemsData }: IItemsList) => {
   }, [itemsData]);
 
   useEffect(() => {
-    const count = items.filter((item) => item.id === listInfo?.id).filter((item) => item.checked).length;
+    const count = items.filter((item) => item.listId === listInfo?.id).filter((item) => item.checked).length;
     setCheckedItemsCount(count);
   }, [items, listInfo])
 
