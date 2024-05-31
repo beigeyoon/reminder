@@ -89,6 +89,14 @@ const ListButton = ({ list }: IListButton) => {
         {
           id: 'sort-items-manually',
           caption: '수동',
+        },
+        {
+          id: 'sort-items-by-title',
+          caption: '제목',
+        },
+        {
+          id: 'sort-items-by-date',
+          caption: '날짜',
         }
       ]
     },

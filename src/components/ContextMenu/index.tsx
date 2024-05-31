@@ -25,7 +25,7 @@ interface IContextMenu {
   byLeftMouseButton?: boolean;
 }
 
-const ContextMenu = ({ id, items, width, byLeftMouseButton = false, children }: PropsWithChildren<IContextMenu>) => {
+const ContextMenu = ({ id, items, width = 160, byLeftMouseButton = false, children }: PropsWithChildren<IContextMenu>) => {
   const [isVisible, setIsVisible] = useState<boolean>(false);
   const [position, setPosition] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
   const ulRef = useRef<HTMLUListElement>(null);
@@ -95,7 +95,7 @@ const ContextMenu = ({ id, items, width, byLeftMouseButton = false, children }: 
           ref={ulRef}
           className='absolute border border-gray200 rounded-lg drop-shadow-md p-[4px] z-10 bg-gray100'
         >
-          {items.map((item: ContextMenuItem) => <MenuItem key={item.id} item={item} closeMenu={() => setIsVisible(false)} />
+          {items.map((item: ContextMenuItem) => <MenuItem key={item.id} item={item} closeMenu={() => setIsVisible(false)} width={width} />
           )}
         </ul>
       )}
@@ -109,16 +109,17 @@ export default ContextMenu;
 interface IMenuItem {
   item: ContextMenuItem;
   closeMenu: () => void;
+  width: number;
 }
 
-const MenuItem = ({ item, closeMenu }: IMenuItem) => {
+const MenuItem = ({ item, closeMenu, width }: IMenuItem) => {
   const { type, caption, onClick, secondDepthItems } = item;
 
   if (type === 'divider') {
     return <hr className='mx-[8px] my-[4px] border-gray200' />;
   } else if (type === 'hasSecondDepth' && secondDepthItems) {
     return (
-      <SecondDepthMenu items={secondDepthItems}>
+      <SecondDepthMenu items={secondDepthItems} parentWidth={width}>
         <li
           className='px-[8px] py-[4px] rounded-md cursor-pointer hover:bg-blue hover:text-white'
           onClick={() => {
