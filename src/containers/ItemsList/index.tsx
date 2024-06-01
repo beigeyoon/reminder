@@ -78,7 +78,11 @@ const ItemsList = ({ itemsData }: IItemsList) => {
           <FontAwesomeIcon icon={faCalendar} />
         </button>
       </div>
-      <Drawer isOpen={isCalanderOpen} close={() => setIsCalendarOpen(false)} />
+      <Drawer
+        isOpen={isCalanderOpen}
+        close={() => setIsCalendarOpen(false)}
+        onClickItemCheckbox={onClickItemCheckbox}
+      />
       <div className='pb-4 flex justify-between text-[36px] font-extrabold'>
         <div>{listInfo?.name}</div>
         <div>{listInfo?.items.length}</div>

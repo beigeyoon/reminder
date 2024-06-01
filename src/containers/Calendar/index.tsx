@@ -7,8 +7,15 @@ import { getItems } from '@/src/services/item';
 import { useListInfo } from '@/src/store/useListInfo';
 import { useState } from 'react';
 import { Item } from '@/src/types';
+import CalendarItem from './CalendarItem';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faAngleLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons';
 
-const Calendar = () => {
+interface ICalendar {
+  onClickItemCheckbox: (itemId: string, isChecked: boolean) => void;
+}
+
+const Calendar = ({ onClickItemCheckbox }: ICalendar) => {
   const { listInfo } = useListInfo();
 
   const [activeDate, setActiveDate] = useState<Date>(new Date());
@@ -22,33 +29,46 @@ const Calendar = () => {
       month: dayjs(activeDate).month() + 1,
     }),
     select: (data) => {
-      makeItemsMap(data);
+      return groupItemsByDate(data);
     }
   });
 
   const appendTileContent: TileContentFunc = ({ activeStartDate, date, view }) => {
-    return <div>
-      hello
+    const tileDate = dayjs(date).date().toString();
+    const tileItems = items?.[tileDate];
+    
+    return <div className='w-[-webkit-fill-available]'>
+      {tileItems?.map((item) => (
+        <CalendarItem item={item} onClickItemCheckbox={onClickItemCheckbox} />
+      ))}
     </div>
   }
 
-  const makeItemsMap = (items: Item[]) => {
-    for (let item of items) {
-      const date = dayjs(item.dateTime).date();
-      
-    }
+  function groupItemsByDate(items: Item[]): Record<string, Item[]> {
+    return items.reduce<Record<string, Item[]>>((acc, item) => {
+      const date = dayjs(item.dateTime).date().toString();
+      if (acc[date]) {
+        acc[date].push(item);
+      } else {
+        acc[date] = [item];
+      }
+      return acc;
+    }, {});
   }
 
   return (
     <ReactCalendar
       formatDay={(_, date) => dayjs(date).format('D')}
       showNeighboringMonth={false}
+      nextLabel={<FontAwesomeIcon icon={faAngleRight} fontSize={22} />}
+      prevLabel={<FontAwesomeIcon icon={faAngleLeft} fontSize={22} />}
       next2Label={null}
       prev2Label={null}
       onActiveStartDateChange={({ activeStartDate }) => {
         if (activeStartDate) setActiveDate(activeStartDate);
       }}
       tileContent={appendTileContent}
+      calendarType='gregory'
     />
   )
 }

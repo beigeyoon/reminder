@@ -5,17 +5,18 @@ import Calendar from "@/src/containers/Calendar";
 interface IDrawer {
   isOpen: boolean;
   close: () => void;
+  onClickItemCheckbox: (itemId: string, isChecked: boolean) => void;
 }
 
-const Drawer = ({ isOpen, close }: IDrawer) => {
+const Drawer = ({ isOpen, close, onClickItemCheckbox }: IDrawer) => {
   return (
     <AntdDrawer
       placement="right"
-      width={1000}
+      width={1200}
       open={isOpen}
       onClose={close}
     >
-      <Calendar />
+      <Calendar onClickItemCheckbox={onClickItemCheckbox} />
     </AntdDrawer>
   )
 }
