@@ -13,7 +13,7 @@ const Dashboard = async () => {
 
   const items = await prisma.item.findMany({
     where: {
-      listId: useListInfo.getState().listInfo?.id as string,
+      listId: useListInfo.getState().selectedList?.id as string,
     },
     include: {
       tags: true,

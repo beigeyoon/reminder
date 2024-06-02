@@ -105,6 +105,7 @@
 .calendar-item > .title {
   overflow: hidden;
   text-overflow: ellipsis;
+  color: #333;
 }
 
 /* Navigation styling */
@@ -116,6 +117,7 @@
   background-color: #ffffff;
   border-bottom: 1px solid #ddd;
   padding-bottom: 30px;
+  font-size: 18px;
 }
 
 .react-calendar__navigation button {

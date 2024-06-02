@@ -4,7 +4,6 @@ import dayjs from "dayjs";
 
 export async function GET (req: NextRequest) {
   const searchParams = req.nextUrl.searchParams;
-  const listId = searchParams.get('listId');
   const year = searchParams.get('year');
   const month = searchParams.get('month');
 
@@ -14,7 +13,6 @@ export async function GET (req: NextRequest) {
   try {
     const items = await prisma.item.findMany({
       where: {
-        listId: listId as string,
         dateTime: {
           not: null,
           gte: startDate,

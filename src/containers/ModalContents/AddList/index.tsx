@@ -74,9 +74,9 @@ const AddList = ({ close, submit, mode = 'add', listInfo }: IAddList) => {
         </select>
       </div>
       <div className='flex justify-end gap-[10px]'>
-          <Button onClick={close}>취소</Button>
-          <Button type='submit'>확인</Button>
-        </div>
+        <Button onClick={close}>취소</Button>
+        <Button type='submit'>확인</Button>
+      </div>
     </form>
   )
 }

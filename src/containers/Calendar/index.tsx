@@ -4,7 +4,6 @@ import dayjs from 'dayjs';
 import './styles.css';
 import { useQuery } from '@tanstack/react-query';
 import { getItems } from '@/src/services/item';
-import { useListInfo } from '@/src/store/useListInfo';
 import { useState } from 'react';
 import { Item } from '@/src/types';
 import CalendarItem from './CalendarItem';
@@ -16,15 +15,11 @@ interface ICalendar {
 }
 
 const Calendar = ({ onClickItemCheckbox }: ICalendar) => {
-  const { listInfo } = useListInfo();
-
   const [activeDate, setActiveDate] = useState<Date>(new Date());
 
   const { data: items, isLoading } = useQuery({
-    enabled: !!listInfo?.id,
     queryKey: ['getItems', activeDate],
     queryFn: () => getItems({
-      listId: listInfo!.id,
       year: dayjs(activeDate).year(),
       month: dayjs(activeDate).month() + 1,
     }),
@@ -58,6 +53,7 @@ const Calendar = ({ onClickItemCheckbox }: ICalendar) => {
 
   return (
     <ReactCalendar
+      locale='ko'
       formatDay={(_, date) => dayjs(date).format('D')}
       showNeighboringMonth={false}
       nextLabel={<FontAwesomeIcon icon={faAngleRight} fontSize={22} />}

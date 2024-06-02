@@ -2,11 +2,15 @@ import { create } from 'zustand';
 import { List } from '../types';
 
 type ListInfoState = {
-  listInfo: List | null,
-  setListInfo: (listInfo: List) => void,
+  selectedList: List | null,
+  setSelectedList: (listInfo: List) => void,
+  lists: List[] | null,
+  setLists: (lists: List[]) => void,
 }
 
 export const useListInfo = create<ListInfoState>((set) => ({
-  listInfo: null,
-  setListInfo: (listInfo: List) => { set({ listInfo }) },
+  selectedList: null,
+  setSelectedList: (selectedList: List) => { set({ selectedList }) },
+  lists: null,
+  setLists: (lists: List[]) => { set({ lists })},
 }));

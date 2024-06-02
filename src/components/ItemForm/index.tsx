@@ -31,9 +31,9 @@ interface IItemForm {
 
 const ItemForm = ({ item, onClickDeleteItem, onClickItemCheckbox }: IItemForm) => {
   const isNewItem = item.id === undefined;
-  const { listInfo } = useListInfo();
+  const { selectedList } = useListInfo();
   const { expandedItems, setExpandedItems } = useControl();
-  const listId = listInfo?.id;
+  const listId = selectedList?.id;
   
   const [showSubItems, setShowSubItems] = useState<boolean>(expandedItems.includes(item.id));
   const [isActive, setIsActive] = useState<boolean>(isNewItem ? true : false);

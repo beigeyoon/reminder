@@ -17,13 +17,13 @@ interface IListButton {
 const ListButton = ({ list }: IListButton) => {
   const { id, color, icon, name, items } = list;
   const queryClient = useQueryClient();
-  const { setListInfo } = useListInfo();
+  const { setSelectedList } = useListInfo();
   const { confirm } = AntdModdal;
 
   const [isEditListModalOpen, setIsEditListModalOpen] = useState<boolean>(false);
 
   const selectList = () => {
-    setListInfo(list);
+    setSelectedList(list);
   };
 
   const { mutateAsync: editList } = useMutation({

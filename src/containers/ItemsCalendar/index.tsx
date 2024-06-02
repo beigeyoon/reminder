@@ -6,10 +6,10 @@ interface IItemsCalendar {
 }
 
 const ItemsCalendar = ({ itemsData }: IItemsCalendar) => {
-  const { listInfo } = useListInfo();
+  const { selectedList } = useListInfo();
 
   return (
-    <div>{listInfo?.name} class</div>
+    <div>{selectedList?.name} class</div>
   )
 }
 

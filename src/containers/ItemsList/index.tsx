@@ -15,7 +15,7 @@ interface IItemsList {
 }
 
 const ItemsList = ({ itemsData }: IItemsList) => {
-  const { listInfo } = useListInfo();
+  const { selectedList } = useListInfo();
 
   const [items, setItems] = useState<any[]>([]);
   const [showFinishedItems, setShowFinishedItems] = useState<boolean>(false);
@@ -27,13 +27,13 @@ const ItemsList = ({ itemsData }: IItemsList) => {
   }, [itemsData]);
 
   useEffect(() => {
-    const count = items.filter((item) => item.listId === listInfo?.id).filter((item) => item.checked).length;
+    const count = items.filter((item) => item.listId === selectedList?.id).filter((item) => item.checked).length;
     setCheckedItemsCount(count);
-  }, [items, listInfo])
+  }, [items, selectedList])
 
   const onClickAddItem = () => {
     const newItem = {
-      listId: listInfo!.id,
+      listId: selectedList!.id,
       checked: false,
       title: null,
       priority: Priority.NO_PRIORITY,
@@ -84,8 +84,8 @@ const ItemsList = ({ itemsData }: IItemsList) => {
         onClickItemCheckbox={onClickItemCheckbox}
       />
       <div className='pb-4 flex justify-between text-[36px] font-extrabold'>
-        <div>{listInfo?.name}</div>
-        <div>{listInfo?.items.length}</div>
+        <div>{selectedList?.name}</div>
+        <div>{selectedList?.items.length}</div>
       </div>
       <div className='flex justify-between py-3 border-b border-gray200 text-gray500 mb-3'>
         <div className='font-bold'>
@@ -96,7 +96,7 @@ const ItemsList = ({ itemsData }: IItemsList) => {
       </div>
       <div id='items' className='grow overflow-y-auto'>
         <AnimatePresence>
-          {orderItems(items).filter((item) => item.listId === listInfo?.id).filter((item) => {
+          {orderItems(items).filter((item) => item.listId === selectedList?.id).filter((item) => {
             if (showFinishedItems) {
               return true;
             }

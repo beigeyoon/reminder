@@ -8,8 +8,8 @@ import { useEffect } from 'react';
 import { useListInfo } from '@/src/store/useListInfo';
 
 const Lists = () => {
-  const { setListInfo } = useListInfo();
-  const { status, data: session } = useSession();
+  const { setSelectedList, setLists } = useListInfo();
+  const { data: session } = useSession();
   const userId = session?.user?.id;
   
   const { data, isLoading } = useQuery({
@@ -20,7 +20,8 @@ const Lists = () => {
 
   useEffect(() => {
     if (data) {
-      setListInfo(data[0]);
+      setSelectedList(data[0]);
+      setLists(data);
     }
   }, [data]);
   
