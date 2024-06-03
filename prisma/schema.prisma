@@ -11,10 +11,12 @@ model User {
   id                String   @id @default(uuid())
   name              String   @unique
   password          String
+  lists             List[]
 }
 
 model List {
   id                String   @id @default(uuid())
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId            String
   name              String
   type              ListType
@@ -26,7 +28,7 @@ model List {
 
 model Section {
   id                String   @id @default(uuid())
-  list              List     @relation(fields: [listId], references: [id])
+  list              List     @relation(fields: [listId], references: [id], onDelete: Cascade)
   listId            String
   name              String
   items             Item[]
@@ -45,9 +47,9 @@ model Item {
   tags              Tag[]    @relation("ItemToTag")
   priority          Int?
   flagged           Boolean  @default(false)
-  list              List     @relation(fields: [listId], references: [id])
+  list              List     @relation(fields: [listId], references: [id], onDelete: Cascade)
   listId            String
-  section           Section? @relation(fields: [sectionId], references: [id])
+  section           Section? @relation(fields: [sectionId], references: [id], onDelete: Cascade)
   sectionId         String?
   image_url         String?
   subItems          SubItem[]
@@ -55,7 +57,7 @@ model Item {
 
 model SubItem {
   id                String   @id @default(uuid())
-  item              Item     @relation(fields: [itemId], references: [id])
+  item              Item     @relation(fields: [itemId], references: [id], onDelete: Cascade)
   itemId            String
   createdTime       DateTime @default(now())
   updatedTime       DateTime @updatedAt
