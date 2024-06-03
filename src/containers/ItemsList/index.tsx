@@ -9,6 +9,7 @@ import { faCalendar } from '@fortawesome/free-regular-svg-icons';
 import { orderItems } from '@/src/utils/orderItems';
 import { motion, AnimatePresence } from "framer-motion";
 import Drawer from '@/src/components/Drawer';
+import { isPresetListItem } from '@/src/utils/presets';
 
 interface IItemsList {
   itemsData: any[];
@@ -19,6 +20,7 @@ const ItemsList = ({ itemsData }: IItemsList) => {
 
   const [items, setItems] = useState<any[]>([]);
   const [showFinishedItems, setShowFinishedItems] = useState<boolean>(false);
+  const [count, setCount] = useState<number>(-1);
   const [checkedItemsCount, setCheckedItemsCount] = useState<number>(0);
   const [isCalanderOpen, setIsCalendarOpen] = useState<boolean>(false);
 
@@ -27,9 +29,13 @@ const ItemsList = ({ itemsData }: IItemsList) => {
   }, [itemsData]);
 
   useEffect(() => {
+    if (selectedList) setCount(selectedList?.items.length);
+  }, [selectedList]);
+
+  useEffect(() => {
     const count = items.filter((item) => item.listId === selectedList?.id).filter((item) => item.checked).length;
     setCheckedItemsCount(count);
-  }, [items, selectedList])
+  }, [items, selectedList]);
 
   const onClickAddItem = () => {
     const newItem = {
@@ -85,7 +91,7 @@ const ItemsList = ({ itemsData }: IItemsList) => {
       />
       <div className='pb-4 flex justify-between text-[36px] font-extrabold'>
         <div>{selectedList?.name}</div>
-        <div>{selectedList?.items.length}</div>
+        <div>{count}</div>
       </div>
       <div className='flex justify-between py-3 border-b border-gray200 text-gray500 mb-3'>
         <div className='font-bold'>
@@ -96,22 +102,24 @@ const ItemsList = ({ itemsData }: IItemsList) => {
       </div>
       <div id='items' className='grow overflow-y-auto'>
         <AnimatePresence>
-          {orderItems(items).filter((item) => item.listId === selectedList?.id).filter((item) => {
-            if (showFinishedItems) {
-              return true;
-            }
-            return !item.checked;
-          }).map((item) => (
-            <motion.div
-              key={item.id}
-              initial={{ opacity: 1, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.2 }}
-            >
-              <ItemForm item={item} onClickDeleteItem={onClickDeleteItem} onClickItemCheckbox={onClickItemCheckbox} />
-            </motion.div>
-          ))}
+          {orderItems(items)
+            .filter((item) => isPresetListItem({ selectedList: selectedList!, item }))
+            .filter((item) => {
+              if (showFinishedItems) return true;
+              return !item.checked;
+            })
+            .map((item) => (
+              <motion.div
+                key={item.id}
+                initial={{ opacity: 1, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                transition={{ duration: 0.2 }}
+              >
+                <ItemForm item={item} onClickDeleteItem={onClickDeleteItem} onClickItemCheckbox={onClickItemCheckbox} />
+              </motion.div>
+            )
+          )}
         </AnimatePresence>
       </div>
     </div>

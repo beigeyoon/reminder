@@ -1,4 +1,3 @@
-import CircleIcon from "@/src/components/CircleIcon";
 import { List } from "@/src/common/types";
 import { deleteList, updateList } from "@/src/services/list";
 import ContextMenu, { ContextMenuItem } from "@/src/components/ContextMenu";
@@ -9,12 +8,13 @@ import { useState } from "react";
 import AddList from "@/src/containers/ModalContents/AddList";
 import Modal from "@/src/components/Modal";
 import { Modal as AntdModdal } from "antd";
+import ListButton from "./ListButton";
 
-interface IListButton {
+interface IListItem {
   list: List;
 }
 
-const ListButton = ({ list }: IListButton) => {
+const ListItem = ({ list }: IListItem) => {
   const { id, color, icon, name, items } = list;
   const queryClient = useQueryClient();
   const { setSelectedList } = useListInfo();
@@ -124,16 +124,13 @@ const ListButton = ({ list }: IListButton) => {
         items={menuItems}
         width={160}
       >
-        <button
-          className='w-[123px] flex flex-col justify-between bg-gray200 rounded-xl p-[10px]'
-          onClick={selectList}
-        >
-          <div className="w-full flex items-center justify-between">
-            <CircleIcon iconName={icon} colorName={color} size='large' />
-            <span className='font-bold text-lg'>{items?.length}</span>
-          </div>
-          <span className='font-bold mt-[8px] overflow-hidden whitespace-nowrap text-ellipsis w-full text-left'>{name}</span>
-        </button>   
+        <ListButton
+          name={name}
+          icon={icon}
+          color={color}
+          items={items}
+          selectList={selectList}
+        />  
       </ContextMenu>
       <Modal isOpen={isEditListModalOpen} close={() => setIsEditListModalOpen(false)} submit={onSubmitEditList}>
         <AddList mode='edit' listInfo={list} />
@@ -142,4 +139,4 @@ const ListButton = ({ list }: IListButton) => {
   )
 }
 
-export default ListButton;
+export default ListItem;

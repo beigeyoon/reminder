@@ -43,4 +43,7 @@ export enum Icon {
   MOON = 'faMoon',
   HEART = 'faHeart',
   STAR = 'faStar',
+  TODAY = 'faCalendarDay',
+  SCHEDULED = 'faClipboardList',
+  CHECKED = 'faCheck',
 }

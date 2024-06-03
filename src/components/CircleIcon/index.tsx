@@ -1,8 +1,7 @@
 import { Color, Icon } from "@/src/common/enums";
 import { getColorCode } from "@/src/utils/getColorCode";
-import { getIconCode } from "@/src/utils/getIconCode";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faListUl, faBookOpen, faFile, faMoneyBill, faDesktop, faPerson, faCartShopping, faPlane, faCalendar, faLightbulb, faHouse, faMusic, faSun, faMoon, faHeart, faStar } from '@fortawesome/free-solid-svg-icons';
+import { faListUl, faBookOpen, faFile, faMoneyBill, faDesktop, faPerson, faCartShopping, faPlane, faCalendar, faLightbulb, faHouse, faMusic, faSun, faMoon, faHeart, faStar, faCalendarDay, faClipboardList, faCheck } from '@fortawesome/free-solid-svg-icons';
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 
 interface ICircleIcon {
@@ -28,6 +27,9 @@ const iconMap: Record<keyof typeof Icon, IconProp> = {
   MOON: faMoon,
   HEART: faHeart,
   STAR: faStar,
+  TODAY: faCalendarDay,
+  SCHEDULED: faClipboardList,
+  CHECKED: faCheck,
 };
 
 const CircleIcon = ({ iconName, colorName, size = 'medium' }: ICircleIcon) => {

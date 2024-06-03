@@ -1,4 +1,3 @@
-import { DefaultSession } from "next-auth";
 import { ListType, Icon, Color, Priority } from "../common/enums";
 
 export interface User {
@@ -16,6 +15,16 @@ export interface List {
   color: keyof typeof Color;
   items: Item[];
   sections: Section[];
+}
+
+export interface PresetList {
+  id: string;
+  name: string;
+  color: keyof typeof Color;
+  icon: keyof typeof Icon;
+  type: ListType;
+  isPreset: boolean;
+  items: Item[];
 }
 
 export interface Section {
