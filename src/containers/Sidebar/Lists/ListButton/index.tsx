@@ -1,5 +1,5 @@
 import CircleIcon from "@/src/components/CircleIcon";
-import { List } from "@/src/types";
+import { List } from "@/src/common/types";
 import { deleteList, updateList } from "@/src/services/list";
 import ContextMenu, { ContextMenuItem } from "@/src/components/ContextMenu";
 import { useMutation, useQueryClient, InvalidateQueryFilters } from "@tanstack/react-query";

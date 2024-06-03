@@ -1,6 +1,6 @@
 import Button from "@/src/components/Button";
 import UnactiveItem from "@/src/components/ItemForm/UnactiveItem";
-import { Item } from "@/src/types";
+import { Item } from "@/src/common/types";
 import { getTagsArray } from "@/src/utils/getTagsArray";
 
 interface IEditItem {

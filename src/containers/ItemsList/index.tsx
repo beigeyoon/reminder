@@ -1,6 +1,6 @@
 'use client'
 import ItemForm from '@/src/components/ItemForm';
-import { Priority } from '@/src/enums';
+import { Priority } from '@/src/common/enums';
 import { useListInfo } from '@/src/store/useListInfo';
 import { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';

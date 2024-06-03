@@ -1,5 +1,5 @@
-import { Color, Icon, ListType } from "../enums";
-import { List, Item, Section } from "../types";
+import { List, Item, Section } from "../common/types";
+import { Color, Icon, ListType } from "../common/enums";
 
 export interface GetListsPayload {
   userId: string;

@@ -5,7 +5,7 @@ import './styles.css';
 import { useQuery } from '@tanstack/react-query';
 import { getItems } from '@/src/services/item';
 import { useState } from 'react';
-import { Item } from '@/src/types';
+import { Item } from '@/src/common/types';
 import CalendarItem from './CalendarItem';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons';

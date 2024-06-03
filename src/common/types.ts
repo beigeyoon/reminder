@@ -1,5 +1,5 @@
 import { DefaultSession } from "next-auth";
-import { ListType, Icon, Color, Priority } from "../enums";
+import { ListType, Icon, Color, Priority } from "../common/enums";
 
 export interface User {
   id: string;

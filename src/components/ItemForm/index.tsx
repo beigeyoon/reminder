@@ -1,5 +1,5 @@
 'use client'
-import { Item } from "@/src/types";
+import { Item } from "@/src/common/types";
 import { useState, useRef, useEffect, useCallback } from "react";
 import DateTime from "./DateTime";
 import PrioritySelect from "./PrioritySelect";

@@ -1,4 +1,4 @@
-import { Color } from "@/src/enums"
+import { Color } from "@/src/common/enums"
 import { getColorCode } from "@/src/utils/getColorCode";
 
 interface IColorSelect {

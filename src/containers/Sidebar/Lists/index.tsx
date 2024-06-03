@@ -2,7 +2,7 @@
 import ListButton from "./ListButton";
 import { useQuery } from "@tanstack/react-query";
 import { getLists } from "@/src/services/list";
-import { List } from "@/src/types";
+import { List } from "@/src/common/types";
 import { useSession } from "next-auth/react";
 import { useEffect } from 'react';
 import { useListInfo } from '@/src/store/useListInfo';

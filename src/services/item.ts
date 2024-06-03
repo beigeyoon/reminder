@@ -1,5 +1,5 @@
-import { Priority } from './../enums/index';
-import { Section, Item, SubItem, Tag } from "../types";
+import { Priority } from "../common/enums";
+import { Section, Item, SubItem, Tag } from "../common/types";
 
 export interface GetItemsPayload {
   year: number;

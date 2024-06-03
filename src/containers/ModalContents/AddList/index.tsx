@@ -1,10 +1,10 @@
 import { useState, useRef, useEffect } from "react";
 import ColorSelect from "./ColorSelect";
-import { Color, Icon, ListType } from "@/src/enums";
+import { Color, Icon, ListType } from "@/src/common/enums";
 import IconSelect from "./IconSelect";
 import Input from "@/src/components/Input";
 import Button from "@/src/components/Button";
-import { List } from "@/src/types";
+import { List } from "@/src/common/types";
 
 interface IAddList {
   close?: () => void;

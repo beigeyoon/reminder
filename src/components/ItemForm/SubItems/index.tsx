@@ -1,5 +1,5 @@
 import { AddSubItemPayload, DeleteSubItemPayload, UpdateSubItemPayload, addSubItem, deleteSubItem, updateSubItem } from "@/src/services/subItem";
-import { SubItem as SubItemType } from "@/src/types";
+import { SubItem as SubItemType } from "@/src/common/types";
 import { useMutation } from "@tanstack/react-query";
 import { CheckboxChangeEvent } from "antd/es/checkbox";
 import { MouseEvent, forwardRef, useCallback } from "react";

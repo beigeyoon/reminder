@@ -18,7 +18,7 @@ export enum Color {
   GREEN = '#19c758',
   LIGHTBLUE = '#52aaf2',
   BLUE = '#027bff',
-  DEEPBL = '#5756d7',
+  DEEPBLUE = '#5756d7',
   PINK = '#ea426a',
   PURPLE = '#c078dc',
   BROWN = '#9d8563',

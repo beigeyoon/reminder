@@ -105,7 +105,6 @@
 .calendar-item > .title {
   overflow: hidden;
   text-overflow: ellipsis;
-  color: #333;
 }
 
 /* Navigation styling */

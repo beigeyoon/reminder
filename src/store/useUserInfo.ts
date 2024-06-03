@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { User } from '../types';
+import { User } from '../common/types';
 
 type UserInfoState = {
   userInfo: User | null,

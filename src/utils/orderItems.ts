@@ -1,4 +1,4 @@
-import { Item } from "../types";
+import { Item } from "../common/types";
 
 export const orderItems = (items: Item[]) => {
   if (!items || !Array.isArray(items)) {

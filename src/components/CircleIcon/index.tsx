@@ -1,4 +1,4 @@
-import { Color, Icon } from "@/src/enums";
+import { Color, Icon } from "@/src/common/enums";
 import { getColorCode } from "@/src/utils/getColorCode";
 import { getIconCode } from "@/src/utils/getIconCode";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';

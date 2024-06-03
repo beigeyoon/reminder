@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { List } from '../types';
+import { List } from '../common/types';
 
 type ListInfoState = {
   selectedList: List | null,

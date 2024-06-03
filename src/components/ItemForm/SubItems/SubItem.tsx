@@ -1,4 +1,4 @@
-import { SubItem as SubItemType } from "@/src/types";
+import { SubItem as SubItemType } from "@/src/common/types";
 import { Checkbox } from "antd";
 import { CheckboxChangeEvent } from "antd/es/checkbox";
 import ContextMenu, { ContextMenuItem } from "../../ContextMenu";

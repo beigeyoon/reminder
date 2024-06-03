@@ -1,4 +1,4 @@
-import { Icon, Color } from "@/src/enums";
+import { Icon, Color } from "@/src/common/enums";
 import { getIconCode } from "@/src/utils/getIconCode";
 import { getColorCode } from "@/src/utils/getColorCode";
 import CircleIcon from "@/src/components/CircleIcon";
