@@ -10,7 +10,7 @@ import { presetLists } from "@/src/common/constants";
 import PresetListItem from "./ListItem/PresetListItem";
 
 const Lists = () => {
-  const { setSelectedList, setLists } = useListInfo();
+  const { selectedList, setSelectedList, setLists } = useListInfo();
   const { data: session } = useSession();
   const userId = session?.user?.id;
   
@@ -22,10 +22,15 @@ const Lists = () => {
 
   useEffect(() => {
     if (data) {
-      setSelectedList(data[0]);
       setLists(data);
+      const currentList = data.find((item) => item.id === selectedList?.id);
+      if (!currentList) {
+        setSelectedList(data[0]);
+      } else {
+        setSelectedList(currentList);
+      }
     }
-  }, [data]);
+  }, [data, selectedList, setLists, setSelectedList]);
   
   if (isLoading) return <></>;
   return (

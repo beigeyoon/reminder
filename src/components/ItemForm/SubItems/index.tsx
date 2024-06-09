@@ -9,7 +9,7 @@ import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import SubItem from "./SubItem";
 
 const SubItems = forwardRef(({ ...props }: FieldValues) => {
-  const { onChange, value: subItems, isActive, itemId, showSubItems } = props;
+  const { onChange, value: subItems, isActive, itemId, showSubItems, handleSubItemsToggle } = props;
 
   const { mutateAsync: createSubItem } = useMutation({
     mutationFn: (body: AddSubItemPayload) => addSubItem(body),
@@ -34,11 +34,12 @@ const SubItems = forwardRef(({ ...props }: FieldValues) => {
     if (result.ok) {
       const updatedSubItems = [ ...subItems, result.subItem ];
       onChange(updatedSubItems);
+      handleSubItemsToggle();
     } else {
       alert('서브 아이템 생성 에러');
       console.error(result.error);
     }
-  }, [createSubItem, itemId, onChange, subItems]);
+  }, [createSubItem, handleSubItemsToggle, itemId, onChange, subItems]);
 
   const onUpdateTitle = useCallback(async (subItemId: string, newTitle: string) => {
     const result = await editSubItem({ id: subItemId, title: newTitle });

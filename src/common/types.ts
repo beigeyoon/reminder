@@ -1,4 +1,4 @@
-import { ListType, Icon, Color, Priority } from "../common/enums";
+import { Icon, Color, Priority, OrderBy } from "../common/enums";
 
 export interface User {
   id: string;
@@ -10,7 +10,7 @@ export interface List {
   id: string;
   userId: string;
   name: string;
-  type: ListType;
+  orderBy: keyof typeof OrderBy;
   icon: keyof typeof Icon;
   color: keyof typeof Color;
   items: Item[];
@@ -22,7 +22,7 @@ export interface PresetList {
   name: string;
   color: keyof typeof Color;
   icon: keyof typeof Icon;
-  type: ListType;
+  orderBy: OrderBy;
   isPreset: boolean;
   items: Item[];
 }
@@ -46,7 +46,7 @@ export interface Item {
   dateTime?: any;
   hasTime?: boolean;
   tags: Tag[];
-  priority?: Priority;
+  priority: Priority;
   flagged: boolean;
   list?: List;
   listId: string;

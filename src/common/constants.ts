@@ -1,4 +1,4 @@
-import { ListType } from "./enums";
+import { OrderBy } from "./enums";
 import { PresetList } from "./types";
 
 export const presetLists: PresetList[] = [
@@ -7,7 +7,7 @@ export const presetLists: PresetList[] = [
     name: '오늘',
     color: 'BLUE',
     icon: 'TODAY',
-    type: ListType.STANDARD,
+    orderBy: OrderBy.NEWEST,
     isPreset: true,
     items: [],
   },
@@ -16,7 +16,7 @@ export const presetLists: PresetList[] = [
     name: '예정',
     color: 'RED',
     icon: 'SCHEDULED',
-    type: ListType.STANDARD,
+    orderBy: OrderBy.NEWEST,
     isPreset: true,
     items: [],
   },
@@ -25,7 +25,7 @@ export const presetLists: PresetList[] = [
     name: '완료됨',
     color: 'GRAY',
     icon: 'CHECKED',
-    type: ListType.STANDARD,
+    orderBy: OrderBy.NEWEST,
     isPreset: true,
     items: [],
   },

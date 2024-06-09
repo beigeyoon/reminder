@@ -181,7 +181,7 @@ const ItemForm = ({ item, onClickDeleteItem, onClickItemCheckbox }: IItemForm) =
               )}
             </div>
           </div>
-          <Controller name='subItems' control={control} render={({ field }) => <SubItems isActive={isActive} itemId={item.id} {...field} showSubItems={showSubItems} />} />
+          <Controller name='subItems' control={control} render={({ field }) => <SubItems isActive={isActive} itemId={item.id} {...field} showSubItems={showSubItems} handleSubItemsToggle={handleSubItemsToggle} />} />
         </div>
       </form>
     </ContextMenu>

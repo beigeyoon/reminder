@@ -1,7 +1,7 @@
-export enum ListType {
-  STANDARD = '표준',
-  GROCERY = '식료품',
-  SMART = '스마트 목록',
+export enum OrderBy {
+  NEWEST,
+  OLDEST,
+  PRIORITY,
 }
 
 export enum Priority {

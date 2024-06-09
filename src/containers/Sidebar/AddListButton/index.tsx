@@ -25,10 +25,14 @@ const AddListButton = () => {
   });
 
   const onSubmit = async (payload: any) => {
+    if (payload.name.length === 0) {
+      alert('리스트 이름을 입력하세요.');
+      return;
+    };
     const body = {
       ...payload,
       userId,
-    }
+    };
     await createList(body);
   };
 

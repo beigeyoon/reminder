@@ -1,5 +1,5 @@
 import { List, Item, Section } from "../common/types";
-import { Color, Icon, ListType } from "../common/enums";
+import { Color, Icon, OrderBy } from "../common/enums";
 
 export interface GetListsPayload {
   userId: string;
@@ -7,7 +7,6 @@ export interface GetListsPayload {
 
 export interface AddListPayload {
   name: string;
-  type: ListType;
   icon: Icon;
   color: Color;
   items?: Item[];
@@ -17,7 +16,7 @@ export interface AddListPayload {
 export interface UpdateListPayload {
   id: string;
   name?: string;
-  type?: ListType;
+  orderBy?: OrderBy;
   icon?: Icon;
   color?: Color;
 }

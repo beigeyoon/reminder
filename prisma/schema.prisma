@@ -19,7 +19,7 @@ model List {
   user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId            String
   name              String
-  type              ListType
+  orderBy           ORDER_BY @default(NEWEST)
   icon              Icon
   color             Color
   items             Item[]
@@ -71,10 +71,10 @@ model Tag {
   items             Item[]   @relation("ItemToTag")
 }
 
-enum ListType {
-  STANDARD
-  GROCERY
-  SMART
+enum ORDER_BY {
+  NEWEST
+  OLDEST
+  PRIORITY
 }
 
 enum Priority {

@@ -1,6 +1,12 @@
 import { Item } from "../common/types";
+import { OrderBy } from "../common/enums";
 
-export const orderItems = (items: Item[]) => {
+interface orderItemsProps {
+  items: Item[];
+  orderBy: keyof typeof OrderBy;
+}
+
+export const orderItems = ({ items, orderBy }: orderItemsProps) => {
   if (!items || !Array.isArray(items)) {
     console.error('Input is not an array or is undefined/null');
     return [];
@@ -12,5 +18,23 @@ export const orderItems = (items: Item[]) => {
     }
   });
 
-  return items.slice().sort((a, b) => new Date(b.createdTime).getTime() - new Date(a.createdTime).getTime());
+  return items.slice().sort((a, b) => {
+    const dateA = new Date(a.createdTime).getTime();
+    const dateB = new Date(b.createdTime).getTime();
+    
+    switch (orderBy) {
+      case 'NEWEST':
+        return dateB - dateA;
+      case 'OLDEST':
+        return dateA - dateB;
+      case 'PRIORITY':
+        if (a.priority !== b.priority) {
+          return b.priority - a.priority;
+        } else {
+          return dateB - dateA;
+        }
+      default:
+        return 0;
+    }
+  });
 };

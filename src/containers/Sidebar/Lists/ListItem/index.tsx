@@ -28,8 +28,9 @@ const ListItem = ({ list }: IListItem) => {
 
   const { mutateAsync: editList } = useMutation({
     mutationFn: (body: UpdateListPayload) => updateList(body),
-    onSuccess: () => {
-      alert('리스트가 수정되었습니다.');
+    onSuccess: (_, vars) => {
+      const isChangeOrderBy = vars.data.hasOwnProperty('orderBy');
+      if (!isChangeOrderBy) alert('리스트가 수정되었습니다.');
       queryClient.invalidateQueries(['getLists'] as InvalidateQueryFilters);
       setIsEditListModalOpen(false);
     }
@@ -63,22 +64,13 @@ const ListItem = ({ list }: IListItem) => {
 
   const menuItems: ContextMenuItem[] = [
     {
-      id: 'unpin-list',
-      caption: '목록 고정 해제',
-      type: 'normal',
-    },
-    {
-      id: 'divide-bar-1',
-      type: 'divider',
-    },
-    {
       id: 'show-list-info',
       caption: '목록 정보 보기',
       type: 'normal',
       onClick: () => setIsEditListModalOpen(true),
     },
     {
-      id: 'divide-bar-2',
+      id: 'divide-bar-1',
       type: 'divider',
     },
     {
@@ -87,21 +79,24 @@ const ListItem = ({ list }: IListItem) => {
       type: 'hasSecondDepth',
       secondDepthItems: [
         {
-          id: 'sort-items-manually',
-          caption: '수동',
+          id: 'sort-items-newest',
+          caption: '최신 순으로 정렬',
+          onClick: () =>onSubmitEditList({ orderBy: 'NEWEST' }),
         },
         {
-          id: 'sort-items-by-title',
-          caption: '제목',
+          id: 'sort-items-by-oldest',
+          caption: '오래된 순으로 정렬',
+          onClick: () =>onSubmitEditList({ orderBy: 'OLDEST' }),
         },
         {
-          id: 'sort-items-by-date',
-          caption: '날짜',
+          id: 'sort-items-by-priority',
+          caption: '우선순위로 정렬',
+          onClick: () =>onSubmitEditList({ orderBy: 'PRIORITY' }),
         }
       ]
     },
     {
-      id: 'divide-bar-3',
+      id: 'divide-bar-2',
       type: 'divider',
     },
     {
@@ -109,11 +104,6 @@ const ListItem = ({ list }: IListItem) => {
       caption: '삭제',
       type: 'normal',
       onClick: () => showDeleteConfirm(),
-    },
-    {
-      id: 'set-group',
-      caption: '그룹에 추가',
-      type: 'normal',
     },
   ];
 

@@ -1,5 +1,4 @@
 import { create } from 'zustand';
-import { Item } from '../common/types';
 
 type ControlState = {
   expandedItems: string[],
