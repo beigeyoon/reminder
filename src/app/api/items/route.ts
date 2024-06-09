@@ -32,22 +32,28 @@ export async function GET (req: NextRequest) {
 
 export async function POST (req: NextRequest) {
   const data = await req.json();
-  const { tags, subItems, ...dataWithoutTagsAndSubItems } = data;
+  const { tags, subItems, userId, ...dataWithoutTagsAndSubItems } = data;
   
   try {
     const newItem = await prisma.item.create({
       data: dataWithoutTagsAndSubItems,
     });
     for (const tagName of tags) {
-      let tag = await prisma.tag.findUnique({
+      let tag = await prisma.tag.findFirst({
         where: {
-          name: tagName
+          AND: [
+            { name: tagName },
+            { userId: userId }
+          ]
         }
       });
       if (!tag) {
         tag = await prisma.tag.create({
           data: {
-            name: tagName
+            name: tagName,
+            user: {
+              connect: { id: userId }
+            }
           }
         });
       }
@@ -68,7 +74,7 @@ export async function POST (req: NextRequest) {
 
 export async function PUT (req: NextRequest) {
   const { id, ...data } = await req.json();
-  const { tags, subItems, ...dataWithoutTagsAndSubItems } = data;
+  const { tags, subItems, userId, ...dataWithoutTagsAndSubItems } = data;
   try {
     const updatedItem = await prisma.item.update({
       where: {
@@ -78,15 +84,21 @@ export async function PUT (req: NextRequest) {
     });
     if (tags?.addedTags?.length > 0) {
       for (const tagName of tags.addedTags) {
-        let tag = await prisma.tag.findUnique({
+        let tag = await prisma.tag.findFirst({
           where: {
-            name: tagName
+            AND: [
+              { name: tagName },
+              { userId: userId }
+            ]
           }
         });
         if (!tag) {
           tag = await prisma.tag.create({
             data: {
-              name: tagName
+              name: tagName,
+              user: {
+                connect: { id: userId }
+              }
             }
           });
         }
@@ -102,14 +114,40 @@ export async function PUT (req: NextRequest) {
     }
     if (tags?.deletedTags?.length > 0) {
       for (const tagName of tags.deletedTags) {
+        const tag = await prisma.tag.findFirst({
+          where: {
+            AND: [
+              { name: tagName },
+              { userId: userId }
+            ]
+          }
+        });
         await prisma.item.update({
           where: { id: updatedItem.id },
           data: {
             tags: {
-              disconnect: { name: tagName }
+              disconnect: { id: tag?.id }
             }
           }
-        })
+        });
+        const disconnectedTag = await prisma.tag.findFirst({
+          where: {
+            AND: [
+              { name: tagName },
+              { userId: userId }
+            ]
+          },
+          include: {
+            items: true,
+          }
+        });
+        if (disconnectedTag?.items?.length === 0) {
+          await prisma.tag.delete({
+            where: {
+              id: disconnectedTag.id,
+            }
+          });
+        };
       }
     }
     return Response.json({ ok: true, item: updatedItem });

@@ -12,6 +12,7 @@ model User {
   name              String   @unique
   password          String
   lists             List[]
+  tags              Tag[]
 }
 
 model List {
@@ -67,8 +68,10 @@ model SubItem {
 
 model Tag {
   id                String   @id @default(uuid())
-  name              String   @unique
+  name              String
   items             Item[]   @relation("ItemToTag")
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId            String
 }
 
 enum ORDER_BY {

@@ -21,6 +21,7 @@ export interface AddItemPayload {
   section?: Section;
   sectionId?: string;
   image_url?: string;
+  userId?: string;
 }
 
 export interface UpdateItemPayload {
@@ -41,6 +42,7 @@ export interface UpdateItemPayload {
   section?: Section;
   sectionId?: string;
   image_url?: string;
+  userId?: string;
 }
 
 export interface DeleteItemPayload {

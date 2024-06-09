@@ -19,7 +19,6 @@ const Tags = forwardRef(({ ...props }: FieldValues) => {
 
   const handleClose = (removedTag: string) => {
     const newTags = tags.filter((tag: string) => tag !== removedTag);
-    console.log(newTags);
     onChange(newTags);
   };
 

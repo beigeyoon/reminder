@@ -22,6 +22,7 @@ import { useClickAway } from "react-use";
 import UnactiveItem from './UnactiveItem';
 import { CheckboxChangeEvent } from 'antd/es/checkbox';
 import { useControl } from '@/src/store/useControl';
+import { useSession } from "next-auth/react";
 
 interface IItemForm {
   item: Item;
@@ -30,6 +31,9 @@ interface IItemForm {
 }
 
 const ItemForm = ({ item, onClickDeleteItem, onClickItemCheckbox }: IItemForm) => {
+  const { status, data: session } = useSession();
+  const userId = session?.user.id;
+
   const isNewItem = item.id === undefined;
   const { selectedList } = useListInfo();
   const { expandedItems, setExpandedItems } = useControl();
@@ -108,16 +112,18 @@ const ItemForm = ({ item, onClickDeleteItem, onClickItemCheckbox }: IItemForm) =
     if (isNewItem) {
       createItem({
         listId,
+        userId,
         ...data,
       });
     } else {
       editItem({
         id: item.id,
+        userId,
         ...data,
         tags: updateTagLists(getTagsArray(item?.tags), data.tags),
       });
     }
-  }, [createItem, editItem, isNewItem, item.id, item?.tags, listId]);
+  }, [createItem, editItem, isNewItem, item.id, item?.tags, listId, userId]);
 
   const onDelete = useCallback(async (itemId: string) => {
     const result = await removeItem({ id: itemId });
