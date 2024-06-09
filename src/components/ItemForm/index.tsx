@@ -1,12 +1,12 @@
 'use client'
 import { Item } from "@/src/common/types";
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useState, useRef, useCallback } from "react";
 import DateTime from "./DateTime";
 import PrioritySelect from "./PrioritySelect";
 import FlagButton from "./FlagButton";
 import Tags from "./Tags";
 import { Checkbox } from "antd";
-import { useMutation } from "@tanstack/react-query";
+import { InvalidateQueryFilters, useMutation, useQueryClient } from "@tanstack/react-query";
 import { AddItemPayload, addItem, UpdateItemPayload, updateItem, DeleteItemPayload, deleteItem } from "@/src/services/item";
 import { useListInfo } from "@/src/store/useListInfo";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
@@ -39,6 +39,8 @@ const ItemForm = ({ item, onClickDeleteItem, onClickItemCheckbox }: IItemForm) =
   const [isActive, setIsActive] = useState<boolean>(isNewItem ? true : false);
   const itemFormRef = useRef<HTMLFormElement>(null);
 
+  const queryClient = useQueryClient();
+
   useClickAway(itemFormRef, async () => {
     if (isActive) {
       if (!getValues('title') || getValues('title').length === 0) {
@@ -55,10 +57,16 @@ const ItemForm = ({ item, onClickDeleteItem, onClickItemCheckbox }: IItemForm) =
 
   const { mutateAsync: editItem } = useMutation({
     mutationFn: (body: UpdateItemPayload) => updateItem(body),
+    onSuccess: () => {
+      queryClient.invalidateQueries(['getItems'] as InvalidateQueryFilters);
+    }
   });
 
   const { mutateAsync: removeItem } = useMutation({
     mutationFn: (body: DeleteItemPayload) => deleteItem(body),
+    onSuccess: () => {
+      queryClient.invalidateQueries(['getItems'] as InvalidateQueryFilters);
+    }
   })
 
   const {

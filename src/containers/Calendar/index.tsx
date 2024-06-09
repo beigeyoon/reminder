@@ -34,7 +34,7 @@ const Calendar = ({ onClickItemCheckbox }: ICalendar) => {
     
     return <div className='w-[-webkit-fill-available]'>
       {tileItems?.map((item) => (
-        <CalendarItem item={item} onClickItemCheckbox={onClickItemCheckbox} />
+        <CalendarItem key={item.id} item={item} onClickItemCheckbox={onClickItemCheckbox} />
       ))}
     </div>
   }

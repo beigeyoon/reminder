@@ -1,13 +1,27 @@
 import { Item } from "@/src/common/types";
 import { Checkbox } from "antd";
 import { CheckboxChangeEvent } from 'antd/es/checkbox';
-import { useEffect, useMemo, useState } from "react";
+import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { UpdateItemPayload, updateItem } from "@/src/services/item";
 import Modal from "@/src/components/Modal";
 import ItemInfo from "../../ModalContents/ItemInfo";
 import { useListInfo } from "@/src/store/useListInfo";
-import { colorStyleMap } from "@/src/common/constants";
+
+const colorClassMap = {
+  RED: 'bg-RED',
+  ORANGE: 'bg-ORANGE',
+  YELLOW: 'bg-YELLOW',
+  GREEN: 'bg-GREEN',
+  LIGHTBLUE: 'bg-LIGHTBLUE',
+  BLUE: 'bg-BLUE',
+  DEEPBLUE: 'bg-DEEPBLUE',
+  PINK: 'bg-PINK',
+  PURPLE: 'bg-PURPLE',
+  BROWN: 'bg-BROWN',
+  GRAY: 'bg-GRAY',
+  PINKBEIGE: 'bg-PINKBEIGE',
+};
 
 interface ICalendarItem {
   item: Item;
@@ -33,7 +47,7 @@ const CalendarItem = ({ item, onClickItemCheckbox }: ICalendarItem) => {
     if (result.ok) {
       setIsChecked(e.target.checked);
       onClickItemCheckbox(item.id, e.target.checked);
-    };
+    }
   };
 
   const handleModal = () => {
@@ -44,17 +58,20 @@ const CalendarItem = ({ item, onClickItemCheckbox }: ICalendarItem) => {
     const listInfo = lists?.find((list) => list.id === item.listId);
     return listInfo;
   };
-  
+
+  const listInfo = getListInfo(item);
+  const itemColor = listInfo ? colorClassMap[listInfo.color] : "";
+
   return (
-    <div className={`calendar-item bg-opacity-10 ${colorStyleMap[getListInfo(item)!.color]}`}>
-      <div className={`min-w-[4px] h-[22px] ${colorStyleMap[getListInfo(item)!.color]}`} />
+    <div className={`calendar-item bg-opacity-10 ${itemColor}`}>
+      <div className={`min-w-[4px] h-[22px] ${itemColor}`} />
       {/* <Checkbox checked={isChecked} onChange={(e) => onClickCheckbox(e)} /> */}
       <div className='title hover:text-BLUE' onClick={handleModal}>{item.title}</div>
       <Modal isOpen={isModalOpen} close={handleModal}>
         <ItemInfo item={item} />
       </Modal>
     </div>
-  )
+  );
 }
 
 export default CalendarItem;

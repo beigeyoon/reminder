@@ -20,7 +20,7 @@ const ListButton = ({ name, icon, color, items, selectList }: IListButton) => {
         <CircleIcon iconName={icon} colorName={color} size='large' />
         <span className='font-bold text-lg'>{items?.length}</span>
       </div>
-      <span className='font-bold mt-[8px] overflow-hidden whitespace-nowrap text-ellipsis w-full text-left'>{name}</span>
+      <span className='font-bold mt-[8px] overflow-hidden whitespace-nowrap text-ellipsis w-full text-left leading-[1.2]'>{name}</span>
     </button>  
   )
 }

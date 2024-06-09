@@ -79,7 +79,9 @@
 }
 
 .react-calendar__tile--now {
-  color: #007aff; /* Apple calendar blue for current day */
+  abbr {
+    color: #007aff;
+  }
 }
 
 .react-calendar__tile--active {
