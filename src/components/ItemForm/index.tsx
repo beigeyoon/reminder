@@ -108,7 +108,7 @@ const ItemForm = ({ item }: IItemForm) => {
       ...data,
       tags: updateTagLists(getTagsArray(item?.tags), data.tags),
     });
-  }, [editItem, item.id, item?.tags, listId, userId]);
+  }, [editItem, item.id, item?.tags, userId]);
 
   const onDelete = useCallback(async (itemId: string) => {
     const result = await removeItem({ id: itemId });
@@ -132,6 +132,14 @@ const ItemForm = ({ item }: IItemForm) => {
     }
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLFormElement>) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleSubmit(onSubmit)();
+      setIsActive(false);
+    }
+  }
+
   const formStyle = {
     active: 'border-2 rounded border-blue p-[8px]',
     inactive: 'cursor-default',
@@ -139,7 +147,7 @@ const ItemForm = ({ item }: IItemForm) => {
 
   return (
     <ContextMenu id={`item-form-${item.id}`} items={menuItems} width={160}>
-      <form className={`flex items-start gap-3 mb-[8px] ${isActive ? formStyle['active'] : formStyle['inactive']}`} ref={itemFormRef}>
+      <form className={`flex items-start gap-3 mb-[8px] ${isActive ? formStyle['active'] : formStyle['inactive']}`} ref={itemFormRef} onKeyDown={handleKeyDown}>
         <Controller name='checked' control={control} render={({ field }) => <Checkbox {...field} checked={field.value} onChange={(e) => onClickCheckbox(e)} />} />
         <div className='w-full'>
           <div className='flex justify-between border-b border-gray100 pb-[4px]' onClick={() => setIsActive(true)}>
