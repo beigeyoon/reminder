@@ -31,6 +31,8 @@ export const presetLists: PresetList[] = [
   },
 ];
 
+export const presetListsIds = presetLists.map((list) => list.id);
+
 export const colorStyleMap = {
   RED: 'bg-RED',
   ORANGE: 'bg-ORANGE',

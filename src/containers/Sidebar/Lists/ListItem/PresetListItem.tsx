@@ -2,6 +2,8 @@ import { PresetList, Item } from "@/src/common/types";
 import { useState } from "react";
 import ListButton from "./ListButton";
 import { useListInfo } from "@/src/store/useListInfo";
+import { useQuery } from "@tanstack/react-query";
+import { getItems } from "@/src/services/item";
 
 interface IPresetListItem {
   list: PresetList;
@@ -9,14 +11,20 @@ interface IPresetListItem {
 
 const PresetListItem = ({ list }: IPresetListItem) => {
   const { setSelectedList } = useListInfo();
-  const [items, setItems] = useState<Item[]>([]);
-  const { color, icon, name } = list;
+  const { id, color, icon, name } = list;
+
+  const { data: items } = useQuery({
+    queryKey: ['getItems', id],
+    queryFn: () => getItems({
+      listId: id,
+    })
+  })
 
   const selectList = () => {
-    setSelectedList(list);
+    setSelectedList({ ...list, items: items as Item[] });
   };
 
-  return (
+  if (items) return (
     <ListButton
       name={name}
       icon={icon}

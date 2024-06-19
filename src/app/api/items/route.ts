@@ -5,18 +5,23 @@ import dayjs from "dayjs";
 export async function GET (req: NextRequest) {
   const searchParams = req.nextUrl.searchParams;
   const listId = searchParams.get('listId');
+  const isTodayPreset = listId === 'today-list';
+  const isScheduledPreset = listId === 'scheduled-list';
+  const isCheckedPreset = listId === 'checked-list';
   const year = searchParams.get('year');
   const month = searchParams.get('month');
+  const isFromCalendar = year && month;
+  const today = dayjs().startOf('day').toDate();
+  const tomorrow = dayjs(today).add(1, 'day').toDate();
 
   let items;
   try {
-    if (year && month) {
+    if (isFromCalendar) {
       const startDate = dayjs().year(parseInt(year)).month(parseInt(month) - 1).startOf('month').toDate();
       const endDate = dayjs(startDate).endOf('month').toDate();
 
       items = await prisma.item.findMany({
         where: {
-          listId: listId!,
           dateTime: {
             not: null,
             gte: startDate,
@@ -29,15 +34,75 @@ export async function GET (req: NextRequest) {
         }
       });
     } else {
-      items = await prisma.item.findMany({
-        where: {
-          listId: listId!,
-        },
-        include: {
-          tags: true,
-          subItems: true,
-        }
-      });
+      if (isTodayPreset) {
+        items = await prisma.item.findMany({
+          where: {
+            // item의 dateTime이 오늘에 해당하는 것 또는 item의 dateTime이 오늘 이전이지만 checked가 false인 것
+            OR: [
+              {
+                dateTime: {
+                  gte: today,
+                  lt: tomorrow,
+                }
+              },
+              {
+                dateTime: {
+                  lt: today,
+                },
+                checked: false,
+              }
+            ]
+          },
+          include: {
+            tags: true,
+            subItems: true,
+          }
+        });
+      } else if (isScheduledPreset) {
+        items = await prisma.item.findMany({
+          where: {
+            // item의 dateTime이 오늘 이후인 것 또는 item의 dateTime이 오늘 이전이지만 checked가 false인 것
+            OR: [
+              {
+                dateTime: {
+                  gt: today,
+                }
+              },
+              {
+                dateTime: {
+                  lt: today,
+                },
+                checked: false,
+              }
+            ]
+          },
+          include: {
+            tags: true,
+            subItems: true,
+          }
+        });
+      } else if (isCheckedPreset) {
+        items = await prisma.item.findMany({
+          where: {
+            // item의 checked가 true인 것
+            checked: true,
+          },
+          include: {
+            tags: true,
+            subItems: true,
+          }
+        });
+      } else {
+        items = await prisma.item.findMany({
+          where: {
+            ...(listId && { listId }),
+          },
+          include: {
+            tags: true,
+            subItems: true,
+          }
+        });
+      }
     }
     return Response.json(items);
   } catch (error) {

@@ -23,11 +23,14 @@ const Lists = () => {
   useEffect(() => {
     if (data) {
       setLists(data);
-      const currentList = data.find((item) => item.id === selectedList?.id);
-      if (!currentList) {
+      const isFirstRender = !selectedList?.id;
+
+      if (isFirstRender) {
         setSelectedList(data[0]);
       } else {
-        setSelectedList(currentList);
+        const isPresetList = presetLists.find((item) => item.id === selectedList?.id);
+        const isUserMadeList = data.find((item) => item.id === selectedList?.id);
+        setSelectedList(isPresetList as PresetList || isUserMadeList);
       }
     }
   }, [data, selectedList, setLists, setSelectedList]);

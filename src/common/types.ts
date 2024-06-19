@@ -15,6 +15,7 @@ export interface List {
   color: keyof typeof Color;
   items: Item[];
   sections: Section[];
+  isPreset?: boolean;
 }
 
 export interface PresetList {

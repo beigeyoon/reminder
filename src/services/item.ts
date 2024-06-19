@@ -2,7 +2,7 @@ import { Priority } from "../common/enums";
 import { Section, Item, SubItem, Tag } from "../common/types";
 
 export interface GetItemsPayload {
-  listId: string;
+  listId?: string;
   year?: number;
   month?: number;
 }

@@ -10,7 +10,7 @@ import { orderItems } from '@/src/utils/orderItems';
 import { motion, AnimatePresence } from "framer-motion";
 import Drawer from '@/src/components/Drawer';
 import { isPresetListItem } from '@/src/utils/presets';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { getItems } from '@/src/services/item';
 import { addItem, AddItemPayload } from '@/src/services/item';
 
@@ -21,8 +21,6 @@ const ItemsList = () => {
   const [count, setCount] = useState<number>(-1);
   const [checkedItemsCount, setCheckedItemsCount] = useState<number>(0);
   const [isCalanderOpen, setIsCalendarOpen] = useState<boolean>(false);
-
-  const queryClient = useQueryClient();
 
   const { data: items } = useQuery({
     queryKey: ['getItems', selectedList?.id],
@@ -36,8 +34,8 @@ const ItemsList = () => {
   })
 
   useEffect(() => {
-    if (selectedList) setCount(selectedList?.items.length);
-  }, [selectedList]);
+    if (items) setCount(items.length);
+  }, [items]);
 
   useEffect(() => {
     if (items) {
@@ -92,7 +90,7 @@ const ItemsList = () => {
       <div id='items' className='grow overflow-y-auto'>
         <AnimatePresence>
           {orderItems({ items, orderBy: selectedList?.orderBy as keyof typeof OrderBy })
-            .filter((item) => isPresetListItem({ selectedList: selectedList!, item }))
+            // .filter((item) => isPresetListItem({ selectedList: selectedList!, item }))
             .filter((item) => {
               if (showFinishedItems) return true;
               return !item.checked;
