@@ -165,7 +165,7 @@ const ItemForm = ({ item, onClickDeleteItem, onClickItemCheckbox }: IItemForm) =
               <div className='flex flex-col leading-[22px]'>
                 <div className='flex'>
                   <PriorityIcon priority={getValues('priority')!} />
-                  <input id='title' {...register('title')} />
+                  <input id='title' {...register('title')} className='w-full' />
                 </div>
                 <input id='memo' placeholder="메모" {...register('memo')} className='text-gray400' />
                 <input id='url' placeholder="url" {...register('url')} className='text-blue' />
