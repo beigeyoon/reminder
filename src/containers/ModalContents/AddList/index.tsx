@@ -14,7 +14,7 @@ interface IAddList {
 }
 
 const AddList = ({ close, submit, mode = 'add', listInfo }: IAddList) => {
-  const nameRef = useRef(null);
+  const nameRef = useRef<HTMLInputElement>(null);
   const [color, setColor] = useState<keyof typeof Color>('BLUE');
   const [icon, setIcon] = useState<keyof typeof Icon>('LIST');
 
@@ -61,7 +61,7 @@ const AddList = ({ close, submit, mode = 'add', listInfo }: IAddList) => {
         </div>
       </div>
       <div className='flex justify-end gap-[10px]'>
-        <Button onClick={close}>취소</Button>
+        <Button type='button' onClick={close}>취소</Button>
         <Button type='submit'>확인</Button>
       </div>
     </form>
