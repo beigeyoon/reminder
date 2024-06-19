@@ -10,71 +10,61 @@ import { orderItems } from '@/src/utils/orderItems';
 import { motion, AnimatePresence } from "framer-motion";
 import Drawer from '@/src/components/Drawer';
 import { isPresetListItem } from '@/src/utils/presets';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { getItems } from '@/src/services/item';
+import { addItem, AddItemPayload } from '@/src/services/item';
 
-interface IItemsList {
-  itemsData: any[];
-}
-
-const ItemsList = ({ itemsData }: IItemsList) => {
+const ItemsList = () => {
   const { selectedList } = useListInfo();
 
-  const [items, setItems] = useState<any[]>([]);
   const [showFinishedItems, setShowFinishedItems] = useState<boolean>(false);
   const [count, setCount] = useState<number>(-1);
   const [checkedItemsCount, setCheckedItemsCount] = useState<number>(0);
   const [isCalanderOpen, setIsCalendarOpen] = useState<boolean>(false);
 
-  useEffect(() => {
-    setItems(itemsData);
-  }, [itemsData]);
+  const queryClient = useQueryClient();
+
+  const { data: items } = useQuery({
+    queryKey: ['getItems', selectedList?.id],
+    queryFn: () => getItems({
+      listId: selectedList?.id as string,
+    }),
+  });
+
+  const { mutateAsync: createItem } = useMutation({
+    mutationFn: (body: AddItemPayload) => addItem(body),
+  })
 
   useEffect(() => {
     if (selectedList) setCount(selectedList?.items.length);
   }, [selectedList]);
 
   useEffect(() => {
-    const count = items.filter((item) => item.listId === selectedList?.id).filter((item) => item.checked).length;
+    if (items) {
+      const count = items.filter((item) => item.checked).length;
     setCheckedItemsCount(count);
+    }
   }, [items, selectedList]);
 
-  const onClickAddItem = () => {
+  const onClickAddItem = async () => {
     const newItem = {
       listId: selectedList!.id,
       checked: false,
-      title: null,
+      title: '',
       priority: Priority.NO_PRIORITY,
       flagged: false,
       tags: [],
       subItems: [],
     };
-    const copiedItems = [ ...items ];
-    copiedItems.push(newItem);
-    setItems(copiedItems);
-  };
-
-  const onClickDeleteItem = (itemId: string) => {
-    const updatedItems = items.filter((item) => item.id !== itemId);
-    setItems(updatedItems);
-  };
-
-  const onClickItemCheckbox = (itemId: string, isChecked: boolean) => {
-    const updatedItems = items.map((item) => {
-      if (item.id === itemId) {
-        return {
-          ...item,
-          checked: isChecked,
-        };
-      }
-      return item;
-    });
-    setItems(updatedItems);
+    const addedItem = await createItem(newItem);
+    items?.push({ ...newItem, id: addedItem.id, isNewItem: true });
   };
   
   const toggleFinishedItems = () => {
     setShowFinishedItems(!showFinishedItems);
   };
 
-  return (
+  if (items) return (
     <div className='flex flex-col h-svh p-6'>
       <div className='flex justify-end gap-4 pb-6 text-lg text-gray400'>
         <button onClick={onClickAddItem}>
@@ -87,7 +77,6 @@ const ItemsList = ({ itemsData }: IItemsList) => {
       <Drawer
         isOpen={isCalanderOpen}
         close={() => setIsCalendarOpen(false)}
-        onClickItemCheckbox={onClickItemCheckbox}
       />
       <div className='pb-4 flex justify-between text-[36px] font-extrabold'>
         <div>{selectedList?.name}</div>
@@ -116,7 +105,7 @@ const ItemsList = ({ itemsData }: IItemsList) => {
                 exit={{ opacity: 0, height: 0 }}
                 transition={{ duration: 0.2 }}
               >
-                <ItemForm item={item} onClickDeleteItem={onClickDeleteItem} onClickItemCheckbox={onClickItemCheckbox} />
+                <ItemForm item={item} />
               </motion.div>
             )
           )}

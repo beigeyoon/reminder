@@ -9,17 +9,17 @@ import { Item } from '@/src/common/types';
 import CalendarItem from './CalendarItem';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons';
+import { useListInfo } from '@/src/store/useListInfo';
 
-interface ICalendar {
-  onClickItemCheckbox: (itemId: string, isChecked: boolean) => void;
-}
+const Calendar = () => {
+  const { selectedList } = useListInfo();
 
-const Calendar = ({ onClickItemCheckbox }: ICalendar) => {
   const [activeDate, setActiveDate] = useState<Date>(new Date());
 
   const { data: items, isLoading } = useQuery({
     queryKey: ['getItems', activeDate],
     queryFn: () => getItems({
+      listId: selectedList?.id as string,
       year: dayjs(activeDate).year(),
       month: dayjs(activeDate).month() + 1,
     }),
@@ -34,7 +34,7 @@ const Calendar = ({ onClickItemCheckbox }: ICalendar) => {
     
     return <div className='w-[-webkit-fill-available]'>
       {tileItems?.map((item) => (
-        <CalendarItem key={item.id} item={item} onClickItemCheckbox={onClickItemCheckbox} />
+        <CalendarItem key={item.id} item={item} />
       ))}
     </div>
   }

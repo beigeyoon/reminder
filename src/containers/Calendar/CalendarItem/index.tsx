@@ -25,10 +25,9 @@ const colorClassMap = {
 
 interface ICalendarItem {
   item: Item;
-  onClickItemCheckbox: (itemId: string, isChecked: boolean) => void;
 }
 
-const CalendarItem = ({ item, onClickItemCheckbox }: ICalendarItem) => {
+const CalendarItem = ({ item }: ICalendarItem) => {
   const { lists } = useListInfo();
 
   const [isChecked, setIsChecked] = useState<boolean>(item.checked);
@@ -41,12 +40,11 @@ const CalendarItem = ({ item, onClickItemCheckbox }: ICalendarItem) => {
   const onClickCheckbox = async (e: CheckboxChangeEvent) => {
     e.stopPropagation();
     const result = await editItem({
-      id: item.id,
+      id: item.id as string,
       checked: e.target.checked,
     });
     if (result.ok) {
       setIsChecked(e.target.checked);
-      onClickItemCheckbox(item.id, e.target.checked);
     }
   };
 

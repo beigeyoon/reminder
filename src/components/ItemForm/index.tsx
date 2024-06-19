@@ -26,20 +26,18 @@ import { useSession } from "next-auth/react";
 
 interface IItemForm {
   item: Item;
-  onClickDeleteItem: (itemId: string) => void;
-  onClickItemCheckbox: (itemId: string, isChecked: boolean) => void;
 }
 
-const ItemForm = ({ item, onClickDeleteItem, onClickItemCheckbox }: IItemForm) => {
+const ItemForm = ({ item }: IItemForm) => {
   const { status, data: session } = useSession();
-  const userId = session?.user.id;
+  const userId = session?.user?.id;
 
-  const isNewItem = item.id === undefined;
+  const isNewItem = item.isNewItem;
   const { selectedList } = useListInfo();
   const { expandedItems, setExpandedItems } = useControl();
   const listId = selectedList?.id;
   
-  const [showSubItems, setShowSubItems] = useState<boolean>(expandedItems.includes(item.id));
+  const [showSubItems, setShowSubItems] = useState<boolean>(expandedItems.includes(item.id as string));
   const [isActive, setIsActive] = useState<boolean>(isNewItem ? true : false);
   const itemFormRef = useRef<HTMLFormElement>(null);
 
@@ -53,10 +51,6 @@ const ItemForm = ({ item, onClickDeleteItem, onClickItemCheckbox }: IItemForm) =
       handleSubmit(onSubmit)();
       setIsActive(false);
     }
-  })
-
-  const { mutateAsync: createItem } = useMutation({
-    mutationFn: (body: AddItemPayload) => addItem(body),
   });
 
   const { mutateAsync: editItem } = useMutation({
@@ -99,45 +93,33 @@ const ItemForm = ({ item, onClickDeleteItem, onClickItemCheckbox }: IItemForm) =
   const onClickCheckbox = async (e: CheckboxChangeEvent) => {
     e.stopPropagation();
     const result = await editItem({
-      id: item.id,
+      id: item.id as string,
       checked: e.target.checked,
     });
     if (result.ok) {
       setValue('checked', e.target.checked);
-      onClickItemCheckbox(item.id, e.target.checked);
     };
   };
 
   const onSubmit: SubmitHandler<any> = useCallback((data) => {
-    if (isNewItem) {
-      createItem({
-        listId,
-        userId,
-        ...data,
-      });
-    } else {
-      editItem({
-        id: item.id,
-        userId,
-        ...data,
-        tags: updateTagLists(getTagsArray(item?.tags), data.tags),
-      });
-    }
-  }, [createItem, editItem, isNewItem, item.id, item?.tags, listId, userId]);
+    editItem({
+      id: item.id,
+      userId,
+      ...data,
+      tags: updateTagLists(getTagsArray(item?.tags), data.tags),
+    });
+  }, [editItem, item.id, item?.tags, listId, userId]);
 
   const onDelete = useCallback(async (itemId: string) => {
     const result = await removeItem({ id: itemId });
-    if (result.ok) {
-      onClickDeleteItem(itemId);
-    }
-  }, [onClickDeleteItem, removeItem]);
+  }, [removeItem]);
 
   const menuItems: ContextMenuItem[] = [
     {
       id: 'delete-list',
       caption: '아이템 삭제',
       type: 'normal',
-      onClick: () => onDelete(item.id),
+      onClick: () => onDelete(item.id as string),
     },
   ];
 
@@ -146,7 +128,7 @@ const ItemForm = ({ item, onClickDeleteItem, onClickItemCheckbox }: IItemForm) =
     if (showSubItems) {
       setExpandedItems(expandedItems.filter((id) => id !== item.id));
     } else {
-      setExpandedItems([...expandedItems, item.id]);
+      setExpandedItems([...expandedItems, item.id as string]);
     }
   };
 
@@ -165,7 +147,7 @@ const ItemForm = ({ item, onClickDeleteItem, onClickItemCheckbox }: IItemForm) =
               <div className='flex flex-col leading-[22px]'>
                 <div className='flex'>
                   <PriorityIcon priority={getValues('priority')!} />
-                  <input id='title' {...register('title')} className='w-full' />
+                  <input id='title' {...register('title')} className='w-full' autoFocus={isNewItem} />
                 </div>
                 <input id='memo' placeholder="메모" {...register('memo')} className='text-gray400' />
                 <input id='url' placeholder="url" {...register('url')} className='text-blue' />

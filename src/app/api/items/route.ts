@@ -4,26 +4,41 @@ import dayjs from "dayjs";
 
 export async function GET (req: NextRequest) {
   const searchParams = req.nextUrl.searchParams;
+  const listId = searchParams.get('listId');
   const year = searchParams.get('year');
   const month = searchParams.get('month');
 
-  const startDate = dayjs().year(year).month(parseInt(month) - 1).startOf('month').toDate();
-  const endDate = dayjs(startDate).endOf('month').toDate();
-
+  let items;
   try {
-    const items = await prisma.item.findMany({
-      where: {
-        dateTime: {
-          not: null,
-          gte: startDate,
-          lt: endDate,
+    if (year && month) {
+      const startDate = dayjs().year(parseInt(year)).month(parseInt(month) - 1).startOf('month').toDate();
+      const endDate = dayjs(startDate).endOf('month').toDate();
+
+      items = await prisma.item.findMany({
+        where: {
+          listId: listId!,
+          dateTime: {
+            not: null,
+            gte: startDate,
+            lt: endDate,
+          }
+        },
+        include: {
+          tags: true,
+          subItems: true,
         }
-      },
-      include: {
-        tags: true,
-        subItems: true,
-      }
-    });
+      });
+    } else {
+      items = await prisma.item.findMany({
+        where: {
+          listId: listId!,
+        },
+        include: {
+          tags: true,
+          subItems: true,
+        }
+      });
+    }
     return Response.json(items);
   } catch (error) {
     return Response.json(error);

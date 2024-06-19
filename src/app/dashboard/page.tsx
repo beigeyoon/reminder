@@ -23,7 +23,7 @@ const Dashboard = async () => {
 
   return (
     <div className='grow'>
-      <ItemsList itemsData={items || []} />
+      <ItemsList />
     </div>
   )
 }

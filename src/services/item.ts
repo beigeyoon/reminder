@@ -2,8 +2,9 @@ import { Priority } from "../common/enums";
 import { Section, Item, SubItem, Tag } from "../common/types";
 
 export interface GetItemsPayload {
-  year: number;
-  month: number;
+  listId: string;
+  year?: number;
+  month?: number;
 }
 
 export interface AddItemPayload {
@@ -49,8 +50,12 @@ export interface DeleteItemPayload {
   id: string;
 }
 
-export const getItems = async ({ year, month }: GetItemsPayload): Promise<Item[]> => {
-  const response = await fetch(`${process.env.NEXT_PUBLIC_FE_URL}/api/items?&year=${year}&month=${month}`, {
+export const getItems = async ({ listId, year, month }: GetItemsPayload): Promise<Item[]> => {
+  const hasDateInfo = year && month;
+  const requestUrl = hasDateInfo
+    ? `${process.env.NEXT_PUBLIC_FE_URL}/api/items?listId=${listId}&year=${year}&month=${month}`
+    : `${process.env.NEXT_PUBLIC_FE_URL}/api/items?listId=${listId}`;
+  const response = await fetch(requestUrl, {
     method: 'GET',
   });
   if (!response.ok) {

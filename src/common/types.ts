@@ -36,9 +36,9 @@ export interface Section {
 }
 
 export interface Item {
-  id: string;
-  createdTime: any;
-  updatedTime: any;
+  id?: string;
+  createdTime?: any;
+  updatedTime?: any;
   checked: boolean;
   title: string;
   memo?: string;
@@ -54,6 +54,7 @@ export interface Item {
   sectionId?: string;
   image_url?: string;
   subItems: SubItem[];
+  isNewItem?: boolean;
 }
 
 export interface SubItem {
