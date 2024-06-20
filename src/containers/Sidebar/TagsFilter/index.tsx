@@ -10,17 +10,17 @@ const TagsFilter = () => {
   const { data: session } = useSession();
   const userName = session?.user?.name;
 
-  const { setTagInfo } = useTagInfo();
+  const { tagInfo, setTagInfo } = useTagInfo();
 
   const { data: userInfo } = useQuery({
-    queryKey: ['getUserInfo'],
+    queryKey: ['getUserInfo', userName],
     queryFn: () => getUserInfo({ name: userName as string }),
   });
 
   const onClickTag = (tag: Tag) => {
     setTagInfo(tag);
   };
-
+  
   return (
     <div>
       <div className='text-sm mb-[8px]'>태그</div>
@@ -29,7 +29,8 @@ const TagsFilter = () => {
           key={tag.name}
           style={{
             userSelect: 'none',
-            backgroundColor: '#cdcdcd',
+            backgroundColor: tagInfo?.id === tag.id ? '#459fff' : '#cdcdcd',
+            color: tagInfo?.id === tag.id ? '#ffffff' : '#262626',
             padding: 6,
             lineHeight: 1,
             borderRadius: 6,

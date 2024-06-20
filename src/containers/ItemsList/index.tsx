@@ -9,13 +9,14 @@ import { faCalendar } from '@fortawesome/free-regular-svg-icons';
 import { orderItems } from '@/src/utils/orderItems';
 import { motion, AnimatePresence } from "framer-motion";
 import Drawer from '@/src/components/Drawer';
-import { isPresetListItem } from '@/src/utils/presets';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { getItems } from '@/src/services/item';
 import { addItem, AddItemPayload } from '@/src/services/item';
+import { useTagInfo } from '@/src/store/useTagInfo';
 
 const ItemsList = () => {
   const { selectedList } = useListInfo();
+  const { tagInfo, setTagInfo } = useTagInfo();
 
   const [showFinishedItems, setShowFinishedItems] = useState<boolean>(false);
   const [count, setCount] = useState<number>(-1);
@@ -23,9 +24,10 @@ const ItemsList = () => {
   const [isCalanderOpen, setIsCalendarOpen] = useState<boolean>(false);
 
   const { data: items } = useQuery({
-    queryKey: ['getItems', selectedList?.id],
+    queryKey: ['getItems', selectedList?.id, tagInfo?.id],
     queryFn: () => getItems({
-      listId: selectedList?.id as string,
+      listId: selectedList?.id,
+      tagId: tagInfo?.id,
     }),
   });
 
@@ -36,15 +38,22 @@ const ItemsList = () => {
   useEffect(() => {
     if (items) {
       setCount(items.length);
-      const count = items.filter((item) => item.checked).length;
+      const count = items?.filter((item) => item.checked).length;
       setCheckedItemsCount(count);
     }
   }, [items]);
 
   useEffect(() => {
+    setTagInfo(null);
     if (selectedList?.id === 'checked-list') setShowFinishedItems(true);
     if (selectedList?.id === 'scheduled-list') setShowFinishedItems(false);
-  }, [selectedList?.id])
+  }, [selectedList?.id, setTagInfo]);
+
+  useEffect(() => {
+    if (tagInfo?.id) {
+      
+    }
+  }, [tagInfo?.id]);
 
   const onClickAddItem = async () => {
     const newItem = {
@@ -79,7 +88,7 @@ const ItemsList = () => {
         close={() => setIsCalendarOpen(false)}
       />
       <div className='pb-4 flex justify-between text-[36px] font-extrabold'>
-        <div>{selectedList?.name}</div>
+        <div>{tagInfo ? tagInfo.name : selectedList?.name}</div>
         <div>{count}</div>
       </div>
       <div className='flex justify-between py-3 border-b border-gray200 text-gray500 mb-3'>

@@ -8,15 +8,20 @@ export async function GET (req: NextRequest) {
   const isTodayPreset = listId === 'today-list';
   const isScheduledPreset = listId === 'scheduled-list';
   const isCheckedPreset = listId === 'checked-list';
-  const year = searchParams.get('year');
-  const month = searchParams.get('month');
-  const isFromCalendar = year && month;
+  const year = searchParams.get('year') as string;
+  const month = searchParams.get('month') as string;
+  const filterByCalendar = year.length > 0 && month.length > 0;
+  const tagId = searchParams.get('tagId') as string;
+  const keyword = searchParams.get('keyword') as string;
+  const filterByTagId = tagId.length > 0;
+  const filterByKeyword = keyword.length > 0;
+
   const today = dayjs().startOf('day').toDate();
   const tomorrow = dayjs(today).add(1, 'day').toDate();
 
   let items;
   try {
-    if (isFromCalendar) {
+    if (filterByCalendar) {
       const startDate = dayjs().year(parseInt(year)).month(parseInt(month) - 1).startOf('month').toDate();
       const endDate = dayjs(startDate).endOf('month').toDate();
 
@@ -32,6 +37,48 @@ export async function GET (req: NextRequest) {
           tags: true,
           subItems: true,
         }
+      });
+    } else if (filterByTagId) {
+      // 입력된 TagId에 해당하는 Tag를 포함하는 아이템
+      items = await prisma.item.findMany({
+        where: {
+          tags: {
+            some: {
+              id: tagId,
+            },
+          },
+        },
+        include: {
+          tags: true,
+          subItems: true,
+        },
+      });
+    } else if (filterByKeyword) {
+      // 입력된 keyword를 item의 title이나 url이나 memo가 포함하는 경우
+      items = await prisma.item.findMany({
+        where: {
+          OR: [
+            {
+              title: {
+                contains: keyword,
+              },
+            },
+            {
+              url: {
+                contains: keyword,
+              },
+            },
+            {
+              memo: {
+                contains: keyword,
+              },
+            },
+          ],
+        },
+        include: {
+          tags: true,
+          subItems: true,
+        },
       });
     } else {
       if (isTodayPreset) {
@@ -110,6 +157,7 @@ export async function GET (req: NextRequest) {
     }
     return Response.json(items);
   } catch (error) {
+    console.log('🩷🩷🩷🩷🩷', error);
     return Response.json(error);
   }
 };

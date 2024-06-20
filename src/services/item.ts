@@ -5,6 +5,8 @@ export interface GetItemsPayload {
   listId?: string;
   year?: number;
   month?: number;
+  tagId?: string;
+  keyword?: string;
 }
 
 export interface AddItemPayload {
@@ -50,12 +52,8 @@ export interface DeleteItemPayload {
   id: string;
 }
 
-export const getItems = async ({ listId, year, month }: GetItemsPayload): Promise<Item[]> => {
-  const hasDateInfo = year && month;
-  const requestUrl = hasDateInfo
-    ? `${process.env.NEXT_PUBLIC_FE_URL}/api/items?listId=${listId}&year=${year}&month=${month}`
-    : `${process.env.NEXT_PUBLIC_FE_URL}/api/items?listId=${listId}`;
-  const response = await fetch(requestUrl, {
+export const getItems = async ({ listId, year, month, tagId, keyword }: GetItemsPayload): Promise<Item[]> => {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_FE_URL}/api/items?listId=${listId || ''}&year=${year || ''}&month=${month || ''}&tagId=${tagId || ''}&keyword=${keyword || ''}`, {
     method: 'GET',
   });
   if (!response.ok) {
