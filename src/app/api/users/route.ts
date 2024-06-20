@@ -19,6 +19,7 @@ export async function GET (req: NextRequest) {
         id: true,
         name: true,
         password: true,
+        tags: true,
       } as UserSelect
     });
     return Response.json(userInfo);

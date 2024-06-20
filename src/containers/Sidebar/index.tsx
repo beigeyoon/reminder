@@ -2,6 +2,8 @@ import SearchInput from "@/src/containers/Sidebar/SearchInput";
 import AddListButton from "./AddListButton";
 import Lists from "./Lists";
 import UserButton from './UserButton';
+import TagsFilter from "./TagsFilter";
+
 
 const Sidebar = () => {
   return (
@@ -10,6 +12,7 @@ const Sidebar = () => {
         <UserButton />
         <SearchInput />
         <Lists />
+        <TagsFilter />
       </div>
       <AddListButton />
     </div>
