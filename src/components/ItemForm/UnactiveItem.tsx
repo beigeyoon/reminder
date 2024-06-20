@@ -2,12 +2,17 @@ import { PriorityIcon } from './PriorityIcon';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLink } from "@fortawesome/free-solid-svg-icons";
 import dayjs from 'dayjs';
+import { useListInfo } from '@/src/store/useListInfo';
+import { useCallback } from 'react';
 
 interface IUnactiveItem {
   item: any;
+  listId: string;
 }
 
-const UnactiveItem = ({ item }: IUnactiveItem) => {
+const UnactiveItem = ({ item, listId }: IUnactiveItem) => {
+  const { lists, selectedList } = useListInfo();
+
   const addProtocolToUrl = (url: string) => {
     if (url.startsWith('http')) {
       return url;
@@ -25,11 +30,19 @@ const UnactiveItem = ({ item }: IUnactiveItem) => {
     isNotOverdue: 'text-gray400',
   }
 
+  const getListNameFromListId = useCallback((listId: string) => {
+    const list = lists?.find((list) => list.id === listId);
+    return list?.name;
+  }, [lists, listId]);
+  
   return (
     <div className='flex flex-col leading-[22px]'>
       <div className='flex'>
         <PriorityIcon priority={item.priority!} />
         <div>{item.title}</div>
+        {(selectedList?.id === 'today-list' || selectedList?.id === 'scheduled-list' || selectedList?.id === 'checked-list') && (
+          <div className='pl-[4px] text-gray300'>{getListNameFromListId(listId)}</div>
+        )}
       </div>
       {item.memo && <div className='text-gray400'>{item.memo}</div>}
       {item.url && <div className='text-blue'>
