@@ -34,15 +34,16 @@ const ItemsList = () => {
   })
 
   useEffect(() => {
-    if (items) setCount(items.length);
+    if (items) {
+      setCount(items.length);
+      const count = items.filter((item) => item.checked).length;
+      setCheckedItemsCount(count);
+    }
   }, [items]);
 
   useEffect(() => {
-    if (items) {
-      const count = items.filter((item) => item.checked).length;
-    setCheckedItemsCount(count);
-    }
-  }, [items, selectedList]);
+    if (selectedList?.id === 'checked-list') setShowFinishedItems(true);
+  }, [selectedList?.id])
 
   const onClickAddItem = async () => {
     const newItem = {
@@ -85,7 +86,9 @@ const ItemsList = () => {
           <span className='text-gray300'>{checkedItemsCount}개 완료됨 ∙ </span>
           <button>지우기</button>
         </div>
-        <button onClick={toggleFinishedItems}>완료된 항목 {showFinishedItems ? '가리기' : '보기'}</button>
+        {selectedList?.id !== 'checked-list' && (
+          <button onClick={toggleFinishedItems}>완료된 항목 {showFinishedItems ? '가리기' : '보기'}</button>
+        )}
       </div>
       <div id='items' className='grow overflow-y-auto'>
         <AnimatePresence>
