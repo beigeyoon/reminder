@@ -43,6 +43,7 @@ const ItemsList = () => {
 
   useEffect(() => {
     if (selectedList?.id === 'checked-list') setShowFinishedItems(true);
+    if (selectedList?.id === 'scheduled-list') setShowFinishedItems(false);
   }, [selectedList?.id])
 
   const onClickAddItem = async () => {
@@ -83,10 +84,15 @@ const ItemsList = () => {
       </div>
       <div className='flex justify-between py-3 border-b border-gray200 text-gray500 mb-3'>
         <div className='font-bold'>
-          <span className='text-gray300'>{checkedItemsCount}개 완료됨 ∙ </span>
-          <button>지우기</button>
+          <span className='text-gray300'>{checkedItemsCount}개 완료됨</span>
+          {selectedList?.id === 'checked-list' && (
+            <>
+              <span className='text-gray300'>{` ∙ `}</span>
+              <button>지우기</button>
+            </>
+          )}
         </div>
-        {selectedList?.id !== 'checked-list' && (
+        {(selectedList?.id !== 'checked-list' && selectedList?.id !== 'scheduled-list') && (
           <button onClick={toggleFinishedItems}>완료된 항목 {showFinishedItems ? '가리기' : '보기'}</button>
         )}
       </div>
