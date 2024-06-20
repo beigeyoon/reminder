@@ -37,7 +37,7 @@ export async function GET (req: NextRequest) {
       if (isTodayPreset) {
         items = await prisma.item.findMany({
           where: {
-            // item의 dateTime이 오늘에 해당하는 것 또는 item의 dateTime이 오늘 이전이지만 checked가 false인 것
+             // item의 dateTime이 오늘에 해당하는 것 또는 item의 dateTime이 오늘 이전이지만 checked가 false인 것
             OR: [
               {
                 dateTime: {
@@ -61,12 +61,16 @@ export async function GET (req: NextRequest) {
       } else if (isScheduledPreset) {
         items = await prisma.item.findMany({
           where: {
-            // item의 dateTime이 오늘 이후인 것 또는 item의 dateTime이 오늘 이전이지만 checked가 false인 것
+            // item의 dateTime이 오늘 이후인 것 또는 item의 dateTime이 오늘 이전이지만 checked가 false인 것, 그리고 item의 dateTime이 null인 것, 그리고 item의 dateTime이 오늘 이후이지만 checked가 true라면 포함하지 않음
             OR: [
               {
                 dateTime: {
                   gt: today,
-                }
+                },
+                checked: false,
+              },
+              {
+                dateTime: null,
               },
               {
                 dateTime: {
