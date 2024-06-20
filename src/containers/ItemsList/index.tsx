@@ -13,47 +13,54 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { getItems } from '@/src/services/item';
 import { addItem, AddItemPayload } from '@/src/services/item';
 import { useTagInfo } from '@/src/store/useTagInfo';
+import { useKeyword } from '@/src/store/useKeyword';
 
 const ItemsList = () => {
   const { selectedList } = useListInfo();
   const { tagInfo, setTagInfo } = useTagInfo();
+  const { keyword, setKeyword } = useKeyword();
 
   const [showFinishedItems, setShowFinishedItems] = useState<boolean>(false);
   const [count, setCount] = useState<number>(-1);
   const [checkedItemsCount, setCheckedItemsCount] = useState<number>(0);
   const [isCalanderOpen, setIsCalendarOpen] = useState<boolean>(false);
+  const [title, setTitle] = useState<string>('');
 
   const { data: items } = useQuery({
-    queryKey: ['getItems', selectedList?.id, tagInfo?.id],
+    queryKey: ['getItems', selectedList?.id, tagInfo?.id, keyword],
     queryFn: () => getItems({
       listId: selectedList?.id,
       tagId: tagInfo?.id,
+      keyword,
     }),
   });
 
   const { mutateAsync: createItem } = useMutation({
     mutationFn: (body: AddItemPayload) => addItem(body),
-  })
+  });
 
   useEffect(() => {
     if (items) {
       setCount(items.length);
       const count = items?.filter((item) => item.checked).length;
       setCheckedItemsCount(count);
+      
+      if (tagInfo?.id) {
+        setTitle('#' + tagInfo?.name);
+      } else if (keyword.length > 0) {
+        setTitle(`'${keyword}'에 대한 검색 결과`);
+      } else {
+        setTitle(selectedList?.name as string);
+      }
     }
-  }, [items]);
+  }, [items, keyword, selectedList?.name, tagInfo?.id, tagInfo?.name]);
 
   useEffect(() => {
     setTagInfo(null);
+    setKeyword('');
     if (selectedList?.id === 'checked-list') setShowFinishedItems(true);
     if (selectedList?.id === 'scheduled-list') setShowFinishedItems(false);
-  }, [selectedList?.id, setTagInfo]);
-
-  useEffect(() => {
-    if (tagInfo?.id) {
-      
-    }
-  }, [tagInfo?.id]);
+  }, [selectedList?.id, setKeyword, setTagInfo]);
 
   const onClickAddItem = async () => {
     const newItem = {
@@ -88,7 +95,7 @@ const ItemsList = () => {
         close={() => setIsCalendarOpen(false)}
       />
       <div className='pb-4 flex justify-between text-[36px] font-extrabold'>
-        <div>{tagInfo ? tagInfo.name : selectedList?.name}</div>
+        <div>{title}</div>
         <div>{count}</div>
       </div>
       <div className='flex justify-between py-3 border-b border-gray200 text-gray500 mb-3'>
