@@ -16,6 +16,15 @@ const UnactiveItem = ({ item }: IUnactiveItem) => {
     }
   }
 
+  const isOverdue = (dateTime: string) => {
+    return dayjs(dateTime).isBefore(dayjs().startOf('day'));
+  }
+
+  const dateTimeColorStyle = {
+    isOverdue: 'text-RED',
+    isNotOverdue: 'text-gray400',
+  }
+
   return (
     <div className='flex flex-col leading-[22px]'>
       <div className='flex'>
@@ -37,7 +46,7 @@ const UnactiveItem = ({ item }: IUnactiveItem) => {
         </div>
       )}
       {item.dateTime && (
-        <div className='inline-block text-gray400'>
+        <div className={`inline-block ${dateTimeColorStyle[isOverdue(item.dateTime) ? 'isOverdue' : 'isNotOverdue']}`}>
           {dayjs(item.dateTime).format('YYYY. M. D.')}
           {item.hasTime && ' ' + dayjs(item.dateTime).format('A h:mm')}
         </div>
