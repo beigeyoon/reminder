@@ -84,10 +84,6 @@
   }
 }
 
-.react-calendar__tile--active {
-  background-color: #e0e0e0; /* Active date color */
-}
-
 .react-calendar__tile:enabled:hover {
   background-color: #e0e0e0; /* Hover effect */
 }
