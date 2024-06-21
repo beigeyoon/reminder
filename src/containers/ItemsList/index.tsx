@@ -14,8 +14,12 @@ import { getItems } from '@/src/services/item';
 import { addItem, AddItemPayload } from '@/src/services/item';
 import { useTagInfo } from '@/src/store/useTagInfo';
 import { useKeyword } from '@/src/store/useKeyword';
+import { useSession } from "next-auth/react";
 
 const ItemsList = () => {
+  const { status, data: session } = useSession();
+  const userId = session?.user?.id;
+
   const { selectedList } = useListInfo();
   const { tagInfo, setTagInfo } = useTagInfo();
   const { keyword, setKeyword } = useKeyword();
@@ -27,11 +31,12 @@ const ItemsList = () => {
   const [title, setTitle] = useState<string>('');
 
   const { data: items } = useQuery({
-    queryKey: ['getItems', selectedList?.id, tagInfo?.id, keyword],
+    queryKey: ['getItems', selectedList?.id, tagInfo?.id, keyword, userId],
     queryFn: () => getItems({
       listId: selectedList?.id,
       tagId: tagInfo?.id,
       keyword,
+      userId,
     }),
   });
 

@@ -24,9 +24,12 @@ const Lists = () => {
     if (data) {
       setLists(data);
       const isFirstRender = !selectedList?.id;
+      const hasNoList = data.length === 0;
 
       if (isFirstRender) {
-        setSelectedList(data[0]);
+        if (hasNoList) {
+          setSelectedList(presetLists[0]);
+        } else setSelectedList(data[0]);
       } else {
         const isPresetList = presetLists.find((item) => item.id === selectedList?.id);
         const isUserMadeList = data.find((item) => item.id === selectedList?.id);

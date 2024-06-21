@@ -7,6 +7,7 @@ export interface GetItemsPayload {
   month?: number;
   tagId?: string;
   keyword?: string;
+  userId?: string;
 }
 
 export interface AddItemPayload {
@@ -52,8 +53,8 @@ export interface DeleteItemPayload {
   id: string;
 }
 
-export const getItems = async ({ listId, year, month, tagId, keyword }: GetItemsPayload): Promise<Item[]> => {
-  const response = await fetch(`${process.env.NEXT_PUBLIC_FE_URL}/api/items?listId=${listId || ''}&year=${year || ''}&month=${month || ''}&tagId=${tagId || ''}&keyword=${keyword || ''}`, {
+export const getItems = async ({ listId, year, month, tagId, keyword, userId }: GetItemsPayload): Promise<Item[]> => {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_FE_URL}/api/items?listId=${listId || ''}&year=${year || ''}&month=${month || ''}&tagId=${tagId || ''}&keyword=${keyword || ''}&userId=${userId || ''}`, {
     method: 'GET',
   });
   if (!response.ok) {

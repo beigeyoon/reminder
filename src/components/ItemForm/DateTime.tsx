@@ -6,7 +6,6 @@ import dayjs from "dayjs";
 import { useController } from "react-hook-form";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClock } from "@fortawesome/free-regular-svg-icons";
-import { toKoreanTime } from "@/src/utils/toKoreanTime";
 
 const DateTime = forwardRef(({ ...props }: FieldValues) => {
   const { onChange: onChangeDateTime, value, control } = props;
@@ -21,16 +20,14 @@ const DateTime = forwardRef(({ ...props }: FieldValues) => {
 
   const onChangeDate: DatePickerProps['onChange'] = (date) => {
     setTimeSectionIsVisible(date ? true : false);
-    const koreaTimeDate = toKoreanTime(date);
-    onChangeDateTime(koreaTimeDate);
+    onChangeDateTime(date);
   };
   const onChangeTime: TimePickerProps['onChange'] = (time) => {
     if (time) {
-      const koreaTimeDateTime = toKoreanTime(time);
-      onChangeDateTime(koreaTimeDateTime);
+      onChangeDateTime(time);
     } else {
       onChangeHasTime(false);
-      const timeInitializedDateTime = toKoreanTime(dayjs(value).startOf('day'));
+      const timeInitializedDateTime = dayjs(value).startOf('day');
       onChangeDateTime(timeInitializedDateTime);
     }
   };
@@ -46,7 +43,7 @@ return (
         variant="filled"
         className='w-[130px]'
         onChange={onChangeDate}
-        defaultValue={value ? toKoreanTime(dayjs(value)) : null}
+        defaultValue={value ? dayjs(value) : null}
         format={'YYYY. M. D.'}
         getPopupContainer={(trigger) => trigger}
       />
@@ -56,7 +53,7 @@ return (
             variant='filled'
             className='w-[110px]'
             onChange={onChangeTime}
-            defaultValue={value ? toKoreanTime(dayjs(value)) : null}
+            defaultValue={value ? dayjs(value) : null}
             format={'A h:mm'}
             getPopupContainer={(trigger) => trigger}
           />

@@ -15,6 +15,7 @@ export async function GET (req: NextRequest) {
   const keyword = searchParams.get('keyword') as string;
   const filterByTagId = tagId.length > 0;
   const filterByKeyword = keyword.length > 0;
+  const userId = searchParams.get('userId') as string;
 
   const today = dayjs().startOf('day').toDate();
   const tomorrow = dayjs(today).add(1, 'day').toDate();
@@ -24,9 +25,12 @@ export async function GET (req: NextRequest) {
     if (filterByCalendar) {
       const startDate = dayjs().year(parseInt(year)).month(parseInt(month) - 1).startOf('month').toDate();
       const endDate = dayjs(startDate).endOf('month').toDate();
-
+      // item의 List가 입력된 userId와 매칭되어야 함
       items = await prisma.item.findMany({
         where: {
+          list: {
+            userId: userId,
+          },
           dateTime: {
             not: null,
             gte: startDate,
@@ -42,6 +46,9 @@ export async function GET (req: NextRequest) {
       // 입력된 TagId에 해당하는 Tag를 포함하는 아이템
       items = await prisma.item.findMany({
         where: {
+          list: {
+            userId: userId,
+          },
           tags: {
             some: {
               id: tagId,
@@ -57,6 +64,9 @@ export async function GET (req: NextRequest) {
       // 입력된 keyword를 item의 title이나 url이나 memo가 포함하는 경우
       items = await prisma.item.findMany({
         where: {
+          list: {
+            userId: userId,
+          },
           OR: [
             {
               title: {
@@ -84,6 +94,9 @@ export async function GET (req: NextRequest) {
       if (isTodayPreset) {
         items = await prisma.item.findMany({
           where: {
+            list: {
+              userId: userId,
+            },
              // item의 dateTime이 오늘에 해당하는 것 또는 item의 dateTime이 오늘 이전이지만 checked가 false인 것
             OR: [
               {
@@ -108,6 +121,9 @@ export async function GET (req: NextRequest) {
       } else if (isScheduledPreset) {
         items = await prisma.item.findMany({
           where: {
+            list: {
+              userId: userId,
+            },
             // item의 dateTime이 오늘 이후인 것 또는 item의 dateTime이 오늘 이전이지만 checked가 false인 것, 그리고 item의 dateTime이 null인 것, 그리고 item의 dateTime이 오늘 이후이지만 checked가 true라면 포함하지 않음
             OR: [
               {
@@ -135,6 +151,9 @@ export async function GET (req: NextRequest) {
       } else if (isCheckedPreset) {
         items = await prisma.item.findMany({
           where: {
+            list: {
+              userId: userId,
+            },
             // item의 checked가 true인 것
             checked: true,
           },
@@ -157,7 +176,6 @@ export async function GET (req: NextRequest) {
     }
     return Response.json(items);
   } catch (error) {
-    console.log('🩷🩷🩷🩷🩷', error);
     return Response.json(error);
   }
 };

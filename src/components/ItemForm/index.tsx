@@ -7,7 +7,7 @@ import FlagButton from "./FlagButton";
 import Tags from "./Tags";
 import { Checkbox } from "antd";
 import { InvalidateQueryFilters, useMutation, useQueryClient } from "@tanstack/react-query";
-import { AddItemPayload, addItem, UpdateItemPayload, updateItem, DeleteItemPayload, deleteItem } from "@/src/services/item";
+import { UpdateItemPayload, updateItem, DeleteItemPayload, deleteItem } from "@/src/services/item";
 import { useListInfo } from "@/src/store/useListInfo";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { getTagsArray, updateTagLists } from "@/src/utils/getTagsArray";

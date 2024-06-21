@@ -10,18 +10,23 @@ import CalendarItem from './CalendarItem';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons';
 import { useListInfo } from '@/src/store/useListInfo';
+import { useSession } from "next-auth/react";
 
 const Calendar = () => {
+  const { status, data: session } = useSession();
+  const userId = session?.user?.id;
+
   const { selectedList } = useListInfo();
 
   const [activeDate, setActiveDate] = useState<Date>(new Date());
 
   const { data: items, isLoading } = useQuery({
-    queryKey: ['getItems', activeDate],
+    queryKey: ['getItems', selectedList?.id, activeDate, userId],
     queryFn: () => getItems({
       listId: selectedList?.id as string,
       year: dayjs(activeDate).year(),
       month: dayjs(activeDate).month() + 1,
+      userId,
     }),
     select: (data) => {
       return groupItemsByDate(data);
