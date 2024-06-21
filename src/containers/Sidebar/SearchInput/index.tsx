@@ -15,6 +15,7 @@ const SearchInput = () => {
       if (inputValue.length > 0) {
         setSelectedTag(null)
         setSearchKeyword(inputValue);
+        setInputValue('');
       }
     }
   };
