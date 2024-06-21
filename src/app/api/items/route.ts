@@ -306,13 +306,46 @@ export async function PUT (req: NextRequest) {
   }
 };
 
-export async function DELETE (req: NextRequest) {
+export async function DELETE(req: NextRequest) {
   const { ids } = await req.json();
   try {
-    const deletedItems = await prisma.$transaction(
-      ids.map((id: string) => prisma.item.delete({ where: { id: id, checked: true } }))
-    );
-    return Response.json({ ok: true });
+    const deletedItems = await prisma.$transaction(async (prisma) => {
+      const itemsToDelete = await prisma.item.findMany({
+        where: {
+          id: { in: ids },
+          checked: true,
+        },
+        include: {
+          tags: true,
+        }
+      });
+
+      const deletePromises = itemsToDelete.map(item => 
+        prisma.item.delete({
+          where: { id: item.id }
+        })
+      );
+      const deletedItems = await Promise.all(deletePromises);
+
+      const tagIdsToCheck = Array.from(new Set(itemsToDelete.flatMap(item => item.tags.map(tag => tag.id))));
+
+      const tagsToDelete = await prisma.tag.findMany({
+        where: {
+          id: { in: tagIdsToCheck },
+          items: { none: {} }
+        }
+      });
+
+      const deleteTagPromises = tagsToDelete.map(tag => 
+        prisma.tag.delete({
+          where: { id: tag.id }
+        })
+      );
+      await Promise.all(deleteTagPromises);
+      return deletedItems;
+    });
+
+    return Response.json({ ok: true, items: deletedItems });
   } catch (error) {
     return Response.json({ ok: false, error });
   }
