@@ -1,18 +1,21 @@
 'use client'
 import Input from "@/src/components/Input";
-import { useKeyword } from "@/src/store/useKeyword";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons/faMagnifyingGlass";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
+import { useControl } from '@/src/store/useControl';
 
 const SearchInput = () => {
-  const { setKeyword } = useKeyword();
+  const { setSelectedTag, setSearchKeyword } = useControl();
 
   const [inputValue, setInputValue] = useState<string>('');
 
   const handleKeyDown = (event: any) => {
     if (event.key === "Enter") {
-      if (inputValue.length > 0) setKeyword(inputValue);
+      if (inputValue.length > 0) {
+        setSelectedTag(null)
+        setSearchKeyword(inputValue);
+      }
     }
   };
 

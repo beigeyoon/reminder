@@ -12,8 +12,7 @@ import Drawer from '@/src/components/Drawer';
 import { useMutation, useQuery, useQueryClient, InvalidateQueryFilters } from '@tanstack/react-query';
 import { getItems } from '@/src/services/item';
 import { addItem, AddItemPayload } from '@/src/services/item';
-import { useTagInfo } from '@/src/store/useTagInfo';
-import { useKeyword } from '@/src/store/useKeyword';
+import { useControl } from '@/src/store/useControl';
 import { useSession } from "next-auth/react";
 import { Modal as AntdModdal } from "antd";
 import { deleteItem, DeleteItemPayload } from '@/src/services/item';
@@ -23,8 +22,7 @@ const ItemsList = () => {
   const userId = session?.user?.id;
 
   const { selectedList } = useListInfo();
-  const { tagInfo, setTagInfo } = useTagInfo();
-  const { keyword, setKeyword } = useKeyword();
+  const { selectedTag, setSelectedTag, searchKeyword, setSearchKeyword } = useControl();
 
   const [showFinishedItems, setShowFinishedItems] = useState<boolean>(false);
   const [count, setCount] = useState<number>(-1);
@@ -37,11 +35,11 @@ const ItemsList = () => {
   const queryClient = useQueryClient();
 
   const { data: items } = useQuery({
-    queryKey: ['getItems', selectedList?.id, tagInfo?.id, keyword, userId],
+    queryKey: ['getItems', selectedList?.id, selectedTag?.id, searchKeyword, userId],
     queryFn: () => getItems({
       listId: selectedList?.id,
-      tagId: tagInfo?.id,
-      keyword,
+      tagId: selectedTag?.id,
+      keyword: searchKeyword,
       userId,
     }),
   });
@@ -63,22 +61,22 @@ const ItemsList = () => {
       const count = items?.filter((item) => item.checked).length;
       setCheckedItemsCount(count);
       
-      if (tagInfo?.id) {
-        setTitle('#' + tagInfo?.name);
-      } else if (keyword.length > 0) {
-        setTitle(`'${keyword}'에 대한 검색 결과`);
+      if (selectedTag?.id) {
+        setTitle('#' + selectedTag?.name);
+      } else if (searchKeyword.length > 0) {
+        setTitle(`'${searchKeyword}'에 대한 검색 결과`);
       } else {
         setTitle(selectedList?.name as string);
       }
     }
-  }, [items, keyword, selectedList?.name, tagInfo?.id, tagInfo?.name]);
+  }, [items, searchKeyword, selectedList?.name, selectedTag?.id, selectedTag?.name]);
 
   useEffect(() => {
-    setTagInfo(null);
-    setKeyword('');
+    setSelectedTag(null);
+    setSearchKeyword('');
     if (selectedList?.id === 'checked-list') setShowFinishedItems(true);
     if (selectedList?.id === 'scheduled-list') setShowFinishedItems(false);
-  }, [selectedList?.id, setKeyword, setTagInfo]);
+  }, [selectedList?.id, setSearchKeyword, setSelectedTag]);
 
   const onClickAddItem = async () => {
     const newItem = {
