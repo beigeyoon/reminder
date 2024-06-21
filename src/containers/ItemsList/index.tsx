@@ -29,6 +29,15 @@ const ItemsList = () => {
   const [checkedItemsCount, setCheckedItemsCount] = useState<number>(0);
   const [isCalanderOpen, setIsCalendarOpen] = useState<boolean>(false);
   const [title, setTitle] = useState<string>('');
+  const [isUserMadeList, setIsUserMadeList] = useState<boolean>(true);
+
+  useEffect(() => {
+    if (selectedList?.id !== 'today-list' && selectedList?.id !== 'scheduled-list' && selectedList?.id !== 'checked-list' && !selectedTag && searchKeyword.length === 0) {
+      setIsUserMadeList(true);
+    } else {
+      setIsUserMadeList(false);
+    }
+  }, [selectedList?.id, selectedTag?.id, searchKeyword]);
 
   const { confirm } = AntdModdal;
 
@@ -110,9 +119,11 @@ const ItemsList = () => {
   if (items) return (
     <div className='flex flex-col h-svh p-6'>
       <div className='flex justify-end gap-4 pb-6 text-lg text-gray400'>
-        <button onClick={onClickAddItem}>
-          <FontAwesomeIcon icon={faPlus} />
-        </button>
+        {isUserMadeList && (
+          <button onClick={onClickAddItem}>
+            <FontAwesomeIcon icon={faPlus} />
+          </button>
+        )}
         <button onClick={() => setIsCalendarOpen(true)}>
           <FontAwesomeIcon icon={faCalendar} />
         </button>
