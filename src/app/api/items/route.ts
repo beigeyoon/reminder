@@ -307,14 +307,12 @@ export async function PUT (req: NextRequest) {
 };
 
 export async function DELETE (req: NextRequest) {
-  const { id } = await req.json();
+  const { ids } = await req.json();
   try {
-    const deletedItem = await prisma.item.delete({
-      where: {
-        id: id
-      }
-    });
-    return Response.json({ ok: true, item: deletedItem });
+    const deletedItems = await prisma.$transaction(
+      ids.map((id: string) => prisma.item.delete({ where: { id: id, checked: true } }))
+    );
+    return Response.json({ ok: true });
   } catch (error) {
     return Response.json({ ok: false, error });
   }

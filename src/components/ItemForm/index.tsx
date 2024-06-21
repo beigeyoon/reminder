@@ -26,9 +26,10 @@ import { useSession } from "next-auth/react";
 
 interface IItemForm {
   item: Item;
+  removeItem: ({ ids }: { ids: string[] }) => void;
 }
 
-const ItemForm = ({ item }: IItemForm) => {
+const ItemForm = ({ item, removeItem }: IItemForm) => {
   const { status, data: session } = useSession();
   const userId = session?.user?.id;
 
@@ -59,13 +60,6 @@ const ItemForm = ({ item }: IItemForm) => {
       queryClient.invalidateQueries(['getItems'] as InvalidateQueryFilters);
     }
   });
-
-  const { mutateAsync: removeItem } = useMutation({
-    mutationFn: (body: DeleteItemPayload) => deleteItem(body),
-    onSuccess: () => {
-      queryClient.invalidateQueries(['getItems'] as InvalidateQueryFilters);
-    }
-  })
 
   const {
     register,
@@ -111,7 +105,7 @@ const ItemForm = ({ item }: IItemForm) => {
   }, [editItem, item.id, item?.tags, userId]);
 
   const onDelete = useCallback(async (itemId: string) => {
-    const result = await removeItem({ id: itemId });
+    const result = await removeItem({ ids: [itemId] });
   }, [removeItem]);
 
   const menuItems: ContextMenuItem[] = [

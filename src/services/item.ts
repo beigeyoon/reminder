@@ -50,7 +50,7 @@ export interface UpdateItemPayload {
 }
 
 export interface DeleteItemPayload {
-  id: string;
+  ids: string[];
 }
 
 export const getItems = async ({ listId, year, month, tagId, keyword, userId }: GetItemsPayload): Promise<Item[]> => {

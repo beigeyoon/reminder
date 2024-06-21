@@ -9,12 +9,14 @@ import { faCalendar } from '@fortawesome/free-regular-svg-icons';
 import { orderItems } from '@/src/utils/orderItems';
 import { motion, AnimatePresence } from "framer-motion";
 import Drawer from '@/src/components/Drawer';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient, InvalidateQueryFilters } from '@tanstack/react-query';
 import { getItems } from '@/src/services/item';
 import { addItem, AddItemPayload } from '@/src/services/item';
 import { useTagInfo } from '@/src/store/useTagInfo';
 import { useKeyword } from '@/src/store/useKeyword';
 import { useSession } from "next-auth/react";
+import { Modal as AntdModdal } from "antd";
+import { deleteItem, DeleteItemPayload } from '@/src/services/item';
 
 const ItemsList = () => {
   const { status, data: session } = useSession();
@@ -30,6 +32,10 @@ const ItemsList = () => {
   const [isCalanderOpen, setIsCalendarOpen] = useState<boolean>(false);
   const [title, setTitle] = useState<string>('');
 
+  const { confirm } = AntdModdal;
+
+  const queryClient = useQueryClient();
+
   const { data: items } = useQuery({
     queryKey: ['getItems', selectedList?.id, tagInfo?.id, keyword, userId],
     queryFn: () => getItems({
@@ -42,6 +48,13 @@ const ItemsList = () => {
 
   const { mutateAsync: createItem } = useMutation({
     mutationFn: (body: AddItemPayload) => addItem(body),
+  });
+
+  const { mutateAsync: removeItem } = useMutation({
+    mutationFn: (body: DeleteItemPayload) => deleteItem(body),
+    onSuccess: () => {
+      queryClient.invalidateQueries(['getItems'] as InvalidateQueryFilters);
+    }
   });
 
   useEffect(() => {
@@ -85,6 +98,17 @@ const ItemsList = () => {
     setShowFinishedItems(!showFinishedItems);
   };
 
+  const showDeleteConfirm = () => {
+    confirm({
+      title: '정말로 삭제하시겠습니까?',
+      content: '완료된 아이템을 모두 삭제합니다.',
+      onOk() {
+        const checkedItemIds = items?.filter((item) => item.checked).map((item) => item.id);
+        removeItem({ ids: checkedItemIds as string[] });
+      }
+    })
+  }
+
   if (items) return (
     <div className='flex flex-col h-svh p-6'>
       <div className='flex justify-end gap-4 pb-6 text-lg text-gray400'>
@@ -109,7 +133,7 @@ const ItemsList = () => {
           {selectedList?.id === 'checked-list' && (
             <>
               <span className='text-gray300'>{` ∙ `}</span>
-              <button>지우기</button>
+              <button onClick={showDeleteConfirm}>지우기</button>
             </>
           )}
         </div>
@@ -120,7 +144,6 @@ const ItemsList = () => {
       <div id='items' className='grow overflow-y-auto'>
         <AnimatePresence>
           {orderItems({ items, orderBy: selectedList?.orderBy as keyof typeof OrderBy })
-            // .filter((item) => isPresetListItem({ selectedList: selectedList!, item }))
             .filter((item) => {
               if (showFinishedItems) return true;
               return !item.checked;
@@ -133,7 +156,7 @@ const ItemsList = () => {
                 exit={{ opacity: 0, height: 0 }}
                 transition={{ duration: 0.2 }}
               >
-                <ItemForm item={item} />
+                <ItemForm item={item} removeItem={removeItem} />
               </motion.div>
             )
           )}
