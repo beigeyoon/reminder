@@ -1,4 +1,4 @@
-import { Item } from "../common/types";
+import { Item, List } from "../common/types";
 import { OrderBy } from "../common/enums";
 
 interface orderItemsProps {
@@ -38,3 +38,23 @@ export const orderItems = ({ items, orderBy }: orderItemsProps) => {
     }
   });
 };
+
+export const orderLists = (lists: List[]) => {
+  console.log('💚💚💚💚💚', lists);
+  if (!lists || !Array.isArray(lists)) {
+    console.error('Input is not an array or is undefined/null');
+    return [];
+  }
+
+  lists.forEach((list, index) => {
+    if (!list.createdTime || isNaN(new Date(list.createdTime).getTime())) {
+      console.error(`Invalid createdTime at index ${index}:`, list.createdTime);
+    }
+  });
+
+  return lists.slice().sort((a, b) => {
+    const dateA = new Date(a.createdTime).getTime();
+    const dateB = new Date(b.createdTime).getTime();
+    return dateB - dateA;
+  });
+}

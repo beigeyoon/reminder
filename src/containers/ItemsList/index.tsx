@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { faCalendar } from '@fortawesome/free-regular-svg-icons';
-import { orderItems } from '@/src/utils/orderItems';
+import { orderItems } from '@/src/utils/orderData';
 import { motion, AnimatePresence } from "framer-motion";
 import Drawer from '@/src/components/Drawer';
 import { useMutation, useQuery, useQueryClient, InvalidateQueryFilters } from '@tanstack/react-query';
@@ -37,7 +37,7 @@ const ItemsList = () => {
     } else {
       setIsUserMadeList(false);
     }
-  }, [selectedList?.id, selectedTag?.id, searchKeyword]);
+  }, [selectedList?.id, selectedTag?.id, searchKeyword, selectedTag]);
 
   const { confirm } = AntdModdal;
 

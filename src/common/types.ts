@@ -8,6 +8,7 @@ export interface User {
 
 export interface List {
   id: string;
+  createdTime?: any;
   userId: string;
   name: string;
   orderBy: keyof typeof OrderBy;

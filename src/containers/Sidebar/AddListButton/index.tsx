@@ -7,8 +7,10 @@ import Modal from "@/src/components/Modal";
 import { useMutation, useQueryClient, InvalidateQueryFilters } from "@tanstack/react-query";
 import { addList, AddListPayload } from "@/src/services/list";
 import { useSession } from "next-auth/react";
+import { useListInfo } from "@/src/store/useListInfo";
 
 const AddListButton = () => {
+  const { setSelectedList } = useListInfo();
   const queryClient = useQueryClient();
   const { status, data: session } = useSession();
   const userId = session?.user.id;
@@ -17,7 +19,8 @@ const AddListButton = () => {
 
   const { mutateAsync: createList } = useMutation({
     mutationFn: (body: AddListPayload) => addList(body),
-    onSuccess: () => {
+    onSuccess: (res) => {
+      setSelectedList(res);
       handleModal();
       alert('리스트가 생성되었습니다.');
       queryClient.invalidateQueries(['getLists'] as InvalidateQueryFilters);
