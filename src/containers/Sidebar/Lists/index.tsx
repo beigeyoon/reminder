@@ -42,7 +42,6 @@ const Lists = () => {
   }, [data, setLists, setSelectedList]);
   
   if (isLoading) return <></>;
-  console.log('🩷🩷🩷🩷🩷', orderLists(data || []));
   return (
     <div className='grid grid-cols-2 gap-[10px]'>
       {orderLists(data || []).map((item: List) => (
