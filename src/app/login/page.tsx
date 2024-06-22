@@ -4,6 +4,8 @@ import { useRouter } from "next/navigation";
 import { useSession, signIn } from "next-auth/react";
 import { ChangeEvent, KeyboardEvent, useState } from "react";
 import { motion } from "framer-motion";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faGithub } from '@fortawesome/free-brands-svg-icons';
 
 const Login = () => {
   const [inputs, setInputs] = useState({
@@ -88,6 +90,13 @@ const Login = () => {
           className='border border-GREEN rounded py-2 mt-4 text-GREEN font-bold'
         >
           Login
+        </button>
+        <button
+          onClick={() => signIn('github')}
+          className='rounded bg-black py-2 text-white font-bold'
+        >
+          <FontAwesomeIcon icon={faGithub} className='mr-[8px]' />
+          Github Login
         </button>
         <button
           onClick={() => router.push('/signup')}

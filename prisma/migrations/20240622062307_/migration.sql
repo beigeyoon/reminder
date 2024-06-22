@@ -2,7 +2,7 @@
 CREATE TABLE `User` (
     `id` VARCHAR(191) NOT NULL,
     `name` VARCHAR(191) NOT NULL,
-    `password` VARCHAR(191) NOT NULL,
+    `password` VARCHAR(191) NULL,
 
     UNIQUE INDEX `User_name_key`(`name`),
     PRIMARY KEY (`id`)
@@ -13,7 +13,7 @@ CREATE TABLE `List` (
     `id` VARCHAR(191) NOT NULL,
     `userId` VARCHAR(191) NOT NULL,
     `name` VARCHAR(191) NOT NULL,
-    `type` ENUM('STANDARD', 'GROCERY', 'SMART') NOT NULL,
+    `orderBy` ENUM('NEWEST', 'OLDEST', 'PRIORITY') NOT NULL DEFAULT 'NEWEST',
     `icon` ENUM('LIST', 'BOOK', 'FILE', 'MONEY', 'COMPUTER', 'LEAF', 'PERSON', 'SHOPPING', 'TRIP', 'CALENDAR', 'IDEA', 'HOUSE', 'MUSIC', 'SUN', 'MOON', 'HEART', 'STAR') NOT NULL,
     `color` ENUM('RED', 'ORANGE', 'YELLOW', 'GREEN', 'LIGHTBLUE', 'BLUE', 'DEEPBLUE', 'PINK', 'PURPLE', 'BROWN', 'GRAY', 'PINKBEIGE') NOT NULL,
 
@@ -65,8 +65,8 @@ CREATE TABLE `SubItem` (
 CREATE TABLE `Tag` (
     `id` VARCHAR(191) NOT NULL,
     `name` VARCHAR(191) NOT NULL,
+    `userId` VARCHAR(191) NOT NULL,
 
-    UNIQUE INDEX `Tag_name_key`(`name`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -93,6 +93,9 @@ ALTER TABLE `Item` ADD CONSTRAINT `Item_sectionId_fkey` FOREIGN KEY (`sectionId`
 
 -- AddForeignKey
 ALTER TABLE `SubItem` ADD CONSTRAINT `SubItem_itemId_fkey` FOREIGN KEY (`itemId`) REFERENCES `Item`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `Tag` ADD CONSTRAINT `Tag_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `User`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `_ItemToTag` ADD CONSTRAINT `_ItemToTag_A_fkey` FOREIGN KEY (`A`) REFERENCES `Item`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
