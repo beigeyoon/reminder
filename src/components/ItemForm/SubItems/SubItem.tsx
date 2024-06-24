@@ -2,15 +2,27 @@ import { SubItem as SubItemType } from "@/src/common/types";
 import { Checkbox } from "antd";
 import { CheckboxChangeEvent } from "antd/es/checkbox";
 import ContextMenu, { ContextMenuItem } from "../../ContextMenu";
+import { useEffect, useRef } from 'react';
 
 interface ISubItem {
   subItem: SubItemType;
   onUpdateTitle: (subItemId: string, newTitle: string) => Promise<void>;
   onDelete: (subItemId: string) => Promise<void>;
   onChangeChecked: (e: CheckboxChangeEvent, subItem: SubItemType) => Promise<void>;
+  autoFocus: boolean;
 }
 
-const SubItem = ({ subItem, onUpdateTitle, onDelete, onChangeChecked }: ISubItem) => {
+const SubItem = ({ subItem, onUpdateTitle, onDelete, onChangeChecked, autoFocus }: ISubItem) => {
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (autoFocus && inputRef.current) {
+      inputRef.current.focus();
+    } else {
+      inputRef?.current?.blur();
+    }
+  }, [autoFocus]);
+
   const menuItems: ContextMenuItem[] = [
     {
       id: 'delete-list',
@@ -48,6 +60,7 @@ const SubItem = ({ subItem, onUpdateTitle, onDelete, onChangeChecked }: ISubItem
         <span className='w-full border-b border-gray100 py-[8px]'>
           <input
             id='subItem-title'
+            ref={inputRef}
             defaultValue={subItem.title}
             onKeyDown={(e) => handleKeyDown(e, subItem)}
             onBlur={(e) => handleBlur(e, subItem)}

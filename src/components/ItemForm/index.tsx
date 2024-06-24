@@ -117,7 +117,8 @@ const ItemForm = ({ item, removeItem }: IItemForm) => {
     },
   ];
 
-  const handleSubItemsToggle = () => {
+  const handleSubItemsToggle = (e?: React.MouseEvent<SVGSVGElement, MouseEvent>) => {
+    if (e) e.stopPropagation();
     setShowSubItems(!showSubItems);
     if (showSubItems) {
       setExpandedItems(expandedItems.filter((id) => id !== item.id));
@@ -171,9 +172,9 @@ const ItemForm = ({ item, removeItem }: IItemForm) => {
                 <div className='w-[28px] flex justify-between items-center'>
                   <span className='text-gray400'>{getValues('subItems').length}</span>
                   {showSubItems ? (
-                    <FontAwesomeIcon icon={faChevronDown} className='text-PURPLE' fontSize={10} onClick={handleSubItemsToggle} />
+                    <FontAwesomeIcon icon={faChevronDown} className='text-PURPLE' fontSize={10} onClick={(e) => handleSubItemsToggle(e)} />
                   ) : (
-                    <FontAwesomeIcon icon={faChevronRight} className='text-PURPLE' fontSize={10} onClick={handleSubItemsToggle} />
+                    <FontAwesomeIcon icon={faChevronRight} className='text-PURPLE' fontSize={10} onClick={(e) => handleSubItemsToggle(e)} />
                   )}
                 </div>
               )}

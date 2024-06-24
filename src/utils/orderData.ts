@@ -40,7 +40,6 @@ export const orderItems = ({ items, orderBy }: orderItemsProps) => {
 };
 
 export const orderLists = (lists: List[]) => {
-  console.log('💚💚💚💚💚', lists);
   if (!lists || !Array.isArray(lists)) {
     console.error('Input is not an array or is undefined/null');
     return [];
