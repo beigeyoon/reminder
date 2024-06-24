@@ -5,7 +5,7 @@ import { faFlag as activeFlag } from "@fortawesome/free-solid-svg-icons";
 import { Button } from "antd";
 import { FieldValues } from "react-hook-form";
 
-const FlagButton = forwardRef(({ ...props }: FieldValues) => {
+const FlagButton = ({ ...props }: FieldValues) => {
   const { name, onBlur, onChange, value } = props;
   const isFlagged = value === true;
 
@@ -25,8 +25,8 @@ const FlagButton = forwardRef(({ ...props }: FieldValues) => {
       />
     </Button>
   )
-});
+};
 
-FlagButton.displayName = 'FlagButton';
+
 
 export default FlagButton;

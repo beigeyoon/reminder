@@ -8,7 +8,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import SubItem from "./SubItem";
 
-const SubItems = forwardRef(({ ...props }: FieldValues) => {
+const SubItems = forwardRef<HTMLDivElement, FieldValues>(({ ...props }: FieldValues, ref) => {
   const { onChange, value: subItems, isActive, itemId, showSubItems, handleSubItemsToggle } = props;
 
   const [newSubItemId, setNewSubItemId] = useState<string | null>(null);

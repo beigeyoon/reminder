@@ -3,7 +3,7 @@ import type { InputRef } from 'antd';
 import { Input, Tag, Tooltip } from 'antd';
 import { FieldValues } from 'react-hook-form';
 
-const Tags = forwardRef(({ ...props }: FieldValues) => {
+const Tags = ({ ...props }: FieldValues) => {
   const { name, onBlur, onChange, value: tags } = props;
 
   const [inputVisible, setInputVisible] = useState(false);
@@ -89,8 +89,8 @@ const Tags = forwardRef(({ ...props }: FieldValues) => {
       )}
     </div>
   );
-});
+};
 
-Tags.displayName = 'Tags';
+
 
 export default Tags;
