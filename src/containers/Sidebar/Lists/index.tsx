@@ -13,7 +13,7 @@ import { orderLists } from "@/src/utils/orderData";
 const Lists = () => {
   const { selectedList, setSelectedList, setLists } = useListInfo();
   const { data: session } = useSession();
-  const userId = session?.user?.id;
+  const userId = session?.user?.id as string;
   
   const { data, isLoading } = useQuery({
     enabled: !!userId,
