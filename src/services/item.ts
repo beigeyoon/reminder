@@ -1,8 +1,13 @@
-import { Priority } from './../enums/index';
-import { Section, Item, SubItem, Tag } from "../types";
+import { Priority } from "../common/enums";
+import { Section, Item, SubItem, Tag } from "../common/types";
 
 export interface GetItemsPayload {
-  listId: string;
+  listId?: string;
+  year?: number;
+  month?: number;
+  tagId?: string;
+  keyword?: string;
+  userId?: string;
 }
 
 export interface AddItemPayload {
@@ -20,6 +25,7 @@ export interface AddItemPayload {
   section?: Section;
   sectionId?: string;
   image_url?: string;
+  userId?: string;
 }
 
 export interface UpdateItemPayload {
@@ -40,14 +46,15 @@ export interface UpdateItemPayload {
   section?: Section;
   sectionId?: string;
   image_url?: string;
+  userId?: string;
 }
 
 export interface DeleteItemPayload {
-  id: string;
+  ids: string[];
 }
 
-export const getItems = async ({ listId }: GetItemsPayload): Promise<Item[]> => {
-  const response = await fetch(`${process.env.NEXT_PUBLIC_FE_URL}/api/items?listId=${listId}`, {
+export const getItems = async ({ listId, year, month, tagId, keyword, userId }: GetItemsPayload): Promise<Item[]> => {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_FE_URL}/api/items?listId=${listId || ''}&year=${year || ''}&month=${month || ''}&tagId=${tagId || ''}&keyword=${keyword || ''}&userId=${userId || ''}`, {
     method: 'GET',
   });
   if (!response.ok) {
@@ -70,7 +77,7 @@ export const addItem = async (body: AddItemPayload): Promise<Item> => {
   return await response.json();
 }
 
-export const updateItem = async (body: UpdateItemPayload): Promise<Item> => {
+export const updateItem = async (body: UpdateItemPayload) => {
   const response = await fetch(`${process.env.NEXT_PUBLIC_FE_URL}/api/items`, {
     method: 'PUT',
     headers: {
@@ -78,9 +85,6 @@ export const updateItem = async (body: UpdateItemPayload): Promise<Item> => {
     },
     body: JSON.stringify(body),
   });
-  if (!response.ok) {
-    throw new Error(`Failed to update item: ${response.statusText}`);
-  }
   return await response.json();
 }
 

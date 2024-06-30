@@ -1,15 +1,18 @@
 'use client'
-import ListButton from "./ListButton";
+import ListItem from "./ListItem";
 import { useQuery } from "@tanstack/react-query";
 import { getLists } from "@/src/services/list";
-import { List } from "@/src/types";
+import { List, PresetList } from "@/src/common/types";
 import { useSession } from "next-auth/react";
 import { useEffect } from 'react';
 import { useListInfo } from '@/src/store/useListInfo';
+import { presetLists } from "@/src/common/constants";
+import PresetListItem from "./ListItem/PresetListItem";
+import { orderLists } from "@/src/utils/orderData";
 
 const Lists = () => {
-  const { setListInfo } = useListInfo();
-  const { status, data: session } = useSession();
+  const { selectedList, setSelectedList, setLists } = useListInfo();
+  const { data: session } = useSession();
   const userId = session?.user?.id;
   
   const { data, isLoading } = useQuery({
@@ -20,15 +23,32 @@ const Lists = () => {
 
   useEffect(() => {
     if (data) {
-      setListInfo(data[0]);
+      setLists(data);
+      const isFirstRender = !selectedList?.id;
+      const hasNoList = data.length === 0;
+
+      if (isFirstRender) {
+        if (hasNoList) {
+          setSelectedList(presetLists[0]);
+        } else {
+          setSelectedList(data[0]);
+        }
+      } else {
+        const isPresetList = presetLists.find((item) => item.id === selectedList?.id);
+        const isUserMadeList = data.find((item) => item.id === selectedList?.id);
+        setSelectedList(isPresetList as PresetList || isUserMadeList || data[0] || presetLists[0]);
+      }
     }
-  }, [data]);
+  }, [data, setLists, setSelectedList]);
   
   if (isLoading) return <></>;
   return (
     <div className='grid grid-cols-2 gap-[10px]'>
-      {data?.map((item: List) => (
-        <ListButton key={item.id} list={item} />
+      {orderLists(data || []).map((item: List) => (
+        <ListItem key={item.id} list={item} />
+      ))}
+      {presetLists.map((item: PresetList) => (
+        <PresetListItem key={item.id} list={item} />
       ))}
     </div>
   )

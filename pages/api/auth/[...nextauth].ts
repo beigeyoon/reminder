@@ -1,7 +1,8 @@
 import NextAuth from "next-auth/next";
 import CredentialsProvider from "next-auth/providers/credentials";
+import GitHubProvider from "next-auth/providers/github";
 import { verifyPassword } from "@/src/utils/bcrypt";
-import { getUserInfo } from "@/src/services/user";
+import { getUserInfo, addUser } from "@/src/services/user";
 
 export default NextAuth({
   providers: [
@@ -26,7 +27,17 @@ export default NextAuth({
         if (!isValid) throw new Error('Wrong Password!');
         return { id: user.id, name: user.name }
       }
-    })
+    }),
+    GitHubProvider({
+      clientId: process.env.GITHUB_CLIENT_ID as string,
+      clientSecret: process.env.GITHUB_CLIENT_SECRET as string,
+      profile(profile) {
+        return {
+          id: profile.id.toString(),
+          name: profile.email as string,
+        };
+      },
+    }),
   ],
   secret: process.env.NEXTAUTH_SECRET,
   pages: {
@@ -50,5 +61,17 @@ export default NextAuth({
       }
       return session;
     },
-  }
+    async signIn({ user, account, profile, email }) {
+      if (account?.provider === 'github') {
+        const existingUser = await getUserInfo({ name: profile?.email as string });
+        if (!existingUser) {
+          await addUser({
+            id: profile?.id as string,
+            username: profile?.email as string,
+          });
+        }
+      }
+      return Promise.resolve(true);
+    },
+  },
 })

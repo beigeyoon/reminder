@@ -6,7 +6,7 @@ type ModalProps = {
   isOpen: boolean;
   close: () => void;
   children: ReactNode;
-  submit: (payload?: any) => void;
+  submit?: (payload?: any) => void;
 };
 
 export default function Modal ({ isOpen, close, children, submit }: ModalProps) {
@@ -27,7 +27,7 @@ export default function Modal ({ isOpen, close, children, submit }: ModalProps) 
   return ReactDOM.createPortal(
     <div
       ref={modalRef}
-      className='dim fixed left-0 top-0 w-screen h-screen bg-black/20 z-30 flex justify-center items-center overflow-y-auto'
+      className='dim fixed left-0 top-0 w-screen h-screen bg-black/20 z-[2000] flex justify-center items-center overflow-y-auto'
       onClick={handleCloseModal}
     >
       <div className='rounded-xl border border-gray300 bg-white p-[16px] w-fit h-fit drop-shadow-xl'>

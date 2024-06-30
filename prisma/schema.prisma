@@ -3,21 +3,25 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
 model User {
   id                String   @id @default(uuid())
   name              String   @unique
-  password          String
+  password          String?
+  lists             List[]
+  tags              Tag[]
 }
 
 model List {
   id                String   @id @default(uuid())
+  createdTime       DateTime @default(now())
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId            String
   name              String
-  type              ListType
+  orderBy           ORDER_BY @default(NEWEST)
   icon              Icon
   color             Color
   items             Item[]
@@ -26,7 +30,7 @@ model List {
 
 model Section {
   id                String   @id @default(uuid())
-  list              List     @relation(fields: [listId], references: [id])
+  list              List     @relation(fields: [listId], references: [id], onDelete: Cascade)
   listId            String
   name              String
   items             Item[]
@@ -45,9 +49,9 @@ model Item {
   tags              Tag[]    @relation("ItemToTag")
   priority          Int?
   flagged           Boolean  @default(false)
-  list              List     @relation(fields: [listId], references: [id])
+  list              List     @relation(fields: [listId], references: [id], onDelete: Cascade)
   listId            String
-  section           Section? @relation(fields: [sectionId], references: [id])
+  section           Section? @relation(fields: [sectionId], references: [id], onDelete: Cascade)
   sectionId         String?
   image_url         String?
   subItems          SubItem[]
@@ -55,7 +59,7 @@ model Item {
 
 model SubItem {
   id                String   @id @default(uuid())
-  item              Item     @relation(fields: [itemId], references: [id])
+  item              Item     @relation(fields: [itemId], references: [id], onDelete: Cascade)
   itemId            String
   createdTime       DateTime @default(now())
   updatedTime       DateTime @updatedAt
@@ -65,14 +69,16 @@ model SubItem {
 
 model Tag {
   id                String   @id @default(uuid())
-  name              String   @unique
+  name              String
   items             Item[]   @relation("ItemToTag")
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId            String
 }
 
-enum ListType {
-  STANDARD
-  GROCERY
-  SMART
+enum ORDER_BY {
+  NEWEST
+  OLDEST
+  PRIORITY
 }
 
 enum Priority {

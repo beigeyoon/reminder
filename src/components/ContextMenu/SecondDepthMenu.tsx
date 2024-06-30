@@ -3,10 +3,10 @@ import { SecondDepthMenuItem } from ".";
 
 interface ISecondDepthMenu {
   items: SecondDepthMenuItem[];
-  width?: number;
+  parentWidth: number;
 }
 
-const SecondDepthMenu = ({ items, width, children }: PropsWithChildren<ISecondDepthMenu>) => {
+const SecondDepthMenu = ({ items, parentWidth, children }: PropsWithChildren<ISecondDepthMenu>) => {
   const [isVisible, setIsVisible] = useState<boolean>(false);
   
   const handleMouseEnter = () => {
@@ -21,8 +21,16 @@ const SecondDepthMenu = ({ items, width, children }: PropsWithChildren<ISecondDe
     <div onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} className='relative'>
       <div>{children}</div>
       {isVisible && (
-        <ul className="absolute top-0 border border-gray200 rounded-lg drop-shadow-md p-[4px] z-20 bg-gray100">
-          <li>hello</li>
+        <ul className='absolute w-fit top-[-4px] border border-gray200 rounded-lg drop-shadow-md p-[4px] z-20 bg-gray100' style={{ left: `${parentWidth - 12}px` }}>
+          {items.map((item: SecondDepthMenuItem) => (
+            <li
+              key={item.id}
+              className='px-[8px] py-[4px] rounded-md cursor-pointer hover:bg-blue hover:text-white break-words whitespace-nowrap'
+              onClick={item.onClick}
+            >
+              {item.caption}
+            </li>
+          ))}
         </ul>
       )}
     </div>

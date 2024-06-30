@@ -1,4 +1,4 @@
-import { Priority } from '@/src/enums';
+import { Priority } from '@/src/common/enums';
 
 interface IPriorityInTitle {
   priority: Priority;

@@ -1,13 +1,13 @@
 'use client'
-import { Item } from "@/src/types";
-import { useState, useRef, useEffect, useCallback } from "react";
+import { Item } from "@/src/common/types";
+import { useState, useRef, useCallback } from "react";
 import DateTime from "./DateTime";
 import PrioritySelect from "./PrioritySelect";
 import FlagButton from "./FlagButton";
 import Tags from "./Tags";
 import { Checkbox } from "antd";
-import { useMutation } from "@tanstack/react-query";
-import { AddItemPayload, addItem, UpdateItemPayload, updateItem, DeleteItemPayload, deleteItem } from "@/src/services/item";
+import { InvalidateQueryFilters, useMutation, useQueryClient } from "@tanstack/react-query";
+import { UpdateItemPayload, updateItem, DeleteItemPayload, deleteItem } from "@/src/services/item";
 import { useListInfo } from "@/src/store/useListInfo";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { getTagsArray, updateTagLists } from "@/src/utils/getTagsArray";
@@ -20,20 +20,29 @@ import ContextMenu, { ContextMenuItem } from "../ContextMenu";
 import { PriorityIcon } from './PriorityIcon';
 import { useClickAway } from "react-use";
 import UnactiveItem from './UnactiveItem';
+import { CheckboxChangeEvent } from 'antd/es/checkbox';
+import { useControl } from '@/src/store/useControl';
+import { useSession } from "next-auth/react";
 
 interface IItemForm {
   item: Item;
-  onClickDeleteItem: (itemId: string) => void;
+  removeItem: ({ ids }: { ids: string[] }) => void;
 }
 
-const ItemForm = ({ item, onClickDeleteItem }: IItemForm) => {
-  const isNewItem = item.id === undefined;
-  const { listInfo } = useListInfo();
-  const listId = listInfo?.id;
+const ItemForm = ({ item, removeItem }: IItemForm) => {
+  const { status, data: session } = useSession();
+  const userId = session?.user?.id;
+
+  const isNewItem = item.isNewItem;
+  const { selectedList } = useListInfo();
+  const { expandedItems, setExpandedItems } = useControl();
+  const listId = selectedList?.id;
   
-  const [showSubItems, setShowSubItems] = useState<boolean>(false);
+  const [showSubItems, setShowSubItems] = useState<boolean>(expandedItems.includes(item.id as string));
   const [isActive, setIsActive] = useState<boolean>(isNewItem ? true : false);
   const itemFormRef = useRef<HTMLFormElement>(null);
+
+  const queryClient = useQueryClient();
 
   useClickAway(itemFormRef, async () => {
     if (isActive) {
@@ -43,19 +52,14 @@ const ItemForm = ({ item, onClickDeleteItem }: IItemForm) => {
       handleSubmit(onSubmit)();
       setIsActive(false);
     }
-  })
-
-  const { mutateAsync: createItem } = useMutation({
-    mutationFn: (body: AddItemPayload) => addItem(body),
   });
 
   const { mutateAsync: editItem } = useMutation({
     mutationFn: (body: UpdateItemPayload) => updateItem(body),
+    onSuccess: () => {
+      queryClient.invalidateQueries(['getItems'] as InvalidateQueryFilters);
+    }
   });
-
-  const { mutateAsync: removeItem } = useMutation({
-    mutationFn: (body: DeleteItemPayload) => deleteItem(body),
-  })
 
   const {
     register,
@@ -79,52 +83,57 @@ const ItemForm = ({ item, onClickDeleteItem }: IItemForm) => {
       subItems: item?.subItems,
     }
   });
-  const isChecked = watch('checked');
 
-  useEffect(() => {
-    if (isChecked) {
-      editItem({
-        id: item.id,
-        checked: true,
-      });
-    } else {
-      editItem({
-        id: item.id,
-        checked: false,
-      })
-    }
-  }, [editItem, isChecked, item.id]);
+  const onClickCheckbox = async (e: CheckboxChangeEvent) => {
+    e.stopPropagation();
+    const result = await editItem({
+      id: item.id as string,
+      checked: e.target.checked,
+    });
+    if (result.ok) {
+      setValue('checked', e.target.checked);
+    };
+  };
 
   const onSubmit: SubmitHandler<any> = useCallback((data) => {
-    if (isNewItem) {
-      createItem({
-        listId,
-        ...data,
-      });
-    } else {
-      editItem({
-        id: item.id,
-        ...data,
-        tags: updateTagLists(getTagsArray(item?.tags), data.tags),
-      });
-    }
-  }, [createItem, editItem, isNewItem, item.id, item?.tags, listId]);
+    editItem({
+      id: item.id,
+      userId,
+      ...data,
+      tags: updateTagLists(getTagsArray(item?.tags), data.tags),
+    });
+  }, [editItem, item.id, item?.tags, userId]);
 
   const onDelete = useCallback(async (itemId: string) => {
-    const result = await removeItem({ id: itemId });
-    if (result.ok) {
-      onClickDeleteItem(itemId);
-    }
-  }, [onClickDeleteItem, removeItem]);
+    const result = await removeItem({ ids: [itemId] });
+  }, [removeItem]);
 
   const menuItems: ContextMenuItem[] = [
     {
       id: 'delete-list',
       caption: '아이템 삭제',
       type: 'normal',
-      onClick: () => onDelete(item.id),
+      onClick: () => onDelete(item.id as string),
     },
   ];
+
+  const handleSubItemsToggle = (e?: React.MouseEvent<SVGSVGElement, MouseEvent>) => {
+    if (e) e.stopPropagation();
+    setShowSubItems(!showSubItems);
+    if (showSubItems) {
+      setExpandedItems(expandedItems.filter((id) => id !== item.id));
+    } else {
+      setExpandedItems([...expandedItems, item.id as string]);
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLFormElement>) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleSubmit(onSubmit)();
+      setIsActive(false);
+    }
+  }
 
   const formStyle = {
     active: 'border-2 rounded border-blue p-[8px]',
@@ -133,22 +142,18 @@ const ItemForm = ({ item, onClickDeleteItem }: IItemForm) => {
 
   return (
     <ContextMenu id={`item-form-${item.id}`} items={menuItems} width={160}>
-      <form className={`flex items-start gap-3 mb-[8px] ${isActive ? formStyle['active'] : formStyle['inactive']}`} ref={itemFormRef}>
-        <Controller name='checked' control={control} render={({ field }) => <Checkbox {...field} checked={field.value} />} />
+      <form className={`flex items-start gap-3 mb-[8px] ${isActive ? formStyle['active'] : formStyle['inactive']}`} ref={itemFormRef} onKeyDown={handleKeyDown}>
+        <Controller name='checked' control={control} render={({ field }) => <Checkbox {...field} checked={field.value} onChange={(e) => onClickCheckbox(e)} />} />
         <div className='w-full'>
           <div className='flex justify-between border-b border-gray100 pb-[4px]' onClick={() => setIsActive(true)}>
             {isActive ? (
               <div className='flex flex-col leading-[22px]'>
                 <div className='flex'>
                   <PriorityIcon priority={getValues('priority')!} />
-                  <input id='title' {...register('title')} />
+                  <input id='title' {...register('title')} className='w-full' autoFocus={isNewItem} />
                 </div>
-                {getValues('memo') && (
-                  <input id='memo' placeholder="메모" {...register('memo')} className='text-gray400' />
-                )}
-                {getValues('url') && (
-                  <input id='url' placeholder="url" {...register('url')} className='text-blue' />
-                )}
+                <input id='memo' placeholder="메모" {...register('memo')} className='text-gray400' />
+                <input id='url' placeholder="url" {...register('url')} className='text-blue' />
                 <Controller name='tags' control={control} render={({ field }) => <Tags {...field} />} />
                 <div className='flex gap-3'>
                   <Controller name='dateTime' control={control} render={({ field }) => <DateTime control={control} {...field} />} />
@@ -157,7 +162,7 @@ const ItemForm = ({ item, onClickDeleteItem }: IItemForm) => {
                 </div>
               </div>
             ) : (
-              <UnactiveItem item={getValues()} />
+              <UnactiveItem item={getValues()} listId={item.listId} />
             )}
             <div className='h-fit flex items-center gap-3 pt-[4px]'>
               {(!isActive && getValues('flagged')) && (
@@ -167,15 +172,15 @@ const ItemForm = ({ item, onClickDeleteItem }: IItemForm) => {
                 <div className='w-[28px] flex justify-between items-center'>
                   <span className='text-gray400'>{getValues('subItems').length}</span>
                   {showSubItems ? (
-                    <FontAwesomeIcon icon={faChevronDown} className='text-PURPLE' fontSize={10} onClick={() => setShowSubItems(false)} />
+                    <FontAwesomeIcon icon={faChevronDown} className='text-PURPLE' fontSize={10} onClick={(e) => handleSubItemsToggle(e)} />
                   ) : (
-                    <FontAwesomeIcon icon={faChevronRight} className='text-PURPLE' fontSize={10} onClick={() => setShowSubItems(true)} />
+                    <FontAwesomeIcon icon={faChevronRight} className='text-PURPLE' fontSize={10} onClick={(e) => handleSubItemsToggle(e)} />
                   )}
                 </div>
               )}
             </div>
           </div>
-          <Controller name='subItems' control={control} render={({ field }) => <SubItems isActive={isActive} itemId={item.id} {...field} showSubItems={showSubItems} />} />
+          <Controller name='subItems' control={control} render={({ field }) => <SubItems isActive={isActive} itemId={item.id} {...field} showSubItems={showSubItems} handleSubItemsToggle={handleSubItemsToggle} />} />
         </div>
       </form>
     </ContextMenu>

@@ -1,5 +1,5 @@
 import { Select } from "antd";
-import { Priority } from "@/src/enums";
+import { Priority } from "@/src/common/enums";
 import { FieldValues } from "react-hook-form";
 
 const  PrioritySelect = ({ ...props }: FieldValues) => {

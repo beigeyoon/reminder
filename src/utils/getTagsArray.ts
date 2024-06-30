@@ -1,4 +1,4 @@
-import { Tag } from "../types";
+import { Tag } from "../common/types";
 
 export const getTagsArray = (tags: Tag[]) => {
   const result: string[] = [];

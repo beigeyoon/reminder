@@ -1,13 +1,13 @@
 'use client'
 import { DatePicker, DatePickerProps, TimePicker, TimePickerProps } from "antd";
-import { forwardRef, useState } from "react";
+import { useState } from "react";
 import { FieldValues } from "react-hook-form";
 import dayjs from "dayjs";
 import { useController } from "react-hook-form";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClock } from "@fortawesome/free-regular-svg-icons";
 
-const DateTime = forwardRef(({ ...props }: FieldValues) => {
+const DateTime = ({ ...props }: FieldValues) => {
   const { onChange: onChangeDateTime, value, control } = props;
 
   const [timeSectionIsVisible, setTimeSectionIsVisible] = useState<boolean>(!!value);
@@ -23,8 +23,9 @@ const DateTime = forwardRef(({ ...props }: FieldValues) => {
     onChangeDateTime(date);
   };
   const onChangeTime: TimePickerProps['onChange'] = (time) => {
-    if (time) onChangeDateTime(time);
-    else {
+    if (time) {
+      onChangeDateTime(time);
+    } else {
       onChangeHasTime(false);
       const timeInitializedDateTime = dayjs(value).startOf('day');
       onChangeDateTime(timeInitializedDateTime);
@@ -68,8 +69,8 @@ return (
       )}
     </div>
   )
-});
+};
 
-DateTime.displayName = 'DateTime';
+
 
 export default DateTime;

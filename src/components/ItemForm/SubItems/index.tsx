@@ -1,15 +1,17 @@
 import { AddSubItemPayload, DeleteSubItemPayload, UpdateSubItemPayload, addSubItem, deleteSubItem, updateSubItem } from "@/src/services/subItem";
-import { SubItem as SubItemType } from "@/src/types";
+import { SubItem as SubItemType } from "@/src/common/types";
 import { useMutation } from "@tanstack/react-query";
 import { CheckboxChangeEvent } from "antd/es/checkbox";
-import { MouseEvent, forwardRef, useCallback } from "react";
+import { MouseEvent, forwardRef, useCallback, useState } from "react";
 import { FieldValues } from "react-hook-form";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import SubItem from "./SubItem";
 
-const SubItems = forwardRef(({ ...props }: FieldValues) => {
-  const { onChange, value: subItems, isActive, itemId, showSubItems } = props;
+const SubItems = forwardRef<HTMLDivElement, FieldValues>(({ ...props }: FieldValues, ref) => {
+  const { onChange, value: subItems, isActive, itemId, showSubItems, handleSubItemsToggle } = props;
+
+  const [newSubItemId, setNewSubItemId] = useState<string | null>(null);
 
   const { mutateAsync: createSubItem } = useMutation({
     mutationFn: (body: AddSubItemPayload) => addSubItem(body),
@@ -34,15 +36,18 @@ const SubItems = forwardRef(({ ...props }: FieldValues) => {
     if (result.ok) {
       const updatedSubItems = [ ...subItems, result.subItem ];
       onChange(updatedSubItems);
+      setNewSubItemId(result.subItem.id);
+      if (!showSubItems) handleSubItemsToggle();
     } else {
       alert('서브 아이템 생성 에러');
       console.error(result.error);
     }
-  }, [createSubItem, itemId, onChange, subItems]);
+  }, [createSubItem, handleSubItemsToggle, itemId, onChange, subItems]);
 
   const onUpdateTitle = useCallback(async (subItemId: string, newTitle: string) => {
     const result = await editSubItem({ id: subItemId, title: newTitle });
     if (result.ok) {
+      setNewSubItemId(null);
       const updatedSubItems = subItems.map((subItem: SubItemType) => {
         if (subItem.id === subItemId) {
           subItem.title = newTitle;
@@ -63,6 +68,7 @@ const SubItems = forwardRef(({ ...props }: FieldValues) => {
       checked: !subItem.checked,
     });
     if (result.ok) {
+      setNewSubItemId(null);
       const updatedSubItems = subItems.map((subItem: SubItemType) => {
         if (result.subItem.id === subItem.id) {
           subItem.checked = !subItem.checked;
@@ -92,7 +98,7 @@ const SubItems = forwardRef(({ ...props }: FieldValues) => {
       {isActive && (
         <button
           onClick={(e) => onClickAddSubItem(e)}
-          className='pt-[8px] pr-[8px]'
+          className='mt-[6px] mr-[8px] py-1 px-2 rounded hover:bg-gray100'
         >
           <FontAwesomeIcon icon={faPlus} className='text-gray400' />
         </button>
@@ -106,6 +112,7 @@ const SubItems = forwardRef(({ ...props }: FieldValues) => {
             onUpdateTitle={onUpdateTitle}
             onDelete={onDelete}
             onChangeChecked={onChangeChecked}
+            autoFocus={subItem.id === newSubItemId}
           />
         ))
         }

@@ -19,6 +19,7 @@ export async function GET (req: NextRequest) {
         id: true,
         name: true,
         password: true,
+        tags: true,
       } as UserSelect
     });
     return Response.json(userInfo);
@@ -30,11 +31,25 @@ export async function GET (req: NextRequest) {
 export async function POST (req: NextRequest) {
   const data = await req.json();
   try {
-    const newList = await prisma.user.create({
+    const newUser = await prisma.user.create({
       data,
     });
-    return Response.json(newList);
+    return Response.json({ ok: true, user: newUser });
   } catch (error) {
-    return Response.json(error);
+    return Response.json({ ok: false, error });
   }
 };
+
+export async function DELETE (req: NextRequest) {
+  const { id } = await req.json();
+  try {
+    const deletedUser = await prisma.user.delete({
+      where: {
+        id: id
+      }
+    });
+    return Response.json({ ok: true, user: deletedUser });
+  } catch (error) {
+    return Response.json({ ok: false, error});
+  }
+}
