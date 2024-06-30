@@ -6,6 +6,7 @@ import { ChangeEvent, KeyboardEvent, useState } from "react";
 import { motion } from "framer-motion";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
+import { IconProp } from "@fortawesome/fontawesome-svg-core";
 
 const Login = () => {
   const [inputs, setInputs] = useState({
@@ -95,7 +96,7 @@ const Login = () => {
           onClick={() => signIn('github')}
           className='rounded bg-black py-2 text-white font-bold'
         >
-          <FontAwesomeIcon icon={faGithub} className='mr-[8px]' />
+          <FontAwesomeIcon icon={faGithub as IconProp} className='mr-[8px]' />
           Github Login
         </button>
         <button
