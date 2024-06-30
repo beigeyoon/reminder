@@ -1,6 +1,6 @@
 import NextAuth from "next-auth/next";
 import CredentialsProvider from "next-auth/providers/credentials";
-import GitHubProvider from "next-auth/providers/github";
+import GitHubProvider, { GithubProfile } from "next-auth/providers/github";
 import { verifyPassword } from "@/src/utils/bcrypt";
 import { getUserInfo, addUser } from "@/src/services/user";
 
@@ -31,7 +31,7 @@ export default NextAuth({
     GitHubProvider({
       clientId: process.env.GITHUB_CLIENT_ID as string,
       clientSecret: process.env.GITHUB_CLIENT_SECRET as string,
-      profile(profile) {
+      profile(profile: GithubProfile) {
         return {
           id: profile.id.toString(),
           name: profile.email as string,
@@ -66,7 +66,7 @@ export default NextAuth({
         const existingUser = await getUserInfo({ name: profile?.email as string });
         if (!existingUser) {
           await addUser({
-            id: profile?.id as string,
+            id: (profile as GithubProfile)?.id.toString(),
             username: profile?.email as string,
           });
         }
