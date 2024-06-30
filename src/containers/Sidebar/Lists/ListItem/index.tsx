@@ -28,7 +28,7 @@ const ListItem = ({ list }: IListItem) => {
 
   const { mutateAsync: editList } = useMutation({
     mutationFn: (body: UpdateListPayload) => updateList(body),
-    onSuccess: (_, vars) => {
+    onSuccess: (_, vars: any) => {
       const isChangeOrderBy = vars.data.hasOwnProperty('orderBy');
       if (!isChangeOrderBy) alert('리스트가 수정되었습니다.');
       queryClient.invalidateQueries(['getLists'] as InvalidateQueryFilters);

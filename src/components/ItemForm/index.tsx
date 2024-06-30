@@ -162,7 +162,7 @@ const ItemForm = ({ item, removeItem }: IItemForm) => {
                 </div>
               </div>
             ) : (
-              <UnactiveItem item={getValues()} listId={item.listId} />
+              <UnactiveItem item={getValues()} />
             )}
             <div className='h-fit flex items-center gap-3 pt-[4px]'>
               {(!isActive && getValues('flagged')) && (
