@@ -1,0 +1,124 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                String   @id @default(uuid())
+  name              String   @unique
+  password          String?
+  lists             List[]
+  tags              Tag[]
+}
+
+model List {
+  id                String   @id @default(uuid())
+  createdTime       DateTime @default(now())
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId            String
+  name              String
+  orderBy           ORDER_BY @default(NEWEST)
+  icon              Icon
+  color             Color
+  items             Item[]
+  sections          Section[]
+}
+
+model Section {
+  id                String   @id @default(uuid())
+  list              List     @relation(fields: [listId], references: [id], onDelete: Cascade)
+  listId            String
+  name              String
+  items             Item[]
+}
+
+model Item {
+  id                String   @id @default(uuid())
+  createdTime       DateTime @default(now())
+  updatedTime       DateTime @updatedAt 
+  checked           Boolean  @default(false)
+  title             String
+  memo              String?
+  url               String?
+  dateTime          DateTime?
+  hasTime           Boolean  @default(false)
+  tags              Tag[]    @relation("ItemToTag")
+  priority          Int?
+  flagged           Boolean  @default(false)
+  list              List     @relation(fields: [listId], references: [id], onDelete: Cascade)
+  listId            String
+  section           Section? @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+  sectionId         String?
+  image_url         String?
+  subItems          SubItem[]
+}
+
+model SubItem {
+  id                String   @id @default(uuid())
+  item              Item     @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  itemId            String
+  createdTime       DateTime @default(now())
+  updatedTime       DateTime @updatedAt
+  checked           Boolean  @default(false)
+  title             String
+}
+
+model Tag {
+  id                String   @id @default(uuid())
+  name              String
+  items             Item[]   @relation("ItemToTag")
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId            String
+}
+
+enum ORDER_BY {
+  NEWEST
+  OLDEST
+  PRIORITY
+}
+
+enum Priority {
+  NO_PRIORITY
+  LOWER
+  MIDDLE
+  UPPER
+}
+
+enum Color {
+  RED
+  ORANGE
+  YELLOW
+  GREEN
+  LIGHTBLUE
+  BLUE
+  DEEPBLUE
+  PINK
+  PURPLE
+  BROWN
+  GRAY
+  PINKBEIGE
+}
+
+enum Icon {
+  LIST
+  BOOK
+  FILE
+  MONEY
+  COMPUTER
+  LEAF
+  PERSON
+  SHOPPING
+  TRIP
+  CALENDAR
+  IDEA
+  HOUSE
+  MUSIC
+  SUN
+  MOON
+  HEART
+  STAR
+}
