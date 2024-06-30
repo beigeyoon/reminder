@@ -7,10 +7,9 @@ import { useCallback } from 'react';
 
 interface IUnactiveItem {
   item: any;
-  listId: string;
 }
 
-const UnactiveItem = ({ item, listId }: IUnactiveItem) => {
+const UnactiveItem = ({ item }: IUnactiveItem) => {
   const { lists, selectedList } = useListInfo();
 
   const addProtocolToUrl = (url: string) => {
@@ -33,7 +32,7 @@ const UnactiveItem = ({ item, listId }: IUnactiveItem) => {
   const getListNameFromListId = useCallback((listId: string) => {
     const list = lists?.find((list) => list.id === listId);
     return list?.name;
-  }, [lists, listId]);
+  }, [lists]);
   
   return (
     <div className='flex flex-col leading-[22px]'>
@@ -41,7 +40,7 @@ const UnactiveItem = ({ item, listId }: IUnactiveItem) => {
         <PriorityIcon priority={item.priority!} />
         <div>{item.title}</div>
         {(selectedList?.id === 'today-list' || selectedList?.id === 'scheduled-list' || selectedList?.id === 'checked-list') && (
-          <div className='pl-[4px] text-gray300'>{getListNameFromListId(listId)}</div>
+          <div className='pl-[4px] text-gray300'>{getListNameFromListId(item.listId)}</div>
         )}
       </div>
       {item.memo && <div className='text-gray400'>{item.memo}</div>}
