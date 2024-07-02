@@ -55,7 +55,7 @@ const UserButton = () => {
       </ContextMenu>
       <div className='flex gap-[4px] items-center text-gray300'>
         {session?.user.name}
-        {!isGithubUser && (
+        {isGithubUser && (
           <FontAwesomeIcon icon={faGithub as IconProp} />
         )}
       </div>
