@@ -47,10 +47,11 @@ export default NextAuth({
     maxAge: 60 * 60,
   },
   callbacks: {
-    async jwt({ token, user }: any) {
+    async jwt({ token, user, account }: any) {
       if (user) {
         token.id = user.id;
         token.name = user.name;
+        token.provider = account.provider;
       };
       return token;
     },
@@ -58,6 +59,7 @@ export default NextAuth({
       if (token) {
         session.user.id = token.id;
         session.user.name = token.name;
+        session.user.provider = token.provider;
       }
       return session;
     },

@@ -1,6 +1,8 @@
 'use client'
 import { faUser } from "@fortawesome/free-solid-svg-icons/faUser";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faGithub } from '@fortawesome/free-brands-svg-icons';
+import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { signOut } from "next-auth/react";
 import ContextMenu, { ContextMenuItem } from '@/src/components/ContextMenu';
 import { deleteUser, DeleteUserPayload } from '@/src/services/user';
@@ -11,6 +13,7 @@ import { Modal } from 'antd';
 const UserButton = () => {
   const { data: session } = useSession();
   const userId = session?.user.id;
+  const isGithubUser = session?.user.provider === 'github';
   
   const { confirm } = Modal;
 
@@ -46,10 +49,16 @@ const UserButton = () => {
   }
 
   return (
-    <div className='w-fit float-end'>
+    <div className='w-full float-end flex items-center justify-between'>
       <ContextMenu id='user-action-menus' items={menuItems} width={160} byLeftMouseButton={true}>
-        <FontAwesomeIcon icon={faUser} fontSize={20}  />
+        <FontAwesomeIcon icon={faUser} fontSize={20} />
       </ContextMenu>
+      <div className='flex gap-[4px] items-center text-gray300'>
+        {session?.user.name}
+        {!isGithubUser && (
+          <FontAwesomeIcon icon={faGithub as IconProp} />
+        )}
+      </div>
     </div>
   )
 }

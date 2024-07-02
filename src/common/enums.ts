@@ -35,7 +35,6 @@ export enum Icon {
   PERSON = 'faPerson',
   SHOPPING = 'faCartShopping',
   TRIP = 'faPlane',
-  CALENDAR = 'faCalendar',
   IDEA = 'faLightbulb',
   HOUSE = 'faHouse',
   MUSIC = 'faMusic',
@@ -46,4 +45,10 @@ export enum Icon {
   TODAY = 'faCalendarDay',
   SCHEDULED = 'faClipboardList',
   CHECKED = 'faCheck',
+  TREE = 'faTree',
+  PALETTE = 'faPalette',
+  QUESTION = 'faCircleQuestion',
+  EXCLAMATION = 'faCircleExclamation',
+  WRENCH = 'faWrench',
+  BUCKET = 'faBucket',
 }
