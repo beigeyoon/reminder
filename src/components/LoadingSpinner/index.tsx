@@ -1,8 +1,16 @@
+'use client'
 import { Spin } from 'antd';
+import { useLoading } from '@/src/store/useLoading';
 
 const LoadingSpinner = () => {
+  const { isLoading } = useLoading();
+
   return (
-    <Spin size='large' fullscreen={true} className='opacity-30' />
+    <>
+      {isLoading && (
+        <Spin size='large' fullscreen={true} className='opacity-30' />
+      )}
+    </>
   )
 }
 

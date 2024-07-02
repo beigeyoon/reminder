@@ -16,6 +16,7 @@ import { useControl } from '@/src/store/useControl';
 import { useSession } from "next-auth/react";
 import { Modal as AntdModdal } from "antd";
 import { deleteItem, DeleteItemPayload } from '@/src/services/item';
+import { useLoading } from '@/src/store/useLoading';
 
 const ItemsList = () => {
   const { status, data: session } = useSession();
@@ -23,6 +24,7 @@ const ItemsList = () => {
 
   const { selectedList } = useListInfo();
   const { selectedTag, setSelectedTag, searchKeyword, setSearchKeyword } = useControl();
+  const { setIsLoading } = useLoading();
 
   const [showFinishedItems, setShowFinishedItems] = useState<boolean>(false);
   const [count, setCount] = useState<number>(-1);
@@ -43,7 +45,7 @@ const ItemsList = () => {
 
   const queryClient = useQueryClient();
 
-  const { data: items } = useQuery({
+  const { data: items, isFetched } = useQuery({
     queryKey: ['getItems', selectedList?.id, selectedTag?.id, searchKeyword, userId],
     queryFn: () => getItems({
       listId: selectedList?.id,
@@ -63,6 +65,10 @@ const ItemsList = () => {
       queryClient.invalidateQueries(['getItems'] as InvalidateQueryFilters);
     }
   });
+
+  useEffect(() => {
+    if (isFetched) setIsLoading(false);
+  }, [isFetched, setIsLoading]);
 
   useEffect(() => {
     if (items) {
