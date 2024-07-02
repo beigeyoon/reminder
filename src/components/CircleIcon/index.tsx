@@ -1,7 +1,7 @@
 import { Color, Icon } from "@/src/common/enums";
 import { getColorCode } from "@/src/utils/getColorCode";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faListUl, faBookOpen, faFile, faMoneyBill, faDesktop, faPerson, faCartShopping, faPlane, faCalendar, faLightbulb, faHouse, faMusic, faSun, faMoon, faHeart, faStar, faCalendarDay, faClipboardList, faCheck } from '@fortawesome/free-solid-svg-icons';
+import { faListUl, faBookOpen, faFile, faMoneyBill, faDesktop, faPerson, faCartShopping, faPlane, faBucket, faLightbulb, faHouse, faMusic, faSun, faMoon, faHeart, faStar, faCalendarDay, faClipboardList, faCheck, faTree, faPalette, faCircleQuestion, faCircleExclamation, faWrench } from '@fortawesome/free-solid-svg-icons';
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 
 interface ICircleIcon {
@@ -19,7 +19,7 @@ const iconMap: Record<keyof typeof Icon, IconProp> = {
   PERSON: faPerson,
   SHOPPING: faCartShopping,
   TRIP: faPlane,
-  CALENDAR: faCalendar,
+  BUCKET: faBucket,
   IDEA: faLightbulb,
   HOUSE: faHouse,
   MUSIC: faMusic,
@@ -30,6 +30,11 @@ const iconMap: Record<keyof typeof Icon, IconProp> = {
   TODAY: faCalendarDay,
   SCHEDULED: faClipboardList,
   CHECKED: faCheck,
+  TREE: faTree,
+  PALETTE: faPalette,
+  QUESTION: faCircleQuestion,
+  EXCLAMATION: faCircleExclamation,
+  WRENCH: faWrench,
 };
 
 const CircleIcon = ({ iconName, colorName, size = 'medium' }: ICircleIcon) => {
