@@ -51,6 +51,11 @@ const Login = () => {
     }
   };
 
+  const onClickGithubLogin = () => {
+    setIsLoading(true);
+    signIn('github')
+  };
+
   const onKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       onClickLogin();
@@ -97,7 +102,7 @@ const Login = () => {
           Login
         </button>
         <button
-          onClick={() => signIn('github')}
+          onClick={onClickGithubLogin}
           className='rounded bg-black py-2 text-white font-bold'
         >
           <FontAwesomeIcon icon={faGithub as IconProp} className='mr-[8px]' />
