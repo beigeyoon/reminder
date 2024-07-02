@@ -7,8 +7,11 @@ import { motion } from "framer-motion";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
+import { useLoading } from "@/src/store/useLoading";
 
 const Login = () => {
+  const { setIsLoading } = useLoading();
+
   const [inputs, setInputs] = useState({
     username: "",
     password: "",
@@ -34,13 +37,15 @@ const Login = () => {
   };
 
   const onClickLogin = async () => {
+    setIsLoading(true);
+
     const response = await signIn("username-password-credential", {
       name: username,
       password,
       redirect: false,
       callbackUrl: "/",
     });
-
+    
     if (response?.error) {
       alert(response.error);
     }
@@ -52,7 +57,6 @@ const Login = () => {
     }
   };
 
-  if (status === 'loading') return <></>;
   return (
     <motion.div
       className='w-screen h-screen flex justify-center items-center'

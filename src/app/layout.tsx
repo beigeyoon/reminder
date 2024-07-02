@@ -4,6 +4,7 @@ import SessionProvider from "../providers/SessionProvider";
 import { config } from '@fortawesome/fontawesome-svg-core';
 import '@fortawesome/fontawesome-svg-core/styles.css';
 import QueryProvider from "../utils/QueryProvider";
+import LoadingSpinner from "../components/LoadingSpinner";
 config.autoAddCss = false
 
 export const metadata: Metadata = {
@@ -23,6 +24,7 @@ export default function RootLayout({
           <SessionProvider>
             {children}
             <div id='modal-portal' />
+            <LoadingSpinner />
           </SessionProvider>
         </QueryProvider>
       </body>
