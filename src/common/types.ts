@@ -15,7 +15,6 @@ export interface List {
   icon: keyof typeof Icon;
   color: keyof typeof Color;
   items: Item[];
-  sections: Section[];
   isPreset?: boolean;
 }
 
@@ -26,14 +25,6 @@ export interface PresetList {
   icon: keyof typeof Icon;
   orderBy: OrderBy;
   isPreset: boolean;
-  items: Item[];
-}
-
-export interface Section {
-  id: string;
-  list: List;
-  listId: string;
-  name: string;
   items: Item[];
 }
 
@@ -52,8 +43,6 @@ export interface Item {
   flagged: boolean;
   list?: List;
   listId: string;
-  section?: Section;
-  sectionId?: string;
   image_url?: string;
   subItems: SubItem[];
   isNewItem?: boolean;

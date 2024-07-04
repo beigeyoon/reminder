@@ -2,26 +2,33 @@
 import Input from "@/src/components/Input";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons/faMagnifyingGlass";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useControl } from '@/src/store/useControl';
 
 const SearchInput = () => {
   const { setSelectedTag, setSearchKeyword } = useControl();
 
-  const [inputValue, setInputValue] = useState<string>('');
+  const [isComposing, setIsComposing] = useState<boolean>(false);
+  
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const handleKeyDown = (event: any) => {
-    if (event.key === "Enter") {
-      if (inputValue.length > 0) {
-        setSelectedTag(null)
-        setSearchKeyword(inputValue);
-        setInputValue('');
+    if (event.key === "Enter" && !isComposing) {
+      if (inputRef.current && inputRef.current.value.length > 0) {
+        setSelectedTag(null);
+        setSearchKeyword(inputRef.current.value);
+        inputRef.current.value = '';
       }
     }
   };
 
-  const handleChange = (event: any) => {
-    setInputValue(event.target.value);
+  const handleComposition = (event: any) => {
+    if (event.type === "compositionstart") {
+      setIsComposing(true);
+    } else if (event.type === "compositionend") {
+      setIsComposing(false);
+      handleKeyDown(event);
+    }
   };
 
   return (
@@ -30,12 +37,12 @@ const SearchInput = () => {
       <Input
         className='rounded-md border-[0.5px] w-full bg-gray200/80 border-gray200 pl-[24px] pr-[4px] py-[5px] text-sm'
         placeholder='Search'
-        value={inputValue}
-        onChange={handleChange}
         onKeyDown={handleKeyDown}
+        onCompositionStart={handleComposition}
+        onCompositionEnd={handleComposition}
+        ref={inputRef}
       />
     </div>
-    
   )
 }
 

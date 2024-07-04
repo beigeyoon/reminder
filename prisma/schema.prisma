@@ -26,15 +26,6 @@ model List {
   icon              Icon
   color             Color
   items             Item[]
-  sections          Section[]
-}
-
-model Section {
-  id                String   @id @default(uuid())
-  list              List     @relation(fields: [listId], references: [id], onDelete: Cascade)
-  listId            String
-  name              String
-  items             Item[]
 }
 
 model Item {
@@ -52,8 +43,6 @@ model Item {
   flagged           Boolean  @default(false)
   list              List     @relation(fields: [listId], references: [id], onDelete: Cascade)
   listId            String
-  section           Section? @relation(fields: [sectionId], references: [id], onDelete: Cascade)
-  sectionId         String?
   image_url         String?
   subItems          SubItem[]
 }
