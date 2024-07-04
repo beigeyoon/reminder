@@ -1,5 +1,5 @@
 import { Priority } from "../common/enums";
-import { Section, Item, SubItem, Tag } from "../common/types";
+import { Item, SubItem, Tag } from "../common/types";
 
 export interface GetItemsPayload {
   listId?: string;
@@ -22,8 +22,6 @@ export interface AddItemPayload {
   tags?: Tag[];
   subItems?: SubItem[];
   priority?: Priority;
-  section?: Section;
-  sectionId?: string;
   image_url?: string;
   userId?: string;
 }
@@ -43,8 +41,6 @@ export interface UpdateItemPayload {
   }
   subItems?: SubItem[];
   priority?: Priority;
-  section?: Section;
-  sectionId?: string;
   image_url?: string;
   userId?: string;
 }

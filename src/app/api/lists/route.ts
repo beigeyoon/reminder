@@ -11,7 +11,6 @@ export async function GET (req: NextRequest) {
       },
       include: {
         items: true,
-        sections: true,
       }
     });
     return Response.json(lists);

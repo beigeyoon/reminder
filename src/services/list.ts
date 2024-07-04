@@ -1,4 +1,4 @@
-import { List, Item, Section } from "../common/types";
+import { List, Item } from "../common/types";
 import { Color, Icon, OrderBy } from "../common/enums";
 
 export interface GetListsPayload {
@@ -10,7 +10,6 @@ export interface AddListPayload {
   icon: Icon;
   color: Color;
   items?: Item[];
-  sections?: Section[];
 }
 
 export interface UpdateListPayload {
