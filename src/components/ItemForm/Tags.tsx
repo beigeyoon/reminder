@@ -30,7 +30,8 @@ const Tags = ({ ...props }: FieldValues) => {
     setInputValue(e.target.value);
   };
 
-  const handleInputConfirm = () => {
+  const handleInputConfirm = (e: any) => {
+    e.stopPropagation();
     if (inputValue && !tags.includes(inputValue)) {
       onChange([...tags, inputValue]);
     }
