@@ -7,6 +7,7 @@ import { FieldValues } from "react-hook-form";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import SubItem from "./SubItem";
+import { Toast } from '../../Toast';
 
 const SubItems = forwardRef<HTMLDivElement, FieldValues>(({ ...props }: FieldValues, ref) => {
   const { onChange, value: subItems, isActive, itemId, showSubItems, handleSubItemsToggle } = props;
@@ -39,7 +40,7 @@ const SubItems = forwardRef<HTMLDivElement, FieldValues>(({ ...props }: FieldVal
       setNewSubItemId(result.subItem.id);
       if (!showSubItems) handleSubItemsToggle();
     } else {
-      alert('서브 아이템 생성 에러');
+      Toast.error('서브 아이템 생성에 실패했습니다.');
       console.error(result.error);
     }
   }, [createSubItem, handleSubItemsToggle, itemId, onChange, subItems]);
@@ -56,7 +57,7 @@ const SubItems = forwardRef<HTMLDivElement, FieldValues>(({ ...props }: FieldVal
       });
       onChange(updatedSubItems);
     } else {
-      alert('서브 아이템 제목 업데이트 에러');
+      Toast.error('서브 아이템 업데이트를 실패했습니다.');
       console.error(result.error);
     }
   }, [editSubItem, onChange, subItems])
@@ -77,7 +78,7 @@ const SubItems = forwardRef<HTMLDivElement, FieldValues>(({ ...props }: FieldVal
       });
       onChange(updatedSubItems);
     } else {
-      alert('서브 아이템 업데이트 에러');
+      Toast.error('서브 아이템 업데이트를 실패했습니다.');
       console.error(result.error);
     }
   }, [editSubItem, onChange, subItems]);
@@ -88,7 +89,7 @@ const SubItems = forwardRef<HTMLDivElement, FieldValues>(({ ...props }: FieldVal
       const updatedSubItems = subItems.filter((subItem: SubItemType) => subItem.id !== result.subItem.id);
       onChange(updatedSubItems);
     } else {
-      alert('서브 아이템 삭제 에러');
+      Toast.error('서브 아이템 삭제를 실패했습니다.');
       console.error(result.error);
     }
   }, [onChange, removeSubItem, subItems]);
