@@ -47,6 +47,7 @@ export interface UpdateItemPayload {
 
 export interface DeleteItemPayload {
   ids: string[];
+  isIndividualItemDeleted?: boolean;
 }
 
 export const getItems = async ({ listId, year, month, tagId, keyword, userId }: GetItemsPayload): Promise<Item[]> => {
@@ -84,13 +85,13 @@ export const updateItem = async (body: UpdateItemPayload) => {
   return await response.json();
 }
 
-export const deleteItem = async (body: DeleteItemPayload) => {
+export const deleteItem = async ({ ids, isIndividualItemDeleted = false }: DeleteItemPayload) => {
   const response = await fetch(`${process.env.NEXT_PUBLIC_FE_URL}/api/items`, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify(body),
+    body: JSON.stringify({ ids, isIndividualItemDeleted }),
   });
   return await response.json();
 }

@@ -26,7 +26,7 @@ import { useSession } from "next-auth/react";
 
 interface IItemForm {
   item: Item;
-  removeItem: ({ ids }: { ids: string[] }) => void;
+  removeItem: ({ ids, isIndividualItemDeleted }: { ids: string[], isIndividualItemDeleted: boolean }) => void;
 }
 
 const ItemForm = ({ item, removeItem }: IItemForm) => {
@@ -104,8 +104,8 @@ const ItemForm = ({ item, removeItem }: IItemForm) => {
     });
   }, [editItem, item.id, item?.tags, userId]);
 
-  const onDelete = useCallback(async (itemId: string) => {
-    const result = await removeItem({ ids: [itemId] });
+  const onDelete = useCallback((itemId: string) => {
+    removeItem({ ids: [itemId], isIndividualItemDeleted: true });
   }, [removeItem]);
 
   const menuItems: ContextMenuItem[] = [
