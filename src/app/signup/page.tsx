@@ -5,6 +5,7 @@ import { ChangeEvent, KeyboardEvent, useState } from "react";
 import { addUser } from "@/src/services/user";
 import { hashPassword } from "@/src/utils/bcrypt";
 import { motion } from "framer-motion";
+import { Toast } from '@/src/components/Toast';
 
 const SignUp = () => {
   const [inputs, setInputs] = useState({
@@ -32,10 +33,10 @@ const SignUp = () => {
   const onClickSignUp = async () => {
     const response = await addUser(inputs);
     if (response.ok) {
-      alert('User Added Successfully!');
+      Toast.success('성공적으로 가입되었습니다.');
       router.push('/login');
     } else {
-      alert(response.error);
+      Toast.error(response.error);
     }
   };
 

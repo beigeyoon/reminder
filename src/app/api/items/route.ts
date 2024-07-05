@@ -307,13 +307,14 @@ export async function PUT (req: NextRequest) {
 };
 
 export async function DELETE(req: NextRequest) {
-  const { ids } = await req.json();
+  const { ids, isIndividualItemDeleted } = await req.json();
+  
   try {
     const deletedItems = await prisma.$transaction(async (prisma) => {
       const itemsToDelete = await prisma.item.findMany({
         where: {
           id: { in: ids },
-          checked: true,
+          checked: isIndividualItemDeleted ? undefined : true,
         },
         include: {
           tags: true,

@@ -9,6 +9,7 @@ import AddList from "@/src/containers/ModalContents/AddList";
 import Modal from "@/src/components/Modal";
 import { Modal as AntdModdal } from "antd";
 import ListButton from "./ListButton";
+import { Toast } from '@/src/components/Toast';
 
 interface IListItem {
   list: List;
@@ -30,7 +31,7 @@ const ListItem = ({ list }: IListItem) => {
     mutationFn: (body: UpdateListPayload) => updateList(body),
     onSuccess: (_, vars: any) => {
       const isChangeOrderBy = vars.data.hasOwnProperty('orderBy');
-      if (!isChangeOrderBy) alert('리스트가 수정되었습니다.');
+      if (!isChangeOrderBy) Toast.success('리스트 정보가 업데이트 되었습니다.');
       queryClient.invalidateQueries(['getLists'] as InvalidateQueryFilters);
       setIsEditListModalOpen(false);
     }
@@ -39,7 +40,7 @@ const ListItem = ({ list }: IListItem) => {
   const { mutateAsync: removeList } = useMutation({
     mutationFn: (body: DeleteListPayload) => deleteList(body),
     onSuccess: () => {
-      alert('리스트가 삭제되었습니다.');
+      Toast.success('리스트가 삭제되었습니다.');
       queryClient.invalidateQueries(['getLists'] as InvalidateQueryFilters);
     }
   });

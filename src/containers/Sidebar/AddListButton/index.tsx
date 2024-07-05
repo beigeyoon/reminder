@@ -8,6 +8,7 @@ import { useMutation, useQueryClient, InvalidateQueryFilters } from "@tanstack/r
 import { addList, AddListPayload } from "@/src/services/list";
 import { useSession } from "next-auth/react";
 import { useListInfo } from "@/src/store/useListInfo";
+import { Toast } from '@/src/components/Toast';
 
 const AddListButton = () => {
   const { setSelectedList } = useListInfo();
@@ -22,14 +23,14 @@ const AddListButton = () => {
     onSuccess: (res) => {
       setSelectedList(res);
       handleModal();
-      alert('리스트가 생성되었습니다.');
+      Toast.success('리스트가 생성되었습니다.');
       queryClient.invalidateQueries(['getLists'] as InvalidateQueryFilters);
     }
   });
 
   const onSubmit = async (payload: any) => {
     if (payload.name.length === 0) {
-      alert('리스트 이름을 입력하세요.');
+      Toast.warning('리스트 이름을 입력하세요.');
       return;
     };
     const body = {

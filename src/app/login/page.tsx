@@ -8,6 +8,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { useLoading } from "@/src/store/useLoading";
+import { Toast } from '@/src/components/Toast';
 
 const Login = () => {
   const { setIsLoading } = useLoading();
@@ -47,7 +48,7 @@ const Login = () => {
     });
     
     if (response?.error) {
-      alert(response.error);
+      Toast.error(response.error);
     }
   };
 
